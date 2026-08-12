@@ -20,3 +20,7 @@ dist_version: "dev"          # build piše PDF u dist/<dist_version>/ (npr. "v1.
 # --- Opcijski popisi (latex_architect uključuje ako je true) ---
 include_lof: false           # \listoffigures
 include_lot: false           # \listoftables
+
+# AgentBrain version used during bootstrap
+agentbrain_version: "2.2.0"
+agentbrain_commit: "8983e7c"
