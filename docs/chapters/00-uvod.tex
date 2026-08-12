@@ -1,1 +1,39 @@
-% 00-uvod — writer popunjava sadržaj.
+% 00 — Uvod.
+
+\section{Uvod}
+\label{sec:uvod}
+
+Ovaj seminarski rad obrađuje četiri zadatka iz kolegija \emph{Optimizacijske
+metode u razvoju i upravljanju sustava} \cite{jokic_zadatak}. Iako se zadaci na
+prvi pogled bave različitim temama --- od kvadratnog programa s dva ograničenja
+do stabilizacije hibridnog dinamičkog sustava --- povezuje ih zajednička nit:
+svaki se svodi na \emph{konveksan} optimizacijski problem, za koji lokalni
+optimum ujedno je i globalni, a uvjeti optimalnosti su i nužni i dovoljni
+\cite[str.~61]{jokic_konveksnost}.
+
+Poglavlje~\ref{sec:zad1} obrađuje kvadratni program s linearnim ograničenjima.
+Analizira se konveksnost, postavljaju se i analitički rješavaju
+Karush--Kuhn--Tuckerovi uvjeti \cite[str.~59]{jokic_kkt}, rezultat se provjerava
+funkcijom \texttt{quadprog} i modeliranjem u YALMIP-u, te se postavlja i rješava
+Lagrangeov dualni problem. Na kraju se pokazuje kako Lagrangeovi množitelji
+mjere osjetljivost optimalne vrijednosti na perturbacije ograničenja.
+
+Poglavlje~\ref{sec:zad2} isti problem promatra uz nesigurne koeficijente
+ograničenja. Pokazuje se da se zahtjev dopustivosti za sve realizacije svodi na
+konačan skup ograničenja najgoreg slučaja i da robusna protuformulacija ostaje
+konveksna, pa se rješava istim alatom. Kvantificira se i cijena robusnosti.
+
+Poglavlje~\ref{sec:zad3} bavi se oblikovanjem profila ceste na neravnom terenu.
+Naglasak je na \emph{formulaciji}: pokazuje se da izbor mjere troška određuje
+klasu problema, te da diskretizacija derivacija podijeljenim razlikama zadržava
+linearnost i vodi na linearni program.
+
+Poglavlje~\ref{sec:zad4} prelazi na dinamičke sustave. Analizira se prekidački
+sustav s dva stabilna moda koji je unatoč tome nestabilan, i sintetizira se
+statički regulator koji ga stabilizira. Sinteza se oslanja na zajedničku
+kvadratnu Ljapunovljevu funkciju \cite[str.~4]{jokic_ljapunov}, čime se problem
+upravljanja svodi na sustav linearnih matričnih nejednakosti.
+
+Svi numerički rezultati dobiveni su u MATLAB-u; skripte se nalaze u direktoriju
+\texttt{src/} repozitorija, po jedna za svaki zadatak, i reproduciraju sve
+brojeve i slike iz ovog rada.

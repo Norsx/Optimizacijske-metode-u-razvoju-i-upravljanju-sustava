@@ -1,5 +1,4 @@
 % 02 — Zadatak 2: robustan QP uz nesigurne koeficijente (+-15 %).
-% Struktura poglavlja; sadržaj popunjava writer uz citate iz rag query.
 
 \section{Zadatak 2 --- robusno kvadratično programiranje}
 \label{sec:zad2}
@@ -7,14 +6,125 @@
 \subsection{Model nesigurnosti koeficijenata}
 \label{sec:zad2:nesigurnost}
 
+Za problem iz Zadatka~1 pretpostavlja se da koeficijenti $a_{ij}$ nisu točno
+poznati: stvarna vrijednost leži u intervalu od $0{,}85a_{ij}$ do $1{,}15a_{ij}$,
+dakle unutar $\pm 15\,\%$ nominalne vrijednosti \cite[str.~1]{jokic_zadatak}.
+Uz predznake iz Zadatka~1 to daje
+\begin{equation}
+  a_{11}, a_{12}, a_{22} \in [-1{,}15,\; -0{,}85], \qquad
+  a_{21} \in [0{,}85,\; 1{,}15].
+\end{equation}
+Za negativne nominalne vrijednosti množenje s $1{,}15$ daje \emph{donju}, a s
+$0{,}85$ \emph{gornju} granicu intervala --- na to treba paziti pri implementaciji.
+
+Svaki interval zapisujemo preko središta i polumjera,
+$\bar a_{ij} = \tfrac12(a_{ij}^{\text{lo}} + a_{ij}^{\text{hi}})$ i
+$r_{ij} = \tfrac12(a_{ij}^{\text{hi}} - a_{ij}^{\text{lo}})$, pa je
+$\bar A = A$ (nominalna matrica) i $r_{ij} = 0{,}15\,|a_{ij}| = 0{,}15$ za sve $i,j$.
+
 \subsection{Robusna formulacija problema}
 \label{sec:zad2:formulacija}
+
+Robusna protuformulacija traži rješenje koje je dopustivo za \emph{svaku}
+realizaciju nesigurnih koeficijenata \cite[str.~1]{jokic_robusno}:
+\begin{equation}
+  \min_x\; f(x) \quad \text{uz} \quad a_i^{\mathsf T}x \le b_i
+  \;\; \forall\, a_i \in \mathcal{U}_i, \quad i = 1,2 .
+  \label{eq:robgen}
+\end{equation}
+To je beskonačno mnogo ograničenja, no dovoljno je zahtijevati da ograničenje
+vrijedi u najgorem slučaju, tj. $\max_{a_i \in \mathcal{U}_i} a_i^{\mathsf T}x \le b_i$.
+
+Kako koeficijenti ulaze linearno i nezavisno jedan o drugome, maksimum po
+kvadru se računa po komponentama. Za $a \in [a^{\text{lo}}, a^{\text{hi}}]$ i
+skalarni $x$ vrijedi $\max_a ax = \bar a x + r|x|$, jer se maksimum postiže u
+gornjoj granici kad je $x \ge 0$, a u donjoj kad je $x < 0$. Odatle
+\begin{equation}
+  \boxed{\;\bar a_i^{\mathsf T}x + r_i^{\mathsf T}|x| \le b_i, \quad i = 1,2 .\;}
+  \label{eq:robcounter}
+\end{equation}
+
+Bitno je uočiti da robusna protuformulacija \eqref{eq:robcounter} ostaje
+konveksna: $|x|$ je konveksna funkcija, koeficijenti $r_i$ su nenegativni, a
+cijeli izraz stoji na lijevoj strani nejednakosti tipa $\le$. Uvođenjem pomoćnih
+varijabli $u_i \ge |x_i|$, što se zapisuje kao par linearnih ograničenja
+$x_i - u_i \le 0$ i $-x_i - u_i \le 0$, problem prelazi u običan QP s linearnim
+ograničenjima u varijablama $z = (x_1, x_2, u_1, u_2)^{\mathsf T}$. Nesigurnost
+dakle nije povećala klasu problema --- i dalje je riješiv istim solverom.
 
 \subsection{Rješenje robusnog problema}
 \label{sec:zad2:rjesenje}
 
+Rješavanjem opisanog QP-a dobiva se
+\begin{equation}
+  x_{\text{rob}} = \left(\frac{13}{2},\; \frac{179}{34}\right)^{\!\mathsf T}
+                 = (6{,}500000,\; 5{,}264706)^{\mathsf T}, \qquad
+  f(x_{\text{rob}}) = 84{,}623962 .
+  \label{eq:z2sol}
+\end{equation}
+
+Budući da je $x_{\text{rob}} > 0$, vrijedi $|x| = x$, pa se \eqref{eq:robcounter}
+svodi na
+\begin{equation}
+  -0{,}85\,(x_1 + x_2) \le -10, \qquad 1{,}15\,x_1 - 0{,}85\,x_2 \le 3 .
+  \label{eq:robexplicit}
+\end{equation}
+Oba su ograničenja u optimumu aktivna, s množiteljima $17{,}607$ i $1{,}344$, pa
+je $x_{\text{rob}}$ sjecište njihovih granica --- za razliku od nominalnog
+problema, gdje je aktivno bilo samo prvo ograničenje. Robusnost je dakle
+promijenila i sam skup aktivnih ograničenja.
+
 \subsection{Dozvoljeni skupovi za slučajne realizacije koeficijenata}
 \label{sec:zad2:skupovi}
 
+Slika~\ref{fig:z2} prikazuje granice obaju ograničenja za niz slučajno
+izabranih koeficijenata iz dopuštenih intervala, zajedno s nominalnim i
+robusnim granicama te obama optimumima.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.72\textwidth]{figures/zad2_robustni.pdf}
+  \caption{Granice ograničenja za $60$ slučajnih realizacija koeficijenata
+  (tanke linije), nominalne granice (plavo), robusne granice najgoreg slučaja
+  (crno) te nominalni i robusni optimum.}
+  \label{fig:z2}
+\end{figure}
+
+Slika objašnjava zašto je robusno rješenje pomaknuto. Nominalni optimum
+$x_{\text{nom}}$ leži \emph{točno na} nominalnoj granici, jer je prvo ograničenje
+u Zadatku~1 aktivno. Čim se koeficijenti malo promijene, granica se zarotira i
+otprilike polovica realizacija tu točku ostavlja izvan dozvoljenog skupa.
+Robusni optimum leži u sjecištu crnih pravaca, koji omeđuju presjek svih
+mogućih dozvoljenih skupova.
+
 \subsection{Usporedba s nominalnim rješenjem}
 \label{sec:zad2:usporedba}
+
+Provjera na $20\,000$ slučajnih realizacija koeficijenata daje jasnu sliku:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Usporedba nominalnog i robusnog rješenja.}
+  \label{tab:z2}
+  \begin{tabular}{lccc}
+    \hline
+    Rješenje & $x$ & $f(x)$ & udio nedopustivih realizacija \\
+    \hline
+    nominalno & $(5{,}757576,\; 4{,}242424)$ & $60{,}606061$ & $49{,}9\,\%$ \\
+    robusno   & $(6{,}500000,\; 5{,}264706)$ & $84{,}623962$ & $0{,}0\,\%$ \\
+    \hline
+  \end{tabular}
+\end{table}
+
+Nominalno rješenje je nedopustivo u gotovo polovici realizacija, što je i
+logično: ono leži na granici, pa ga svaka rotacija granice "prema unutra"
+izbacuje iz dozvoljenog skupa. Robusno rješenje nije prekršilo ograničenja ni u
+jednoj realizaciji.
+
+Za to se plaća \emph{cijena robusnosti}: vrijednost funkcije cilja raste s
+$60{,}61$ na $84{,}62$, dakle za $24{,}02$ odnosno oko $39{,}6\,\%$. To je
+tipičan kompromis u robusnom optimiranju --- garancija dopustivosti pod svim
+realizacijama plaća se lošijom nominalnom vrijednošću. Je li taj trošak
+prihvatljiv ovisi o posljedicama kršenja ograničenja: ako su ona sigurnosna,
+cijena je opravdana; ako su mekana, isplati se razmotriti manje konzervativne
+modele nesigurnosti, primjerice elipsoidni skup umjesto kvadra.
