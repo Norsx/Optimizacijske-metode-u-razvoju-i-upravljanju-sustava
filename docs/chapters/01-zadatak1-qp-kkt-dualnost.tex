@@ -59,19 +59,42 @@ KKT uvjeti \cite[str.~59]{jokic_kkt} glase
   \lambda_i\,(A_ix - b_i) &= 0,\quad i=1,2 && \text{(komplementarnost)}. \label{eq:kkt4}
 \end{align}
 
-Prvo provjeravamo je li ograničenje uopće aktivno. Bezuvjetni minimum je
-$x_{\text{unc}} = -H^{-1}c = (-0{,}897598,\; 0{,}682680)^{\mathsf T}$, za koji je
-$x_1 + x_2 = -0{,}215 < 10$. Ograničenje \eqref{eq:z1g1} je dakle prekršeno i mora
-biti aktivno u optimumu.
-
-Pretpostavimo da je aktivno samo prvo ograničenje, tj. $\lambda_2 = 0$. Tada
-\eqref{eq:kkt1} i $A_1x = b_1$ daju linearan sustav
+Uvjet komplementarnosti \eqref{eq:kkt4} znači da je svako ograničenje ili
+aktivno ($A_ix = b_i$, uz $\lambda_i \ge 0$) ili neaktivno ($A_ix < b_i$, uz
+$\lambda_i = 0$). Sustavan postupak je stoga proći kroz sve $2^m$ kombinacija
+aktivnih skupova i potražiti onu koja zadovoljava \emph{sve} KKT uvjete. Uz
+$m = 2$ ograničenja to su četiri slučaja. Za pretpostavljeni aktivni skup $S$
+rješava se linearan sustav
 \begin{equation}
-  \begin{bmatrix} H & A_1^{\mathsf T} \\ A_1 & 0 \end{bmatrix}
-  \begin{bmatrix} x \\ \lambda_1 \end{bmatrix}
-  = \begin{bmatrix} -c \\ b_1 \end{bmatrix},
+  \begin{bmatrix} H & A_S^{\mathsf T} \\ A_S & 0 \end{bmatrix}
+  \begin{bmatrix} x \\ \lambda_S \end{bmatrix}
+  = \begin{bmatrix} -c \\ b_S \end{bmatrix},
+  \label{eq:kktsys}
 \end{equation}
-čije je rješenje
+a zatim se provjeravaju primarna dopustivost $Ax \le b$ i dualna dopustivost
+$\lambda \ge 0$. Rezultati su u tablici~\ref{tab:z1cases}.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Nabrajanje aktivnih skupova. Točno jedan slučaj zadovoljava sve KKT uvjete.}
+  \label{tab:z1cases}
+  \begin{tabular}{lccl}
+    \hline
+    Aktivni skup & $x$ & $\lambda$ & Status \\
+    \hline
+    $\{\}$          & $(-0{,}8976,\; 0{,}6827)$ & $(0,\; 0)$ & odbačen: nedopustiv \\
+    $\{g_1\}$       & $(5{,}7576,\; 4{,}2424)$  & $(12{,}2424,\; 0)$ & \textbf{zadovoljava sve} \\
+    $\{g_2\}$       & $(2{,}2407,\; -0{,}7593)$ & $(0,\; -6{,}7093)$ & odbačen: nedopustiv \\
+    $\{g_1, g_2\}$  & $(6{,}5000,\; 3{,}5000)$  & $(11{,}5000,\; -2{,}4500)$ & odbačen: $\lambda_2 < 0$ \\
+    \hline
+  \end{tabular}
+\end{table}
+
+Slučaj bez aktivnih ograničenja daje bezuvjetni minimum $-H^{-1}c$, koji je
+nedopustiv jer je $x_1 + x_2 = -0{,}215 < 10$. Slučaj $\{g_2\}$ je također
+nedopustiv, a slučaj s oba aktivna ograničenja daje negativan množitelj
+$\lambda_2 = -2{,}45$, čime pada na dualnoj dopustivosti. Preostaje jedini
+kandidat
 \begin{equation}
   x^\star = \begin{bmatrix} 190/33 \\ 140/33 \end{bmatrix}
           = \begin{bmatrix} 5{,}757576 \\ 4{,}242424 \end{bmatrix}, \qquad
@@ -79,10 +102,9 @@ Pretpostavimo da je aktivno samo prvo ograničenje, tj. $\lambda_2 = 0$. Tada
   \label{eq:z1sol}
 \end{equation}
 
-Pretpostavku treba potvrditi. Dualna dopustivost vrijedi jer je
-$\lambda_1^\star = 12{,}242424 > 0$. Drugo ograničenje je neaktivno jer je
+Za njega je $\lambda_1^\star > 0$, drugo ograničenje je neaktivno jer je
 $x_1^\star - x_2^\star - 3 = -1{,}484848 < 0$, što je konzistentno s
-$\lambda_2^\star = 0$ u \eqref{eq:kkt4}. Rezidual stacionarnosti iznosi
+$\lambda_2^\star = 0$ u \eqref{eq:kkt4}, a rezidual stacionarnosti iznosi
 $\lVert Hx^\star + c + \lambda_1^\star A_1^{\mathsf T}\rVert \approx 1{,}8\cdot10^{-15}$.
 Optimalna vrijednost je
 \begin{equation}

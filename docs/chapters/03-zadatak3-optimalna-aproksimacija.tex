@@ -37,17 +37,17 @@ klasifikaciju problema.
 \subsection{Formulacija optimizacijskog problema}
 \label{sec:zad3:formulacija}
 
-Količina premještenog materijala na $i$-tom podintervalu proporcionalna je
-apsolutnoj razlici visina, jer se i otkopavanje i nasipavanje jednako plaćaju.
-Ukupni trošak je stoga
+Količina premještenog materijala proporcionalna je apsolutnoj razlici visina,
+jer se i otkopavanje i nasipavanje jednako plaćaju. Mjera odstupanja je stoga
+$\ell_1$ norma
 \begin{equation}
-  J(y) = \sum_{i=0}^{N} \lvert y_i - h(x_i)\rvert \,\Delta x,
+  J(y) = \lVert y - h \rVert_1 = \sum_{i=0}^{N} \lvert y_i - h(x_i)\rvert ,
   \label{eq:z3cost}
 \end{equation}
-što je diskretizacija integrala $\int_0^L |y(x)-h(x)|\,\mathrm{d}x$, dakle
-$\ell_1$ norma odstupanja. Problem glasi
+čime problem ulazi u okvir aproksimacije u zadanoj normi s ograničenjima
+\cite[str.~4, 14]{jokic_lpqp}. Problem glasi
 \begin{align}
-  \min_{y \in \mathbb{R}^{N+1}}\quad & \sum_{i=0}^{N} \lvert y_i - h_i\rvert\,\Delta x \label{eq:z3a}\\
+  \min_{y \in \mathbb{R}^{N+1}}\quad & \lVert y - h \rVert_1 \label{eq:z3a}\\
   \text{uz}\quad & \lvert y_i - y_{i-1}\rvert \le b_1 \Delta x, && i = 1,\dots,N, \label{eq:z3b}\\
                  & \lvert y_i - 2y_{i-1} + y_{i-2}\rvert \le b_2 \Delta x^2, && i = 2,\dots,N, \label{eq:z3c}\\
                  & y_0 = a, \quad y_N = b . \label{eq:z3d}
@@ -57,12 +57,15 @@ $\ell_1$ norma odstupanja. Problem glasi
 \label{sec:zad3:klasa}
 
 Funkcija cilja \eqref{eq:z3a} je konveksna ali nije glatka, dok su sva
-ograničenja linearna. Standardnom \emph{epigrafskom reformulacijom} uvode se
-pomoćne varijable $t_i$ uz
+ograničenja linearna. Minimizacija $\ell_1$ norme reformulira se uvođenjem
+vektora pomoćnih varijabli $t$ prema pravilu iz vježbi:
 \begin{equation}
-  y_i - h_i \le t_i, \qquad -(y_i - h_i) \le t_i,
+  \min_y \lVert y - h\rVert_1
+  \quad\Longleftrightarrow\quad
+  \min_{y,\,t}\; \mathbf{1}^{\mathsf T}t = \sum_{i=0}^{N} t_i
+  \quad \text{uz} \quad -t \le y - h \le t .
+  \label{eq:z3epi}
 \end{equation}
-što je ekvivalentno $t_i \ge |y_i - h_i|$, a cilj postaje $\sum_i t_i \Delta x$.
 Time i cilj i sva ograničenja postaju linearni, pa je riječ o
 \textbf{linearnom programu} (LP) \cite[str.~30]{jokic_lpqp} s $2(N+1)$ varijabli.
 Apsolutne vrijednosti u \eqref{eq:z3b}--\eqref{eq:z3c} razlažu se na po dvije
@@ -86,14 +89,14 @@ na slici~\ref{fig:z3}.
   \caption{Rezultati za četiri slučaja. Aktivna ograničenja pokazuju koje
   ograničenje oblikuje rješenje.}
   \label{tab:z3}
-  \begin{tabular}{llccccc}
+  \begin{tabular}{llcccccc}
     \hline
-    Slučaj & $N$ & $b_1$ & $b_2$ & trošak & aktivnih nagiba & aktivnih zakrivljenosti \\
+    Slučaj & $N$ & $b_1$ & $b_2$ & $J = \lVert y-h\rVert_1$ & $J\,\Delta x$ & aktivnih nagiba & aktivnih zakrivljenosti \\
     \hline
-    A & $20$  & $0{,}5$ & $0{,}5$ & $1{,}916180$ & $10/20$  & $3/19$  \\
-    A & $100$ & $0{,}5$ & $0{,}5$ & $1{,}965940$ & $51/100$ & $35/99$ \\
-    B & $20$  & $0{,}5$ & $0{,}2$ & $2{,}453727$ & $5/20$   & $12/19$ \\
-    B & $100$ & $0{,}5$ & $0{,}2$ & $2{,}506047$ & $25/100$ & $73/99$ \\
+    A & $20$  & $0{,}5$ & $0{,}5$ & $3{,}832359$  & $1{,}916180$ & $10/20$  & $3/19$  \\
+    A & $100$ & $0{,}5$ & $0{,}5$ & $19{,}659396$ & $1{,}965940$ & $51/100$ & $35/99$ \\
+    B & $20$  & $0{,}5$ & $0{,}2$ & $4{,}907453$  & $2{,}453727$ & $5/20$   & $12/19$ \\
+    B & $100$ & $0{,}5$ & $0{,}2$ & $25{,}060470$ & $2{,}506047$ & $25/100$ & $73/99$ \\
     \hline
   \end{tabular}
 \end{table}
@@ -114,18 +117,21 @@ su ona doista aktivna i da rješenje leži na rubu dozvoljenog skupa.
 \subsection{Usporedba slučajeva i utjecaj diskretizacije}
 \label{sec:zad3:diskusija}
 
-\paragraph{Utjecaj ograničenja $b_2$.} Slučaj B je stroži i skuplji: trošak raste
-s $1{,}92$ na $2{,}45$ pri $N=20$, dakle za oko $28\,\%$. Struktura rješenja se
+\paragraph{Utjecaj ograničenja $b_2$.} Slučaj B je stroži i skuplji: pri $N=20$
+$J$ raste s $3{,}83$ na $4{,}91$, dakle za oko $28\,\%$. Struktura rješenja se
 kvalitativno mijenja --- u slučaju A dominira ograničenje nagiba (aktivno na
 polovici čvorova), dok u slučaju B prevladava ograničenje zakrivljenosti
 ($73/99$ aktivnih pri $N=100$). Profil u slučaju B je vidljivo glađi jer se
 nagib ne smije mijenjati brzo, pa cesta ne može tako vjerno pratiti teren.
 
-\paragraph{Utjecaj diskretizacije.} Prijelaz s $N=20$ na $N=100$ mijenja trošak
-tek u trećoj znamenki ($1{,}916 \to 1{,}966$ i $2{,}454 \to 2{,}506$, oko
-$2\,\%$). Rješenje dakle konvergira i grubljom mrežom već je dobro
-aproksimirano. Blagi porast je očekivan: finija mreža bolje aproksimira integral
-i uz to nameće ograničenja u više točaka, pa je dozvoljeni skup nešto uži.
+\paragraph{Utjecaj diskretizacije.} Vrijednosti $J$ za različite $N$ nisu
+izravno usporedive, jer je $J$ zbroj po $N+1$ čvorova pa raste s gustoćom mreže.
+Usporedivu veličinu daje $J\,\Delta x$, diskretizacija integrala
+$\int_0^L |y-h|\,\mathrm{d}x$, dakle stvarna količina materijala. Ona se
+prijelazom s $N=20$ na $N=100$ mijenja tek u trećoj znamenki
+($1{,}916 \to 1{,}966$ i $2{,}454 \to 2{,}506$, oko $2\,\%$), pa je rješenje već
+na grubljoj mreži dobro aproksimirano. Množenje konstantom $\Delta x$ ne mijenja
+minimizator, pa je optimalni profil ceste u oba zapisa isti.
 
 \paragraph{Oblik rješenja.} Na dijelovima gdje teren zadovoljava ograničenja
 cesta ga prati gotovo točno, čime je trošak lokalno nula. Odstupanje se

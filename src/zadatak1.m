@@ -35,21 +35,54 @@ fprintf('Svojstvene vrijednosti H: %.6f, %.6f\n', lam_H(1), lam_H(2));
 fprintf('H pozitivno definitna: %d  -> strogo konveksan QP\n', all(lam_H > 0));
 fprintf('Ogranicenja su linearna -> dozvoljeni skup je konveksan poliedar.\n\n');
 
-%% b) KKT uvjeti - analiticko rjesenje uz pretpostavku "aktivno samo g1"
-% Stacionarnost:  H*x + c + A'*lambda = 0
-% Komplementarnost: lambda_i * (A(i,:)*x - b(i)) = 0
-% Pretpostavka: g1 aktivno, g2 neaktivno (lambda2 = 0)
-KKT = [H, A(1,:)'; A(1,:), 0];
-rhs = [-c; b(1)];
-sol = KKT \ rhs;
-x_kkt = sol(1:2);
-lambda1 = sol(3);
+%% b) KKT uvjeti - sustavno nabrajanje slucajeva aktivnih ogranicenja
+% Postupak iz vjezbi 3 (Primjer 2): zbog komplementarnosti svako ogranicenje je
+% ili aktivno (g_i = 0, lambda_i >= 0) ili neaktivno (g_i < 0, lambda_i = 0),
+% pa se prolazi kroz svih 2^m kombinacija i trazi ona koja zadovolji SVE
+% KKT uvjete. Uz m = 2 ogranicenja to su 4 slucaja.
+fprintf('=== b) KKT - nabrajanje slucajeva ===\n');
+fprintf('%-28s %-22s %-20s %s\n', 'aktivni skup', 'x', 'lambda', 'status');
 
-fprintf('=== b) KKT ===\n');
+combos = {[], 1, 2, [1 2]};
+x_kkt = []; lam_kkt = [];
+for k = 1:numel(combos)
+    S = combos{k};
+    nS = numel(S);
+    % Rjesava se [H A_S'; A_S 0][x; lambda_S] = [-c; b_S]
+    KKTmat = [H, A(S,:)'; A(S,:), zeros(nS)];
+    rhs = [-c; b(S)];
+    sol = KKTmat \ rhs;
+    xk = sol(1:2);
+    lamS = sol(3:end);
+    lam = zeros(2,1); lam(S) = lamS;
+
+    primal = all(A*xk - b <= 1e-9);      % dopustivost
+    dualok = all(lam >= -1e-9);          % lambda >= 0
+    ok = primal && dualok;
+
+    if isempty(S)
+        nameS = '{} (nijedno aktivno)';
+    else
+        nameS = ['{' strjoin(arrayfun(@(i) sprintf('g%d', i), S, 'UniformOutput', false), ', ') '}'];
+    end
+    if ~primal
+        st = 'ODBACEN: nedopustiv';
+    elseif ~dualok
+        st = 'ODBACEN: lambda < 0';
+    else
+        st = 'ZADOVOLJAVA SVE KKT UVJETE';
+        x_kkt = xk; lam_kkt = lam;
+    end
+    fprintf('%-28s [%7.4f %7.4f]  [%7.4f %7.4f]  %s\n', nameS, xk(1), xk(2), lam(1), lam(2), st);
+end
+lambda1 = lam_kkt(1);
+fprintf('\n');
+
+fprintf('=== b) Rjesenje ===\n');
 fprintf('x*      = [%.6f; %.6f]   (tocno: [190/33; 140/33])\n', x_kkt(1), x_kkt(2));
 fprintf('lambda1 = %.6f   (tocno: 404/33)\n', lambda1);
 fprintf('lambda2 = 0 (g2 neaktivno)\n');
-fprintf('provjera g2 = %.6f  (< 0 => neaktivno, pretpostavka vrijedi)\n', A(2,:)*x_kkt - b(2));
+fprintf('provjera g2 = %.6f  (< 0 => neaktivno, u skladu s lambda2 = 0)\n', A(2,:)*x_kkt - b(2));
 fprintf('dualna dopustivost: lambda1 = %.6f >= 0\n', lambda1);
 fprintf('rezidual stacionarnosti: %.3e\n', norm(H*x_kkt + c + lambda1*A(1,:)'));
 fprintf('p* = %.6f   (tocno: 2000/33)\n\n', f(x_kkt));
