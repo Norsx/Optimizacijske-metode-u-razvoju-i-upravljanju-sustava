@@ -77,25 +77,30 @@ promijenila i sam skup aktivnih ograničenja.
 \subsection{Dozvoljeni skupovi za slučajne realizacije koeficijenata}
 \label{sec:zad2:skupovi}
 
-Slika~\ref{fig:z2} prikazuje granice obaju ograničenja za niz slučajno
-izabranih koeficijenata iz dopuštenih intervala, zajedno s nominalnim i
-robusnim granicama te obama optimumima.
+Slika~\ref{fig:z2} prikazuje dozvoljene skupove za $300$ slučajno izabranih
+realizacija koeficijenata. Sivi ton označava udio realizacija za koje je pojedina
+točka dopustiva: bijelo znači da nije dopustiva ni za jednu, a crno da je
+dopustiva za sve. Crno područje je dakle presjek svih dozvoljenih skupova, tj.
+robusni dozvoljeni skup, a zelena kontura je njegov rub.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.72\textwidth]{figures/zad2_robustni.pdf}
-  \caption{Granice ograničenja za $60$ slučajnih realizacija koeficijenata
-  (tanke linije), nominalne granice (plavo), robusne granice najgoreg slučaja
-  (crno) te nominalni i robusni optimum.}
+  \includegraphics[width=0.82\textwidth]{figures/zad2_robustni.pdf}
+  \caption{Dozvoljeni skupovi za $300$ slučajnih realizacija koeficijenata
+  (sivi ton = udio realizacija za koje je točka dopustiva), rub robusnog skupa
+  (zeleno), nominalne granice (plavo), granice najgoreg slučaja (crno) te
+  nominalni i robusni optimum.}
   \label{fig:z2}
 \end{figure}
 
 Slika objašnjava zašto je robusno rješenje pomaknuto. Nominalni optimum
 $x_{\text{nom}}$ leži \emph{točno na} nominalnoj granici, jer je prvo ograničenje
 u Zadatku~1 aktivno. Čim se koeficijenti malo promijene, granica se zarotira i
-otprilike polovica realizacija tu točku ostavlja izvan dozvoljenog skupa.
-Robusni optimum leži u sjecištu crnih pravaca, koji omeđuju presjek svih
-mogućih dozvoljenih skupova.
+otprilike polovica realizacija tu točku ostavlja izvan dozvoljenog skupa --- na
+slici se to vidi po tome što $x_{\text{nom}}$ leži u sivoj zoni s udjelom oko
+$0{,}5$. Robusni optimum leži u vrhu crnog područja, dakle na rubu presjeka svih
+mogućih dozvoljenih skupova, i to je najbolja točka koja je dopustiva pod svakom
+realizacijom.
 
 \subsection{Usporedba s nominalnim rješenjem}
 \label{sec:zad2:usporedba}

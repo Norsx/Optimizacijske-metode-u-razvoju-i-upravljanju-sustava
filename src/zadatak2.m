@@ -95,15 +95,39 @@ fig = figure('Color', 'w', 'Position', [100 100 780 660]);
 hold on; box on;
 xs = linspace(0, 14, 300);
 
-hSample = gobjects(1);
-for k = 1:60
+% Dozvoljeni skupovi za niz slucajnih realizacija. Umjesto samih granicnih
+% pravaca crta se koliki UDIO realizacija proglasava svaku tocku dopustivom:
+% tamnije podrucje = dopustivo za vise realizacija, a podrucje s udjelom 1
+% je presjek svih skupova, tj. robusni dozvoljeni skup.
+ng = 420;
+gv = linspace(0, 14, ng);
+[G1, G2] = meshgrid(gv, gv);
+acc = zeros(ng);
+Msets = 300;
+for k = 1:Msets
     Ak = Alo + (Ahi - Alo).*rand(2,2);
-    % granica 1: Ak(1,1)x1 + Ak(1,2)x2 = -10
+    feas = (Ak(1,1)*G1 + Ak(1,2)*G2 <= bvec(1)) & ...
+           (Ak(2,1)*G1 + Ak(2,2)*G2 <= bvec(2));
+    acc = acc + feas;
+end
+frac = acc / Msets;
+hImg = imagesc(gv, gv, frac);
+set(gca, 'YDir', 'normal');
+colormap(flipud(gray(256).^0.6));
+cb = colorbar; cb.Label.String = 'udio realizacija za koje je tocka dopustiva';
+caxis([0 1]);
+
+% obris robusnog skupa (udio = 1)
+contour(G1, G2, frac, [0.999 0.999], 'LineColor', [0 0.5 0], 'LineWidth', 1.6);
+
+% nekoliko pojedinacnih granica radi citljivosti
+hSample = gobjects(1);
+for k = 1:25
+    Ak = Alo + (Ahi - Alo).*rand(2,2);
     y1 = (bvec(1) - Ak(1,1)*xs) / Ak(1,2);
-    % granica 2: Ak(2,1)x1 + Ak(2,2)x2 = 3
     y2 = (bvec(2) - Ak(2,1)*xs) / Ak(2,2);
-    hS1 = plot(xs, y1, '-', 'Color', [0.55 0.72 0.90 0.55], 'LineWidth', 0.6);
-    plot(xs, y2, '-', 'Color', [0.95 0.75 0.55 0.55], 'LineWidth', 0.6);
+    hS1 = plot(xs, y1, '-', 'Color', [0.35 0.55 0.85 0.35], 'LineWidth', 0.5);
+    plot(xs, y2, '-', 'Color', [0.90 0.60 0.25 0.35], 'LineWidth', 0.5);
     if k == 1; hSample = hS1; end
 end
 
@@ -121,7 +145,7 @@ hR = plot(x_rob(1), x_rob(2), 'p', 'MarkerFaceColor', 'r', ...
      'MarkerEdgeColor', 'k', 'MarkerSize', 15);
 
 xlabel('x_1'); ylabel('x_2');
-title('Zadatak 2: granice ogranicenja za slucajne koeficijente (\pm15 %)');
+title('Zadatak 2: dozvoljeni skupovi za slucajne koeficijente (\pm15 %)');
 legend([hSample hNom hRob hN hR], ...
     {'slucajne realizacije', 'nominalne granice', 'robusne (najgori slucaj)', ...
      'x_{nom}', 'x_{rob}'}, 'Location', 'northeast');

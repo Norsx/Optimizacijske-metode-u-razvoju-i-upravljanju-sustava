@@ -140,21 +140,34 @@ contour(X1, X2, Fv, [f(x_kkt) f(x_kkt)], 'LineColor', [0.85 0.2 0.2], 'LineWidth
 plot(x1, 10 - x1, 'k-', 'LineWidth', 1.6);
 plot(x1, x1 - 3,  'k--', 'LineWidth', 1.6);
 
-% gradijenti u KKT tocki
+% Gradijenti u KKT tocki. Zadatak trazi gradijente ogranicenja (oba) i
+% funkcije cilja, pa se crta i gradijent neaktivnog ogranicenja g2.
 gf  = H*x_kkt + c;          % gradijent funkcije cilja
 g1  = A(1,:)';              % gradijent aktivnog ogranicenja g1
+g2  = A(2,:)';              % gradijent neaktivnog ogranicenja g2
 sc  = 1.6;
+fprintf('=== c) Gradijenti u KKT tocki ===\n');
+fprintf('grad f(x*)  = [%+.6f; %+.6f]\n', gf(1), gf(2));
+fprintf('grad g1(x*) = [%+.6f; %+.6f]  (aktivno)\n', g1(1), g1(2));
+fprintf('grad g2(x*) = [%+.6f; %+.6f]  (neaktivno, lambda2 = 0)\n', g2(1), g2(2));
+fprintf('provjera: grad f + lambda1*grad g1 = [%.2e; %.2e]\n\n', ...
+        gf(1)+lambda1*g1(1), gf(2)+lambda1*g1(2));
+
 q1 = quiver(x_kkt(1), x_kkt(2), sc*gf(1)/norm(gf), sc*gf(2)/norm(gf), 0, ...
      'Color', [0.85 0.2 0.2], 'LineWidth', 2, 'MaxHeadSize', 0.9);
 q2 = quiver(x_kkt(1), x_kkt(2), sc*g1(1)/norm(g1), sc*g1(2)/norm(g1), 0, ...
      'Color', [0.1 0.4 0.1], 'LineWidth', 2, 'MaxHeadSize', 0.9);
+q3 = quiver(x_kkt(1), x_kkt(2), sc*g2(1)/norm(g2), sc*g2(2)/norm(g2), 0, ...
+     'Color', [0.85 0.45 0.05], 'LineWidth', 2, 'MaxHeadSize', 0.9, ...
+     'LineStyle', '--');
 
 plot(x_kkt(1), x_kkt(2), 'ko', 'MarkerFaceColor', 'y', 'MarkerSize', 9);
 text(x_kkt(1)+0.30, x_kkt(2)-0.55, 'x^*', 'FontSize', 12, 'FontWeight', 'bold');
 
 xlabel('x_1'); ylabel('x_2');
 title('Dozvoljeni skup, nivo krivulje i gradijenti u KKT tocki');
-legend([hFeas q1 q2], {'dozvoljeni skup', '\nabla f(x^*)', '\nabla g_1(x^*)'}, ...
+legend([hFeas q1 q2 q3], {'dozvoljeni skup', '\nabla f(x^*)', ...
+       '\nabla g_1(x^*) (aktivno)', '\nabla g_2(x^*) (neaktivno)'}, ...
        'Location', 'northeast');
 axis([0 12 0 12]); axis square;
 

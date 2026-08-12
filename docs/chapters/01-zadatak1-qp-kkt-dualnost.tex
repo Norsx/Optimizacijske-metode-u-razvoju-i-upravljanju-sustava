@@ -98,8 +98,11 @@ Slika~\ref{fig:z1} prikazuje dozvoljeni skup, nivo krivulje funkcije cilja te
 gradijente u točki $x^\star$. Gradijenti su
 \begin{equation}
   \nabla f(x^\star) = Hx^\star + c = \begin{bmatrix} 12{,}242424 \\ 12{,}242424 \end{bmatrix}, \qquad
-  \nabla g_1(x^\star) = \begin{bmatrix} -1 \\ -1 \end{bmatrix}.
+  \nabla g_1(x^\star) = \begin{bmatrix} -1 \\ -1 \end{bmatrix}, \qquad
+  \nabla g_2(x^\star) = \begin{bmatrix} 1 \\ -1 \end{bmatrix}.
 \end{equation}
+Gradijenti ograničenja su konstantni jer su ograničenja afina, pa ne ovise o
+točki u kojoj se računaju.
 
 Geometrijski sadržaj stacionarnosti vidi se izravno: $\nabla f(x^\star)$ i
 $\nabla g_1(x^\star)$ su antiparalelni, jer je
@@ -113,8 +116,9 @@ smanjiti bez izlaska iz dozvoljenog skupa.
   \centering
   \includegraphics[width=0.78\textwidth]{figures/zad1_kkt.pdf}
   \caption{Dozvoljeni skup (plavo), nivo krivulje funkcije cilja, aktivno
-  ograničenje (puna crta), neaktivno ograničenje (crtkano) i gradijenti u
-  točki $x^\star$. Crvena krivulja je nivo krivulja $f(x) = p^\star$.}
+  ograničenje (puna crta), neaktivno ograničenje (crtkano) te gradijenti
+  funkcije cilja i obaju ograničenja u točki $x^\star$. Crvena krivulja je nivo
+  krivulja $f(x) = p^\star$.}
   \label{fig:z1}
 \end{figure}
 
