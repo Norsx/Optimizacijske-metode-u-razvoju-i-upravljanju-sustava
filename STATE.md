@@ -17,19 +17,57 @@
 
 ## Zadatak (4 cjeline)
 
-Izvorni tekst: `data/raw/tekst-seminarskog-zadatka.pdf` (read-only).
+Izvorni tekst: `data/raw/tekst-seminarskog-zadatka.pdf` (read-only). Podaci niže su
+prepisani s renderiranih stranica izvornika — tekstualni sloj tog PDF-a je neispravan
+i izvlači se izobličeno, pa se **ne smije** koristiti za prepisivanje formula.
 
-1. **QP, konveksnost, KKT, dualnost** — konveksnost problema, KKT uvjeti, grafički
-   prikaz dozvoljenog skupa i gradijenata, rješenje u MATLAB-u (`quadprog`/YALMIP),
-   Lagrangeov dualni problem, osjetljivost `p*` na perturbacije `b1`, `b2`.
-2. **Robustan QP** — koeficijenti `a_ij` nesigurni u intervalu ±15 %; riješiti robusnu
-   formulaciju i skicirati dozvoljene skupove za slučajne realizacije koeficijenata.
-3. **Formulacija opt. problema — optimalna aproksimacija s ograničenjima** — visina
-   ceste `y(x)` na neravnom terenu `h(x)`, diskretizacija s `N+1` točaka, ograničenja
-   na nagib (`b1`) i promjenu nagiba (`b2`), rubni uvjeti. Slučajevi A/B × N = 20/100.
-4. **Robusna stabilizacija** — prekidački (switching) sustav s dva moda
-   `A_parno` / `A_neparno`; provjera Hurwitzovosti, simulacija, dizajn statičkog
-   regulatora `u = Kx` uz eksponencijalnu stabilnost zatvorenog kruga.
+### Zadatak 1 — QP, konveksnost, KKT, dualnost
+
+$$\min_x\; x_1^2 + 2x_2^2 - 0.3x_1x_2 + 2x_1 - 3x_2$$
+
+uz ograničenja $a_{11}x_1 + a_{12}x_2 \le -10$ i $a_{21}x_1 + a_{22}x_2 \le 3$,
+gdje je $a_{11}=-1,\; a_{12}=-1,\; a_{21}=1,\; a_{22}=-1$.
+
+Dakle: $-x_1-x_2 \le -10$ (tj. $x_1+x_2 \ge 10$) i $x_1-x_2 \le 3$.
+
+Podzadaci: a) konveksnost; b) KKT uvjeti i njihovo rješenje; c) crtež dozvoljenog
+skupa, nivo krivulja i gradijenata u KKT točki; d) MATLAB (`quadprog` i/ili YALMIP),
+usporedba dualnih varijabli s (b); e) Lagrangeov dualni problem numerički, usporedba
+s (d) i (b); f) osjetljivost $p^\star$ na perturbacije $b_1$ i $b_2$.
+
+### Zadatak 2 — robustan QP
+
+Koeficijenti $a_{ij}$ nesigurni: stvarna vrijednost leži u $[0.85a_{ij},\,1.15a_{ij}]$
+(±15 % od vrijednosti iz Zadatka 1). Riješiti robusni problem; nacrtati dozvoljene
+skupove za niz slučajno izabranih koeficijenata i označiti optimum.
+
+### Zadatak 3 — optimalna aproksimacija s ograničenjima
+
+$L = 10$, $h(x) = 0.0053x^4 - 0.095x^3 + 0.48x^2 - 0.3x + 1$,
+$a = h(0) = 1$, $b = h(L) = 4$.
+
+- slučaj A: $b_1 = 0.5,\; b_2 = 0.5$
+- slučaj B: $b_1 = 0.5,\; b_2 = 0.2$
+
+Diskretizacija: $N+1$ točaka, $\Delta x = L/N$, $x_0=0$, $x_N=L$.
+Nagib: $\nabla y_i := \frac{1}{\Delta x}(y_i - y_{i-1})$;
+promjena nagiba: $\nabla^2 y_i := \frac{1}{\Delta x}(\nabla y_i - \nabla y_{i-1})$.
+
+Ograničenja: $|\nabla y_i| \le b_1$, $|\nabla^2 y_i| \le b_2$, $y_0 = a$, $y_N = b$.
+Riješiti za 4 slučaja: A/N=20, A/N=100, B/N=20, B/N=100.
+
+### Zadatak 4 — robusna stabilizacija
+
+$\dot x(t) = A(t)x(t) + Bu(t)$, gdje je $A(t) = A_{\text{parno}}$ kad je
+$\lfloor t \rfloor$ paran, inače $A_{\text{neparno}}$:
+
+$$A_{\text{parno}} = \begin{bmatrix} -1 & -\tfrac{1}{6}\pi \\ \tfrac{3}{2}\pi & -1 \end{bmatrix}, \qquad
+A_{\text{neparno}} = \begin{bmatrix} -1 & -\tfrac{3}{2}\pi \\ \tfrac{1}{6}\pi & -1 \end{bmatrix}$$
+
+a) jesu li oba moda Hurwitzova (svojstvene vrijednosti); b) simulacija s $x(0)=[1,0]^T$,
+graf $x(t)$ i trajektorija u prostoru stanja, je li sustav stabilan; c) uz
+$B = [1, 0]^T$ dizajnirati statički $u = Kx$ tako da je $\dot x = (A(t)+BK)x$
+eksponencijalno stabilan, pa simulirati s istim početnim uvjetom.
 
 ## Bilješke
 
