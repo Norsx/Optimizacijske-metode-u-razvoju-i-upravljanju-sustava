@@ -1,0 +1,172 @@
+% FSB Seminar — Sveučilište u Zagrebu, Fakultet strojarstva i brodogradnje
+% Template v2.1 — latex_architect popunjava placeholdere iz project.yaml
+
+\documentclass[12pt,a4paper]{article}
+
+% --- Encoding, Font & Language (dual-engine) ---
+% Kanonski engine je Tectonic (XeTeX): fontspec + TeX Gyre Termes ima PRAVI
+% OpenType bold pa hrvatski ž/ć/š/đ rade i u \textbf{}. pdfLaTeX fallback koristi
+% newtxtext (vidi gotcha miktex-t1-bold-diacritics). NE newtxmath uz amssymb (\Bbbk konflikt).
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+  \usepackage{newtxtext}
+\else
+  \usepackage{fontspec}
+  \setmainfont{texgyretermes-regular.otf}[
+    BoldFont       = texgyretermes-bold.otf,
+    ItalicFont     = texgyretermes-italic.otf,
+    BoldItalicFont = texgyretermes-bolditalic.otf
+  ]
+\fi
+\usepackage[croatian]{babel}
+
+% --- Layout ---
+\usepackage[top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% --- Headers & Footers ---
+\usepackage{fancyhdr}
+\setlength{\headheight}{13.6pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \authorname}
+\fancyhead[R]{\small\itshape \seminartitleshort}
+\fancyfoot[L]{\small\itshape Fakultet strojarstva i brodogradnje}
+\fancyfoot[R]{\small\itshape\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% --- Section Formatting (14pt Bold Uppercase) ---
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\fontsize{14}{17}\bfseries\MakeUppercase}
+  {\thesection.}{0.5em}{}
+\titleformat{\subsection}
+  {\normalfont\fontsize{12}{15}\bfseries}
+  {\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}
+  {\normalfont\fontsize{12}{15}\bfseries\itshape}
+  {\thesubsubsection.}{0.5em}{}
+\titleformat{\paragraph}[runin]
+  {\normalfont\fontsize{12}{15}\itshape}
+  {}{0em}{}[.]
+
+% --- Figures & Tables ---
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{float}
+\usepackage{caption}
+\captionsetup[figure]{font={small,bf},labelsep=period,position=below}
+\captionsetup[table]{font={small,bf},labelsep=period,position=above}
+
+% --- Figure/Table numbering by section (Slika 2.1, Tablica 2.1) ---
+\usepackage{chngcntr}
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+\counterwithin{equation}{section}
+
+% --- Depth ---
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+% --- Croatian names (addto — babel croatian overrida renewcommand) ---
+\addto\captionscroatian{%
+  \renewcommand{\figurename}{Slika}%
+  \renewcommand{\tablename}{Tablica}%
+  \renewcommand{\contentsname}{\normalfont\fontsize{14}{17}\bfseries SADRŽAJ}%
+  \renewcommand{\listfigurename}{\normalfont\fontsize{14}{17}\bfseries POPIS SLIKA}%
+  \renewcommand{\listtablename}{\normalfont\fontsize{14}{17}\bfseries POPIS TABLICA}%
+  \renewcommand{\refname}{\normalfont\fontsize{14}{17}\bfseries LITERATURA}%
+}
+
+% --- References ---
+\usepackage{cite}
+
+% --- Hyperlinks ---
+\usepackage[hidelinks,unicode]{hyperref}
+
+% --- Math ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% --- Color (za upozorenja o nepopunjenim placeholderima) ---
+\usepackage{xcolor}
+
+% --- Paragraph spacing ---
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+
+% --- Spriječavanje razdvajanja riječi (Justify bez hifenacije) ---
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\tolerance=10000
+\hbadness=10000
+\emergencystretch=\maxdimen
+
+% ============================================================
+% DOCUMENT METADATA — latex_architect popunjava iz project.yaml
+% ============================================================
+\newcommand{\univname}{SVEUČILIŠTE U ZAGREBU}
+\newcommand{\facultyname}{FAKULTET STROJARSTVA I BRODOGRADNJE}
+\newcommand{\coursename}{OPTIMIZACIJSKE METODE U RAZVOJU I UPRAVLJANJU SUSTAVA}
+\newcommand{\seminartitle}{Kvadratično programiranje, robusna optimizacija i robusna stabilizacija dinamičkih sustava}
+\newcommand{\seminartitleshort}{QP, robusna optimizacija i stabilizacija}
+\newcommand{\professorname}{Prof. dr. sc. Andrej Jokić}
+\newcommand{\authorname}{Ivan Noršić}
+\newcommand{\locationdate}{Zagreb, 2026.}
+
+% ============================================================
+\begin{document}
+
+% ---- TITLE PAGE ----
+\begin{titlepage}
+  \centering
+  {\fontsize{14}{17}\selectfont \univname \par}
+  {\fontsize{14}{17}\selectfont \facultyname \par}
+  \vfill
+  {\fontsize{28}{34}\bfseries \coursename \par}
+  \vspace{0.8cm}
+  {\fontsize{14}{18}\bfseries \seminartitle \par}
+  \vfill
+  % Tabular: lijevo "Profesor:" / bold ime — desno "Student:" / bold ime
+  % \textmd i \textbf (ne \bfseries/\normalfont — ne rade pouzdano u p{} ćelijama)
+  \begin{tabular}{p{0.45\textwidth}>{\raggedleft\arraybackslash}p{0.45\textwidth}}
+    \textmd{Profesor:} & \textmd{Student:} \\[0.3cm]
+    \textbf{\professorname} & \textbf{\authorname}
+  \end{tabular}
+  \vspace{1.5cm}
+  \par
+  {\normalfont \locationdate \par}
+\end{titlepage}
+
+% ---- FRONTMATTER (rimske stranice velikim slovima: I, II, III) ----
+\pagenumbering{Roman}
+\setcounter{page}{1}
+
+\tableofcontents
+\clearpage
+
+
+
+% ---- BODY (arapske stranice) ----
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\input{chapters/00-uvod}
+
+
+
+\input{chapters/zakljucak}
+
+% ---- LITERATURA ----
+\clearpage
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+\end{document}
