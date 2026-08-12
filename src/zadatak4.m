@@ -48,37 +48,59 @@ fprintf('Floquetov eksponent = %+.6f  (rast e^{%.4f t})\n\n', log(rho)/2, log(rh
 % Postojanje takvog P jamci eksponencijalnu stabilnost za PROIZVOLJNO
 % prekapcanje, ne samo za ovo periodicno.
 %
-% Sustavni put je LMI u varijablama Q = P^-1, Y = K*Q:
-%     A_i*Q + Q*A_i' + B*Y + Y'*B' < 0,  Q > 0,   K = Y*Q^-1,
-% no za to treba SDP rjesavac (SeDuMi/SDPT3/Mosek), koji na ovom stroju nije
-% instaliran. Zato je certifikat izveden analiticki, uz P = I:
+% Uvjet je bilinearan u (P,K), pa se "konveksificira" supstitucijom
+% Q = P^-1 i Y = K*Q (predavanje 07, "Od analize do sinteze"):
 %
-%   A_i + B*K = [-1+k1, c_i; b_i, -1],  c_parno = k2 - pi/6,  b_parno = 3pi/2
-%                                       c_nepar = k2 - 3pi/2, b_nepar = pi/6
-%   Uz k2 = -4*pi/3 izvandijagonalni clan od A'P+PA za parni mod iscezava,
-%   a neparni mod trazi  -1 + k1 < -16*pi^2/9,  tj.  k1 < 1 - 16*pi^2/9.
-k1_max = 1 - 16*pi^2/9;
-k1 = -20;
-k2 = -4*pi/3;
-K = [k1, k2];
-P = eye(2);
+%     A_i*Q + Q*A_i' + B*Y + Y'*B' < 0,   Q > 0,   K = Y*Q^-1.
+%
+% To je sustav linearnih matricnih nejednakosti, dakle SDP, i rjesava se
+% YALMIP-om uz SeDuMi.
+fprintf('=== c) Sinteza regulatora (LMI / SDP) ===\n');
 
-fprintf('=== c) Sinteza regulatora ===\n');
-fprintf('uvjet iz certifikata: k1 < 1 - 16*pi^2/9 = %.6f\n', k1_max);
-fprintf('odabrano: K = [%.4f, %.4f]  (k2 = -4*pi/3)\n', k1, k2);
+n = 2;
+epsi = 1e-4;
+Q = sdpvar(n, n, 'symmetric');
+Y = sdpvar(1, n, 'full');
 
-alpha = inf;
+LMI = [Q >= epsi*eye(n)];
+for k = 1:2
+    LMI = [LMI, mats{k}*Q + Q*mats{k}' + B*Y + Y'*B' <= -epsi*eye(n)];
+end
+
+sol = optimize(LMI, [], sdpsettings('verbose', 0, 'solver', 'sedumi'));
+fprintf('SDP status: %s\n', yalmiperror(sol.problem));
+
+Qv = value(Q);
+Yv = value(Y);
+K  = Yv / Qv;                 % K = Y*Q^-1
+P  = inv(Qv);                 % P = Q^-1
+
+fprintf('Q =\n'); disp(Qv);
+fprintf('Y = [%.6f, %.6f]\n', Yv(1), Yv(2));
+fprintf('K = [%.6f, %.6f]\n', K(1), K(2));
+fprintf('P = Q^-1 =\n'); disp(P);
+fprintf('eig(P) = %.6f, %.6f  -> P > 0: %d\n', min(eig(P)), max(eig(P)), all(eig(P) > 0));
+
+minEigNegM = inf;
 for k = 1:2
     Acl = mats{k} + B*K;
     M = Acl'*P + P*Acl;
     ev_cl = eig(Acl);
     fprintf('%-10s + BK: eig = %+.4f, %+.4f | eig(Acl''P+PAcl) = %+.4f, %+.4f -> ND: %d\n', ...
         names{k}, real(ev_cl(1)), real(ev_cl(2)), min(eig(M)), max(eig(M)), max(eig(M)) < 0);
-    alpha = min(alpha, -max(eig(M)));
+    minEigNegM = min(minEigNegM, -max(eig(M)));
 end
 Phi_cl = expm((A_neparno + B*K)*1) * expm((A_parno + B*K)*1);
 fprintf('spektralni radijus zatvorenog kruga = %.6e  (<< 1)\n', max(abs(eig(Phi_cl))));
-fprintf('jamceni pad: Vdot <= -%.4f V  =>  |x(t)| <= |x(0)|*exp(-%.4f t)\n\n', alpha, alpha/2);
+
+% Eksponencijalna ocjena uz V = x'Px. Iz Vdot <= -lambda_min(-M)*|x|^2 i
+% V >= lambda_min(P)*|x|^2 slijedi Vdot <= -alpha*V uz alpha = lambda_min(-M)/lambda_max(P),
+% pa je |x(t)| <= sqrt(cond(P))*|x(0)|*exp(-alpha*t/2). Faktor sqrt(cond(P))
+% nestaje samo za P = I; uz opci P iz SDP-a mora se navesti.
+alpha = minEigNegM / max(eig(P));
+condP = cond(P);
+fprintf('jamceni pad: Vdot <= -%.4f V  =>  |x(t)| <= %.3f*|x(0)|*exp(-%.4f t)\n\n', ...
+    alpha, sqrt(condP), alpha/2);
 
 [t_cl, X_cl] = simulate_switched(Aof, B*K, x0, 12);
 

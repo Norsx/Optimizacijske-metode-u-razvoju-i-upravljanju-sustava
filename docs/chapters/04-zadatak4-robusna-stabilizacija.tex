@@ -85,66 +85,61 @@ Postoji li takav par $(P,K)$, zatvoreni krug je eksponencijalno stabilan za
 \emph{proizvoljno} prekapčanje, ne samo za ovo periodično --- a to je jače od
 onoga što zadatak traži.
 
-Uvjet \eqref{eq:z4lmi} je bilinearan u $(P,K)$, no supstitucijom $Q = P^{-1}$ i
-$Y = KQ$ prelazi u linearne matrične nejednakosti
+Uvjet \eqref{eq:z4lmi} je bilinearan u $(P,K)$, jer se nepoznati $P$ i $K$
+međusobno množe. Postupak \emph{konveksifikacije} \cite[str.~28]{jokic_ljapunov}
+uklanja tu bilinearnost: množenjem \eqref{eq:z4lmi} slijeva i zdesna s
+$Q = P^{-1} \succ 0$ i uvođenjem $Y = KQ$ dobiva se
 \begin{equation}
   A_iQ + QA_i^{\mathsf T} + BY + Y^{\mathsf T}B^{\mathsf T} \prec 0, \quad Q \succ 0,
-  \qquad K = YQ^{-1},
+  \qquad K = YQ^{-1} .
   \label{eq:z4lmi2}
 \end{equation}
-što je standardni put preko semidefinitnog programiranja \cite[str.~23]{jokic_qcpsdp}.
-Na korištenom sustavu nije bio instaliran SDP rješavač, pa je certifikat izveden
-analitički --- za sustav drugog reda to je izvedivo u zatvorenoj formi.
+Uvjeti \eqref{eq:z4lmi2} su \emph{linearne matrične nejednakosti} u novim
+varijablama $(Q,Y)$, pa je problem sinteze semidefinitni program
+\cite[str.~23]{jokic_qcpsdp}. Riješen je u MATLAB-u, modeliranjem u YALMIP-u i
+rješavačem SeDuMi, uz $Q \succeq \varepsilon I$ i desnu stranu $-\varepsilon I$
+($\varepsilon = 10^{-4}$) radi stroge definitnosti.
 
-Uz $P = I$ i $K = [\,k_1\;\; k_2\,]$ zatvoreni krug ima oblik
-$A_i + BK = \left[\begin{smallmatrix} -1+k_1 & c_i \\ \beta_i & -1 \end{smallmatrix}\right]$,
-gdje je $c_{\text{parno}} = k_2 - \pi/6$, $\beta_{\text{parno}} = 3\pi/2$ te
-$c_{\text{neparno}} = k_2 - 3\pi/2$, $\beta_{\text{neparno}} = \pi/6$. Tada je
+Rješavanje daje
 \begin{equation}
-  (A_i+BK)^{\mathsf T} + (A_i+BK) =
-  \begin{bmatrix} 2(-1+k_1) & c_i + \beta_i \\ c_i + \beta_i & -2 \end{bmatrix} .
+  Q = \begin{bmatrix} 0{,}1505 & -0{,}0935 \\ -0{,}0935 & 0{,}2723 \end{bmatrix}, \qquad
+  Y = \begin{bmatrix} -0{,}973797 & 0{,}491016 \end{bmatrix},
 \end{equation}
-Izbor
+odakle je
 \begin{equation}
-  k_2 = -\frac{4\pi}{3}
+  \boxed{\;K = YQ^{-1} = [\,-6{,}800717 \quad -0{,}532251\,]\;}, \qquad
+  P = Q^{-1} = \begin{bmatrix} 8{,}4464 & 2{,}9008 \\ 2{,}9008 & 4{,}6689 \end{bmatrix}.
 \end{equation}
-poništava izvandijagonalni član parnog moda, pa on postaje dijagonalan i
-negativno definitan čim je $k_1 < 1$. Za neparni mod uvjet negativne
-definitnosti (pozitivna determinanta uz negativan trag) daje
-\begin{equation}
-  -4(-1+k_1) > \left(c_{\text{neparno}} + \beta_{\text{neparno}}\right)^2
-  \quad\Longrightarrow\quad
-  k_1 < 1 - \frac{16\pi^2}{9} = -16{,}545963 .
-  \label{eq:z4bound}
-\end{equation}
-
-Odabrano je
-\begin{equation}
-  \boxed{\;K = \left[\,-20 \quad -\tfrac{4\pi}{3}\,\right] = [\,-20 \quad -4{,}188790\,].\;}
-\end{equation}
-
-Numerička provjera potvrđuje granicu \eqref{eq:z4bound}: za $k_1 = -16{,}6$ uvjet
-je zadovoljen, a za $k_1 = -16{,}5$ nije. Uz odabrani $K$ i $P = I$ dobiva se
+Matrica $P$ je pozitivno definitna, sa svojstvenim vrijednostima $3{,}096165$ i
+$10{,}019093$.
 
 \begin{table}[htbp]
   \centering
-  \caption{Certifikat stabilnosti zatvorenog kruga uz $P = I$.}
+  \caption{Certifikat stabilnosti zatvorenog kruga uz $P$ dobiven iz SDP-a.}
   \label{tab:z4}
   \begin{tabular}{lcc}
     \hline
     Mod & $\operatorname{eig}(A_i + BK)$ & $\operatorname{eig}\!\big((A_i+BK)^{\mathsf T}P + P(A_i+BK)\big)$ \\
     \hline
-    parno    & $-19{,}820,\; -2{,}180$ & $-42{,}000,\; -2{,}000$ \\
-    neparno  & $-20{,}764,\; -1{,}236$ & $-43{,}684,\; -0{,}316$ \\
+    parno    & $-6{,}9668,\; -1{,}8339$ & $-106{,}1443,\; -13{,}7553$ \\
+    neparno  & $-7{,}3696,\; -1{,}4311$ & $-164{,}9941,\; -3{,}5083$ \\
     \hline
   \end{tabular}
 \end{table}
 
-Obje su matrice negativno definitne, čime je \eqref{eq:z4lmi} zadovoljen.
-Iz $\dot V \le -0{,}3163\,V$ slijedi eksponencijalna ocjena
+Obje su matrice negativno definitne, čime je \eqref{eq:z4lmi} zadovoljen za oba
+moda uz \emph{isti} $P$, što je i bio cilj.
+
+Iz $\dot V \le -\lambda_{\min}(-M)\lVert x\rVert^2$, gdje je
+$M = (A_i+BK)^{\mathsf T}P + P(A_i+BK)$, i $V \ge \lambda_{\min}(P)\lVert x\rVert^2$
+slijedi $\dot V \le -\alpha V$ uz
+$\alpha = \lambda_{\min}(-M)/\lambda_{\max}(P) = 0{,}3502$, pa je
 \begin{equation}
-  \lVert x(t)\rVert \le \lVert x(0)\rVert\, e^{-0{,}1581\,t} .
+  \lVert x(t)\rVert \le \sqrt{\kappa(P)}\;\lVert x(0)\rVert\, e^{-0{,}1751\,t},
+  \qquad \sqrt{\kappa(P)} = 1{,}799 .
 \end{equation}
+Faktor $\sqrt{\kappa(P)}$ posljedica je toga što nivo skupovi funkcije
+$V(x) = x^{\mathsf T}Px$ nisu kružnice; za $P = I$ on iščezava.
 
 \subsection{Simulacija zatvorenog kruga}
 \label{sec:zad4:zatvoreni}
@@ -178,9 +173,14 @@ regulatora prirodno se zapisuje kao LMI problem, čime ulazi u domenu
 semidefinitnog programiranja i time u istu konveksnu okosnicu kao i prethodni
 zadaci.
 
-Cijena dobivenog rješenja je relativno velik pojačanje $k_1 = -20$. Uvjet
-\eqref{eq:z4bound} pokazuje da je to nužno uz izbor $P = I$: granica
-$1 - 16\pi^2/9 \approx -16{,}55$ posljedica je velikog raspona izvandijagonalnih
-elemenata. Traženjem općenitijeg $P$ preko SDP-a mogao bi se dobiti manji
-zahtjev na pojačanje, što je prirodan sljedeći korak ako bi upravljački signal
-bio ograničen.
+Vrijedi istaknuti i praktičnu korist konveksifikacije. Da se tražila
+Ljapunovljeva matrica unaprijed fiksirana na $P = I$, uz dodatni izbor
+$k_2 = -4\pi/3$ koji poništava izvandijagonalni član parnog moda, uvjet
+negativne definitnosti neparnog moda dao bi $k_1 < 1 - 16\pi^2/9 \approx -16{,}55$,
+dakle pojačanje barem tri puta veće od dobivenog. Prepuštanjem i $P$ i $K$
+rješavaču kroz LMI \eqref{eq:z4lmi2} dobiveno je $K = [-6{,}80,\; -0{,}53]$ uz
+istodobno bolji spektralni radijus zatvorenog kruga. To je tipično za LMI
+pristup: fiksiranje Ljapunovljeve matrice unaprijed je konzervativno, a
+supstitucija $Q = P^{-1}$, $Y = KQ$ omogućuje da se optimira po obojem odjednom
+bez gubitka konveksnosti. Ako bi upravljački signal bio ograničen, isti se okvir
+proširuje dodatnim LMI ograničenjem na normu pojačanja.

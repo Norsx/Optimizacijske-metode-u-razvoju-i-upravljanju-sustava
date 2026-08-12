@@ -34,10 +34,12 @@ Zadatak~4 dao je najizrazitiji rezultat: oba dinamička moda imaju identične
 svojstvene vrijednosti $-1 \pm \mathrm{i}\pi/2$ i oba su Hurwitzova, a prekidački
 sustav je ipak nestabilan, sa spektralnim radijusom monodromijske matrice
 $1{,}218$. Time je pokazano da se stabilnost hibridnih sustava ne može ispitivati
-mod po mod. Statički regulator $K = [-20,\; -4\pi/3]$ konstruiran je tako da uz
-$P = I$ zadovoljava Ljapunovljevu nejednakost za oba moda, čime je zajamčena
-eksponencijalna stabilnost \emph{za proizvoljno prekapčanje}, a ne samo za
-zadani periodični raspored.
+mod po mod. Statički regulator $K = [-6{,}80,\; -0{,}53]$ dobiven je rješavanjem
+sustava linearnih matričnih nejednakosti u varijablama $Q = P^{-1}$ i $Y = KQ$,
+semidefinitnim programom u YALMIP-u i SeDuMi-ju. Dobiveni $P$ zadovoljava
+Ljapunovljevu nejednakost za oba moda istodobno, čime je zajamčena eksponencijalna
+stabilnost \emph{za proizvoljno prekapčanje}, a ne samo za zadani periodični
+raspored.
 
 Zajednički zaključak jest da konveksnost nije tehnička sitnica nego glavni alat.
 Ona je omogućila da se za Zadatak~1 tvrdi globalna optimalnost, da robusna
