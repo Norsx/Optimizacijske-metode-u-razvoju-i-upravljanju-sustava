@@ -37,6 +37,9 @@ docs/**/build/
 
 # Generated PDFs in docs build (Tectonic outputs next to source)
 docs/**/*.pdf
+# ...but figures are build inputs, not outputs: without them a fresh clone
+# cannot compile the document until MATLAB has been re-run.
+!docs/figures/*.pdf
 
 # Generated PDFs in dist (built by CI or scripts)
 dist/**/*.pdf
