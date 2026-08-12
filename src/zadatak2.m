@@ -48,27 +48,47 @@ x_nom = quadprog(H, c, Anom, bvec, [], [], [], [], [], opts);
 fprintf('=== Nominalno rjesenje ===\n');
 fprintf('x_nom = [%.6f; %.6f],  f = %.6f\n\n', x_nom(1), x_nom(2), f(x_nom));
 
-%% Robusno rjesenje: varijable z = [x1; x2; u1; u2],  u >= |x|
-Hz = blkdiag(H, zeros(2));
-cz = [c; 0; 0];
-% Abar*x + R*u <= b
-Az = [Abar, R;
-      % u >= x   ->   x - u <= 0
-       1, 0, -1,  0;
-       0, 1,  0, -1;
-      % u >= -x  ->  -x - u <= 0
-      -1, 0, -1,  0;
-       0,-1,  0, -1];
-bz = [bvec; 0; 0; 0; 0];
+%% Robusno rjesenje - nabrajanje vrhova (postupak iz predavanja 08, Primjer 2)
+% Skup nesigurnosti je kvadar, dakle konveksna ljuska svojih vrhova. Kako
+% ogranicenje ovisi o koeficijentima LINEARNO, najgori slucaj se postize u
+% nekom vrhu, pa je dovoljno nametnuti ogranicenje u svim vrhovima. Time
+% beskonacno mnogo nejednakosti prelazi u konacan skup linearnih nejednakosti.
+% Redci su nezavisni, pa svaki redak daje 2^2 = 4 vrha -> ukupno 8 ogranicenja.
+Arob = []; brob = [];
+for i = 1:2
+    for s1 = [1 2]
+        for s2 = [1 2]
+            a1 = (s1 == 1)*Alo(i,1) + (s1 == 2)*Ahi(i,1);
+            a2 = (s2 == 1)*Alo(i,2) + (s2 == 2)*Ahi(i,2);
+            Arob = [Arob; a1, a2];
+            brob = [brob; bvec(i)];
+        end
+    end
+end
+fprintf('=== Robusno rjesenje (nabrajanje vrhova) ===\n');
+fprintf('broj vrhova / ogranicenja: %d\n', size(Arob,1));
 
-[z, ~, flag, ~, lam] = quadprog(Hz, cz, Az, bz, [], [], [], [], [], opts);
-x_rob = z(1:2);
-fprintf('=== Robusno rjesenje ===\n');
+[x_rob, ~, flag, ~, lam] = quadprog(H, c, Arob, brob, [], [], [], [], [], opts);
 fprintf('exitflag = %d\n', flag);
 fprintf('x_rob = [%.6f; %.6f]\n', x_rob(1), x_rob(2));
+
+% Kontrola: ekvivalentan zapis najgoreg slucaja  abar'*x + r'*|x| <= b,
+% uz pomocne varijable u >= |x|. Mora dati isto rjesenje.
+Hz = blkdiag(H, zeros(2));
+cz = [c; 0; 0];
+Az = [Abar, R;  1 0 -1  0;  0 1  0 -1;  -1 0 -1  0;  0 -1  0 -1];
+bz = [bvec; 0; 0; 0; 0];
+z_chk = quadprog(Hz, cz, Az, bz, [], [], [], [], [], opts);
+fprintf('kontrola (zapis s |x|): x = [%.6f; %.6f], odstupanje %.2e\n', ...
+        z_chk(1), z_chk(2), norm(z_chk(1:2) - x_rob));
 fprintf('f(x_rob) = %.6f   (nominalno %.6f, cijena robusnosti %.6f)\n', ...
     f(x_rob), f(x_nom), f(x_rob) - f(x_nom));
-fprintf('multiplikatori robusnih ogranicenja: [%.6f, %.6f]\n', lam.ineqlin(1), lam.ineqlin(2));
+act = find(lam.ineqlin > 1e-7);
+fprintf('aktivnih vrhova: %d od %d\n', numel(act), size(Arob,1));
+for k = act'
+    fprintf('  vrh %d: [%+.4f, %+.4f] x <= %+.1f,  lambda = %.6f\n', ...
+            k, Arob(k,1), Arob(k,2), brob(k), lam.ineqlin(k));
+end
 
 % Buduci da je x_rob > 0, |x| = x, pa se robusna ogranicenja svode na
 %   -0.85*(x1+x2) <= -10   i   1.15*x1 - 0.85*x2 <= 3

@@ -32,25 +32,38 @@ realizaciju nesigurnih koeficijenata \cite[str.~1]{jokic_robusno}:
   \;\; \forall\, a_i \in \mathcal{U}_i, \quad i = 1,2 .
   \label{eq:robgen}
 \end{equation}
-To je beskonačno mnogo ograničenja, no dovoljno je zahtijevati da ograničenje
-vrijedi u najgorem slučaju, tj. $\max_{a_i \in \mathcal{U}_i} a_i^{\mathsf T}x \le b_i$.
+To je beskonačno mnogo ograničenja --- po jedno za svaku realizaciju $a_i$.
+Ključni korak je pretvorba u \emph{konačan} skup nejednakosti.
 
-Kako koeficijenti ulaze linearno i nezavisno jedan o drugome, maksimum po
-kvadru se računa po komponentama. Za $a \in [a^{\text{lo}}, a^{\text{hi}}]$ i
-skalarni $x$ vrijedi $\max_a ax = \bar a x + r|x|$, jer se maksimum postiže u
-gornjoj granici kad je $x \ge 0$, a u donjoj kad je $x < 0$. Odatle
+Skup nesigurnosti $\mathcal{U}_i$ je kvadar, dakle konveksna ljuska svojih
+vrhova, $\mathcal{U}_i = \operatorname{co}(v_1, v_2, v_3, v_4)$. Kako ograničenje
+ovisi o koeficijentima \emph{linearno}, funkcija $a_i \mapsto a_i^{\mathsf T}x$
+je linearna, pa svoj maksimum na konveksnoj ljusci postiže u nekom vrhu.
+Zahtjev \eqref{eq:robgen} je stoga ekvivalentan zahtjevu da ograničenje vrijedi
+u svim vrhovima:
 \begin{equation}
-  \boxed{\;\bar a_i^{\mathsf T}x + r_i^{\mathsf T}|x| \le b_i, \quad i = 1,2 .\;}
+  \boxed{\;v_j^{\mathsf T}x \le b_i, \quad j = 1,\dots,4, \quad i = 1,2 .\;}
   \label{eq:robcounter}
 \end{equation}
+Isti je postupak proveden u predavanjima na primjeru robusnog LP-a s
+poliedarskom nesigurnošću \cite[str.~12--16]{jokic_robusno}, gdje se izvorni
+problem s beskonačno mnogo nejednakosti zamjenjuje ekvivalentnim problemom s
+konačnim brojem nejednakosti.
 
-Bitno je uočiti da robusna protuformulacija \eqref{eq:robcounter} ostaje
-konveksna: $|x|$ je konveksna funkcija, koeficijenti $r_i$ su nenegativni, a
-cijeli izraz stoji na lijevoj strani nejednakosti tipa $\le$. Uvođenjem pomoćnih
-varijabli $u_i \ge |x_i|$, što se zapisuje kao par linearnih ograničenja
-$x_i - u_i \le 0$ i $-x_i - u_i \le 0$, problem prelazi u običan QP s linearnim
-ograničenjima u varijablama $z = (x_1, x_2, u_1, u_2)^{\mathsf T}$. Nesigurnost
-dakle nije povećala klasu problema --- i dalje je riješiv istim solverom.
+Retci su međusobno nezavisni, pa svaki daje $2^2 = 4$ vrha, ukupno $8$ linearnih
+ograničenja. Nesigurnost dakle nije povećala klasu problema --- robusni problem
+je i dalje kvadratni program s linearnim ograničenjima i rješava se istim
+solverom.
+
+Ekvivalentno se najgori slučaj može zapisati i u zatvorenoj formi. Za
+$a \in [a^{\text{lo}}, a^{\text{hi}}]$ i skalarni $x$ vrijedi
+$\max_a ax = \bar a x + r|x|$, jer se maksimum postiže u gornjoj granici kad je
+$x \ge 0$, a u donjoj kad je $x < 0$, pa ograničenje postaje
+$\bar a_i^{\mathsf T}x + r_i^{\mathsf T}|x| \le b_i$. Taj je zapis konveksan
+($|x|$ je konveksna, $r_i \ge 0$, izraz je na lijevoj strani nejednakosti
+$\le$) i uvođenjem $u_i \ge |x_i|$ također daje QP. Oba puta korištena su u
+implementaciji i daju isto rješenje uz odstupanje reda $10^{-9}$, što potvrđuje
+ekvivalentnost.
 
 \subsection{Rješenje robusnog problema}
 \label{sec:zad2:rjesenje}
@@ -69,10 +82,11 @@ svodi na
   -0{,}85\,(x_1 + x_2) \le -10, \qquad 1{,}15\,x_1 - 0{,}85\,x_2 \le 3 .
   \label{eq:robexplicit}
 \end{equation}
-Oba su ograničenja u optimumu aktivna, s množiteljima $17{,}607$ i $1{,}344$, pa
-je $x_{\text{rob}}$ sjecište njihovih granica --- za razliku od nominalnog
-problema, gdje je aktivno bilo samo prvo ograničenje. Robusnost je dakle
-promijenila i sam skup aktivnih ograničenja.
+Od osam vrhova aktivna su točno dva, s množiteljima $17{,}607$ i $1{,}344$:
+vrh $(-0{,}85,\, -0{,}85)$ prvog retka i vrh $(1{,}15,\, -0{,}85)$ drugog. To su
+upravo najgori slučajevi za $x > 0$. Robusni optimum je sjecište njihovih
+granica --- za razliku od nominalnog problema, gdje je aktivno bilo samo prvo
+ograničenje. Robusnost je dakle promijenila i sam skup aktivnih ograničenja.
 
 \subsection{Dozvoljeni skupovi za slučajne realizacije koeficijenata}
 \label{sec:zad2:skupovi}
