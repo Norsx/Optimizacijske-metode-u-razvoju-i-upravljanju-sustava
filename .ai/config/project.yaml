@@ -1,4 +1,4 @@
-name: "TBD"
+name: "Optimizacijske metode u razvoju i upravljanju sustava"
 type: "seminar"              # seminar | thesis | paper | homework
 latex_format: "fsb-seminar"  # fsb-seminar | fsb-thesis | fsb-paper
 brain_mode: "global"         # none | global
@@ -6,12 +6,12 @@ brain_mode: "global"         # none | global
 # if GEMINI_API_KEY is set in .env, otherwise local sentence-transformers.
 
 # --- Metadata za naslovnicu (latex_architect popunjava main.tex) ---
-author_name: ""              # Ime i prezime studenta
-course_name: ""              # Naziv kolegija (UPPERCASE u dokumentu)
-seminar_title: ""            # Puni naslov seminara
-seminar_title_short: ""      # Skraćeni naslov za header (max ~50 znakova)
-professor_title: ""          # Titula (npr. "Prof. dr. sc.")
-professor_name: ""           # Ime i prezime profesora
+author_name: "Ivan Noršić"   # Ime i prezime studenta
+course_name: "OPTIMIZACIJSKE METODE U RAZVOJU I UPRAVLJANJU SUSTAVA"
+seminar_title: "Kvadratično programiranje, robusna optimizacija i robusna stabilizacija dinamičkih sustava"
+seminar_title_short: "QP, robusna optimizacija i stabilizacija"
+professor_title: "Prof. dr. sc."
+professor_name: "Andrej Jokić"
 
 # --- Build & page limit ---
 max_pages: 12                # build skripta upozorava ako PDF premašuje N stranica
