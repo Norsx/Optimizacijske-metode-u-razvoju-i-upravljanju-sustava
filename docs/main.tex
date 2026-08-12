@@ -42,7 +42,7 @@
 % --- Section Formatting (14pt Bold Uppercase) ---
 \usepackage{titlesec}
 \titleformat{\section}
-  {\normalfont\fontsize{14}{17}\bfseries\MakeUppercase}
+  {\normalfont\fontsize{14}{17}\bfseries\raggedright\MakeUppercase}
   {\thesection.}{0.5em}{}
 \titleformat{\subsection}
   {\normalfont\fontsize{12}{15}\bfseries}
@@ -97,6 +97,27 @@
 
 % --- Color (za upozorenja o nepopunjenim placeholderima) ---
 \usepackage{xcolor}
+
+% --- Ispis MATLAB koda ---
+\usepackage{listings}
+\lstdefinestyle{matlabstil}{
+  language=Matlab,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color[rgb]{0,0,0.6}\bfseries,
+  commentstyle=\color[rgb]{0,0.45,0}\itshape,
+  stringstyle=\color[rgb]{0.65,0.15,0.15},
+  numbers=left, numberstyle=\tiny\color{gray}, numbersep=7pt,
+  frame=single, rulecolor=\color{gray},
+  breaklines=true, breakatwhitespace=false,
+  showstringspaces=false, tabsize=4,
+  columns=fullflexible, keepspaces=true,
+  captionpos=b,
+  extendedchars=true, inputencoding=utf8, literate=%
+    {č}{{\v{c}}}1 {ć}{{\'c}}1 {ž}{{\v{z}}}1 {š}{{\v{s}}}1 {đ}{{\dj}}1
+    {Č}{{\v{C}}}1 {Ć}{{\'C}}1 {Ž}{{\v{Z}}}1 {Š}{{\v{S}}}1 {Đ}{{\DJ}}1
+}
+\lstset{style=matlabstil}
+\renewcommand{\lstlistingname}{Kod}
 
 % --- Paragraph spacing ---
 \setlength{\parindent}{1.25cm}
@@ -173,6 +194,9 @@
 \input{chapters/04-zadatak4-robusna-stabilizacija}
 
 \input{chapters/zakljucak}
+
+\clearpage
+\input{chapters/05-kod}
 
 % ---- LITERATURA ----
 \clearpage

@@ -195,7 +195,8 @@ q3 = quiver(x_kkt(1), x_kkt(2), sc*g2(1)/norm(g2), sc*g2(2)/norm(g2), 0, ...
      'LineStyle', '--');
 
 plot(x_kkt(1), x_kkt(2), 'ko', 'MarkerFaceColor', 'y', 'MarkerSize', 9);
-text(x_kkt(1)+0.30, x_kkt(2)-0.55, 'x^*', 'FontSize', 12, 'FontWeight', 'bold');
+% Oznaka ide gore-lijevo: dolje-desno je strelica grad g2, gore-desno grad f.
+text(x_kkt(1)-0.95, x_kkt(2)+0.55, 'x^*', 'FontSize', 12, 'FontWeight', 'bold');
 
 xlabel('x_1'); ylabel('x_2');
 title('Dozvoljeni skup, nivo krivulje i gradijenti u KKT tocki');

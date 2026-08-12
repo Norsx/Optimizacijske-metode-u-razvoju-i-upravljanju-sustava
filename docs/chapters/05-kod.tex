@@ -1,0 +1,37 @@
+% 05 — Prilog: MATLAB kod.
+
+\section{Prilog --- MATLAB kod}
+\label{sec:kod}
+
+Sve numeričke vrijednosti i sve slike u ovom radu proizvedene su skriptama koje
+slijede. Svaka je samostalna i pokreće se iz korijena projekta naredbom
+\texttt{matlab -batch "run('src/zadatakN.m')"}. Skripte same razrješavaju
+putanje relativno na vlastitu lokaciju, pa spremaju slike u \texttt{docs/figures/}
+neovisno o tome iz kojeg se direktorija pozivaju.
+
+Korištene su funkcije \texttt{quadprog} i \texttt{linprog} iz Optimization
+Toolboxa, modeliranje u YALMIP-u te rješavač SeDuMi za semidefinitni program u
+Zadatku~4.
+
+\subsection{Zadatak 1 --- QP, KKT, dualnost, osjetljivost}
+\label{sec:kod:z1}
+
+\lstinputlisting[caption={\texttt{src/zadatak1.m}}, label={lst:z1}]{../src/zadatak1.m}
+
+\clearpage
+\subsection{Zadatak 2 --- robustan QP}
+\label{sec:kod:z2}
+
+\lstinputlisting[caption={\texttt{src/zadatak2.m}}, label={lst:z2}]{../src/zadatak2.m}
+
+\clearpage
+\subsection{Zadatak 3 --- optimalna aproksimacija s ograničenjima}
+\label{sec:kod:z3}
+
+\lstinputlisting[caption={\texttt{src/zadatak3.m}}, label={lst:z3}]{../src/zadatak3.m}
+
+\clearpage
+\subsection{Zadatak 4 --- robusna stabilizacija}
+\label{sec:kod:z4}
+
+\lstinputlisting[caption={\texttt{src/zadatak4.m}}, label={lst:z4}]{../src/zadatak4.m}
