@@ -119,6 +119,9 @@
 \newcommand{\seminartitleshort}{QP, robusna optimizacija i stabilizacija}
 \newcommand{\professorname}{Prof. dr. sc. Andrej Jokić}
 \newcommand{\authorname}{Ivan Noršić}
+% Predložak nema polje za matični broj; definirano ovdje ručno. Ako se
+% docs/main.tex ikad ponovno generira s render_template.py --force, vratiti.
+\newcommand{\studentid}{0035239736}
 \newcommand{\locationdate}{Zagreb, 2026.}
 
 % ============================================================
@@ -138,7 +141,8 @@
   % \textmd i \textbf (ne \bfseries/\normalfont — ne rade pouzdano u p{} ćelijama)
   \begin{tabular}{p{0.45\textwidth}>{\raggedleft\arraybackslash}p{0.45\textwidth}}
     \textmd{Profesor:} & \textmd{Student:} \\[0.3cm]
-    \textbf{\professorname} & \textbf{\authorname}
+    \textbf{\professorname} & \textbf{\authorname} \\[0.25cm]
+                            & \textmd{Mat.~broj: \studentid}
   \end{tabular}
   \vspace{1.5cm}
   \par

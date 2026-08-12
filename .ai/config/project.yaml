@@ -7,6 +7,7 @@ brain_mode: "global"         # none | global
 
 # --- Metadata za naslovnicu (latex_architect popunjava main.tex) ---
 author_name: "Ivan Noršić"   # Ime i prezime studenta
+student_id: "0035239736"     # Maticni broj (predlozak ga nema; rucno u docs/main.tex)
 course_name: "OPTIMIZACIJSKE METODE U RAZVOJU I UPRAVLJANJU SUSTAVA"
 seminar_title: "Kvadratično programiranje, robusna optimizacija i robusna stabilizacija dinamičkih sustava"
 seminar_title_short: "QP, robusna optimizacija i stabilizacija"
