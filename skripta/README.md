@@ -91,7 +91,7 @@ Legenda: ✅ obrađeno i zapisano · 🔄 u tijeku · ⬜ nije počelo
 | `05_LP_QP.pdf` | 1–40 | ✅ | cijelo predavanje, poglavlje 5 |
 | `06_QCP_SDP.pdf` | 1–31 | ✅ | cijelo predavanje, poglavlje 6 |
 | `07_Dinamicki_sustavi_Ljapunov_disipativnost.pdf` | 1–55 | ✅ | cijelo predavanje, poglavlje 7 |
-| `08_Robusno_optimiranje.pdf` | 1–21 | ⬜ | |
+| `08_Robusno_optimiranje.pdf` | 1–21 | ✅ | cijelo predavanje, poglavlje 8 |
 
 ### Vježbe
 
@@ -324,6 +324,26 @@ Vježbe 5 (Zadatak 2):
 > opisom nesigurnosti (dva vrha) i LMI sintezom iz predavanja 07; brojevi su
 > dobiveni skriptom `scripts/solve_vj5_robusna.py`, uz g = 9,81 m/s²
 > (slajd ne navodi brojčanu vrijednost).
+
+### Detaljna evidencija — poglavlje 8
+
+| Str. izvora | Tema | Odjeljak skripte |
+|---|---|---|
+| 2–3 | robusni LP s poliedarskim nesigurnostima, ekvivalentan LP | 8.1 |
+| 4–5 | dokaz preko dualizacije unutarnjeg problema | 8.1.3 |
+| 6–10 | **Primjer 1** — nezavisne perturbacije koeficijenata | 8.2 |
+| 11–14 | **Primjer 2** — zajedničke perturbacije, redukcija na vrhove | 8.3 |
+| 15–19 | brojčani slučaj i tri varijante rješenja | 8.3.4–8.3.5 |
+| 20–21 | robusni LP s elipsoidnim nesigurnostima kao CQP | 8.4 |
+
+> Slajdovi 18 i 19 prikazuju samo slike, bez brojčanih minimizatora. Skripta
+> ih navodi kao **vlastiti izračun** (skripta `scripts/fig_08_robusno.py`),
+> izričito označen kao dopuna izvorniku.
+
+## Status
+
+**Sva predavanja i sve vježbe obrađeni su u cijelosti.** Skripta ima 217
+stranica A4 formata.
 
 ## Izvan opsega
 

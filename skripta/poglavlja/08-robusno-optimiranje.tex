@@ -1,4 +1,707 @@
 \chapter{Robusno optimiranje}
 \label{ch:robusno}
 
-\emph{Poglavlje je u izradi.}
+\begin{izvor}
+\textbf{Izvor:} \texttt{08\_Robusno\_optimiranje.pdf}, stranice 1--21
+(obrađeno u cijelosti). Naslov na prvom slajdu glasi \emph{(Uvod u) robusno
+optimiranje}.
+\end{izvor}
+
+\textbf{Zašto ovo poglavlje.} Svi dosadašnji problemi pretpostavljali su da su
+podaci ($A$, $b$, $c$) \emph{točno} poznati. U praksi to gotovo nikad nije
+slučaj: koeficijenti se mjere, procjenjuju ili variraju s temperaturom i
+istrošenošću. Robusno optimiranje traži rješenje koje je \textbf{dopustivo za
+sve} moguće vrijednosti nesigurnih podataka --- dakle štiti se od
+\emph{najgoreg} slučaja.
+
+Klasifikaciju smo sreli već u poglavlju~\ref{ch:definicije} \str{2:11}:
+\emph{robusno optimiranje: ako su $f$ i $\Feas$ okarakterizirani nepoznatim
+(ali ograničenim) parametrima}.
+
+% =====================================================================
+\section{Robusni LP s poliedarskim nesigurnostima}
+\label{sec:poliedarske}
+\str{2--5}
+
+\subsection{Postavka}
+\str{2}
+
+Promotrimo LP
+\[
+\min_x c\T x \qquad \uzogr a_i\T x \le b_i, \quad i = 1,\dots,m
+\]
+i pretpostavimo da su vektori $a_i \in \R^n$ \textbf{nesigurni} u smislu da ne
+znamo njihove vrijednosti, već znamo samo da $a_i \in \mathcal{P}_i$, gdje je
+\[
+\mathcal{P}_i = \{\, a \mid C_ia \le d_i \,\}
+\]
+za poznate $C_i \in \R^{m_i\times n}$, $d_i \in \R^{m_i}$. Pretpostavka je da
+skupovi (poliedri) $\mathcal{P}_i$ nisu prazni.
+
+\begin{definicija}[Robusni LP]
+\begin{equation}
+\label{eq:robusni-lp-poliedar}
+\min_x c\T x \qquad \uzogr
+a_i\T x \le b_i \;\textbf{ za sve } a_i \in \mathcal{P}_i, \quad i = 1,\dots,m
+\end{equation}
+\end{definicija}
+
+\begin{napomena}[u čemu je poteškoća]
+Zapis „za sve $a_i \in \mathcal{P}_i$” krije \textbf{beskonačno mnogo}
+nejednakosti --- po jednu za svaku točku poliedra. Takav se problem zove
+\emph{polu-beskonačan} i ne može se izravno predati rješavaču. Cijelo poglavlje
+odgovara na pitanje: \textbf{kako to svesti na konačno mnogo uvjeta?}
+
+Sreli smo isti problem u odjeljku~\ref{sec:robusni-lp-cqp}, ondje s elipsoidnim
+skupom nesigurnosti.
+\end{napomena}
+
+\subsection{Ekvivalentan LP}
+\str{3}
+
+\begin{teorem}[Robusni LP kao obični LP]
+Robusni LP \eqref{eq:robusni-lp-poliedar} je ekvivalentan sljedećem LP-u:
+\begin{equation}
+\label{eq:robusni-lp-ekv}
+\begin{aligned}
+\min_{x,\,\{\mu_i\}_{i=1,\dots,m}} \quad & c\T x \\
+\uzogr & d_i\T\mu_i \le b_i, && i = 1,\dots,m \\
+       & C_i\T\mu_i = x, && i = 1,\dots,m \\
+       & \mu_i \ge 0, && i = 1,\dots,m
+\end{aligned}
+\end{equation}
+\end{teorem}
+
+\textbf{Ovo je izvanredan rezultat:} beskonačno mnogo nejednakosti zamijenjeno
+je \textbf{konačnim} LP-om, po cijenu uvođenja novih varijabli $\mu_i$ --- a to
+su, kao što će dokaz pokazati, \textbf{dualne varijable} problema „najgoreg
+slučaja”.
+
+\subsection{Dokaz}
+\str{4--5}
+
+\textbf{Korak 1 --- prebacivanje na najgori slučaj} \str{4}\textbf{.}
+\[
+\begin{aligned}
+\min_x c\T x \\
+\uzogr a_i\T x \le b_i \text{ za sve } a_i \in \mathcal{P}_i
+\end{aligned}
+\qquad\Updownarrow\qquad
+\begin{aligned}
+\min_x c\T x \\
+\uzogr \sup_{a\in\mathcal{P}_i} a\T x \le b_i, \quad i = 1,\dots,m
+\end{aligned}
+\]
+
+\emph{Zašto:} nejednakost vrijedi za \emph{sve} $a$ iz skupa točno onda kad
+vrijedi za \textbf{najgori} $a$ --- onaj koji lijevu stranu čini najvećom. Time
+smo beskonačno mnogo uvjeta zamijenili \emph{jednim}, ali taj jedan sadrži
+unutarnji optimizacijski problem.
+
+\textbf{Korak 2 --- unutarnji problem kao LP} \str{4}\textbf{.} Za fiksan $i$,
+problem $\sup_{a\in\mathcal{P}_i}a\T x$ ekvivalentan je problemu
+\begin{equation}
+\label{eq:unutarnji}
+\inf_a \; -a\T x \qquad \uzogr C_ia \le d_i
+\tag{$\heartsuit$}
+\end{equation}
+
+(trik $\max f \Leftrightarrow \min(-f)$ iz odjeljka~\ref{sec:trikovi}; uočite da
+je ovdje \textbf{$a$ varijabla}, a $x$ je fiksan).
+
+\textbf{Korak 3 --- dualizacija unutarnjeg problema} \str{4}\textbf{.} Opt.\
+problem \eqref{eq:unutarnji} je LP za koji vrijedi \textbf{jaka dualnost}, pa
+njegovu optimalnu vrijednost možemo dobiti iz Lagrangeovog dualnog problema. Za
+\eqref{eq:unutarnji} imamo Lagrangian
+\[
+L(a,\mu_i) = -a\T x + \mu_i\T(C_ia - d_i)
+\]
+gdje je $\mu_i \in \R^{m_i}$ vektor dualnih varijabli.
+
+\textbf{Korak 4 --- dualna funkcija} \str{5}:
+\[
+\ell(\mu_i) = \inf_a L(a,\mu_i)
+= \inf_a\big(-x\T + \mu_i\T C_i\big)a - \mu_i\T d_i
+= \begin{cases}
+-\mu_i\T d_i & \text{za } C_i\T\mu_i = x \\
+-\infty & \text{u ostalim slučajevima}
+\end{cases}
+\]
+
+\emph{Objašnjenje:} $L$ je \textbf{afina} u $a$ (točno kao u primjeru duala LP-a,
+odjeljak~\ref{sec:dual-lp}), pa je njezin infimum $-\infty$ osim ako koeficijent
+uz $a$ iščezne: $-x\T + \mu_i\T C_i = 0$, tj.\ $C_i\T\mu_i = x$. Tada ostaje
+samo slobodni član $-\mu_i\T d_i$. \checkmark
+
+\textbf{Korak 5 --- zaključak} \str{5}\textbf{.} Za svaki $\mu_i \ge 0$ za koji
+$C_i\T\mu_i = x$ imamo da je $-\mu_i\T d_i$ \emph{donja} granica za opt.\
+problem \eqref{eq:unutarnji}. (Opt.\ vrijednost dualnog problema
+$d^\star = \max_{\mu_i}\ell(\mu_i)$ jednaka je opt.\ vrijednosti
+\eqref{eq:unutarnji}.)
+
+Slijedi da je $\mu_i\T d_i$ za $\mu_i \ge 0$ za koji $C_i\T\mu_i = x$
+\textbf{gornja} granica za $\sup_{a\in\mathcal{P}_i}a\T x$, a postoji
+$\mu_i^\star$: $\mu_i^\star \ge 0$, $C_i\T\mu_i^\star = x$, takav da je
+$(\mu_i^\star)\T d_i = \sup_{a\in\mathcal{P}_i}a\T x$. $\blacksquare$
+
+\begin{napomena}[bit dokaza u tri rečenice]
+Uvjet „$\sup_{a} a\T x \le b_i$” traži rješavanje unutarnjeg maksimizacijskog
+problema, što je nezgodno jer ovisi o $x$. Dualnost ga preokreće: umjesto
+\emph{maksimuma} po $a$ dobivamo \emph{minimum} po $\mu_i$, a minimum je
+$\le b_i$ čim \emph{postoji jedan} $\mu_i$ s $\mu_i\T d_i \le b_i$.
+
+Zato se u \eqref{eq:robusni-lp-ekv} $\mu_i$ pojavljuje kao \textbf{nova
+projektna varijabla} vanjskog problema --- i vanjski min i unutarnji min sada
+idu u istom smjeru, pa se spajaju u jedan LP.
+
+Ovo je \textbf{najvažnija tehnika robusnog optimiranja} i zove se
+\emph{robusna kontrapartija} (engl.\ \emph{robust counterpart}).
+\end{napomena}
+
+% =====================================================================
+\section{Primjer 1: nezavisne perturbacije koeficijenata}
+\label{sec:robusno-primjer1}
+\str{6--10}
+
+\subsection{Nominalni problem}
+\str{6}
+
+Opt.\ problem s „nominalnim vrijednostima” koeficijenata:
+\[
+\begin{aligned}
+\min_x \; & c\T x = \begin{pmatrix}-50 & 10\end{pmatrix}x \\
+\uzogr & a_1\T x = \begin{pmatrix}-1 & -1\end{pmatrix}x \le -10 \\
+& a_2\T x = \begin{pmatrix}1 & -1\end{pmatrix}x \le 10 \\
+& a_3\T x = \begin{pmatrix}1 & 1\end{pmatrix}x \le 30 \\
+& a_4\T x = \begin{pmatrix}-1 & 1\end{pmatrix}x \le 10
+\end{aligned}
+\qquad\text{tj.}\qquad
+\begin{aligned}
+\min_x \; & c\T x \\
+\uzogr & \underbrace{\begin{pmatrix}
+-1 & -1 \\ 1 & -1 \\ 1 & 1 \\ -1 & 1
+\end{pmatrix}}_{A} x \le
+\begin{pmatrix}-10\\10\\30\\10\end{pmatrix}
+\end{aligned}
+\]
+
+\textbf{Nesigurnost u parametrima} (sa slajda): svi elementi matrice $A$ mogu
+odstupati od svoje nominalne vrijednosti za \textbf{$\pm5\,\%$}. Tako npr.\
+umjesto $-1$ može biti broj u intervalu $[-1{,}05;\ -0{,}95]$, a umjesto $1$
+broj u intervalu $[0{,}95;\ 1{,}05]$.
+
+\subsection{Skupovi nesigurnosti kao poliedri}
+\str{7}
+
+\[
+\min_x c\T x \qquad \uzogr a_i\T x \le b_i \text{ za sve } a_i \in \mathcal{P}_i,
+\quad \mathcal{P}_i = \{\, a \mid C_ia \le d_i \,\}, \quad i = 1,\dots,4
+\]
+\[
+C_1 = C_2 = C_3 = C_4 = \begin{pmatrix}
+-1 & 0 \\ 1 & 0 \\ 0 & -1 \\ 0 & 1
+\end{pmatrix}
+\]
+\[
+d_1 = \begin{pmatrix}1{,}05\\ -0{,}95\\ 1{,}05\\ -0{,}95\end{pmatrix},\;
+d_2 = \begin{pmatrix}-0{,}95\\ 1{,}05\\ 1{,}05\\ -0{,}95\end{pmatrix},\;
+d_3 = \begin{pmatrix}-0{,}95\\ 1{,}05\\ -0{,}95\\ 1{,}05\end{pmatrix},\;
+d_4 = \begin{pmatrix}1{,}05\\ -0{,}95\\ -0{,}95\\ 1{,}05\end{pmatrix}
+\]
+
+\textbf{Kako se to čita.} Matrica $C_i$ ista je za sve $i$ i kodira „kutiju”:
+redci daju $-a_1 \le d_{i,1}$, $a_1 \le d_{i,2}$, $-a_2 \le d_{i,3}$,
+$a_2 \le d_{i,4}$, dakle
+\[
+-d_{i,1} \le a_1 \le d_{i,2}, \qquad -d_{i,3} \le a_2 \le d_{i,4}
+\]
+
+\emph{Provjera za $i = 1$} (nominalni $a_1 = (-1,-1)$): $d_1$ daje
+$-1{,}05 \le a_1 \le -0{,}95$ i $-1{,}05 \le a_2 \le -0{,}95$. \checkmark ---
+točno $\pm5\,\%$ oko $-1$ u obje komponente.
+
+\emph{Provjera za $i = 3$} (nominalni $a_3 = (1,1)$): $d_3$ daje
+$0{,}95 \le a_1 \le 1{,}05$ i $0{,}95 \le a_2 \le 1{,}05$. \checkmark
+
+\subsection{Rezultati}
+\str{8--9}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+& \textbf{Minimizator} & \textbf{Slajd} \\
+\midrule
+nominalni problem & $x^\star = \begin{pmatrix}20 \\ 10\end{pmatrix}$ & 8 \\[6pt]
+problem s perturbiranim koeficijentima
+  & $x^\star = \begin{pmatrix}18{,}5714 \\ 10\end{pmatrix}$ & 9 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Provjera nominalnog rješenja} (uvrštavanje $x = (20,10)$):
+\begin{align}
+a_1\T x &= -20 - 10 = -30 \le -10 \quad\checkmark && \text{(neaktivno)} \\
+a_2\T x &= 20 - 10 = 10 \le 10 \quad\checkmark && \textbf{(aktivno)} \\
+a_3\T x &= 20 + 10 = 30 \le 30 \quad\checkmark && \textbf{(aktivno)} \\
+a_4\T x &= -20 + 10 = -10 \le 10 \quad\checkmark && \text{(neaktivno)}
+\end{align}
+Vrijednost cilja: $c\T x = -50\cdot20 + 10\cdot10 = -1000 + 100 = -900$.
+
+\textbf{Provjera robusnog rješenja.} Za nesigurni slučaj, najgori $a_i$ za
+$x \ge 0$ dobiva se uzimanjem gornje granice svakog koeficijenta:
+\[
+\sup_{a\in\mathcal{P}_i} a\T x
+= \bar a_i\T x + 0{,}05\big(|x_1| + |x_2|\big)
+\]
+(jer je $|\bar a_{ij}| = 1$ za sve elemente). Aktivna ograničenja 2 i 3 daju:
+\begin{align}
+\text{ogr. 3:}\quad & 1{,}05(x_1 + x_2) \le 30
+  \;\Rightarrow\; x_1 + x_2 \le 28{,}5714 \\
+\text{ogr. 2:}\quad & 1{,}05x_1 - 0{,}95x_2 \le 10
+\end{align}
+Uz $x_2 = 10$: iz prvog $x_1 \le 18{,}5714$; iz drugog
+$1{,}05x_1 \le 10 + 9{,}5 = 19{,}5 \Rightarrow x_1 \le 18{,}5714$. Oba daju
+istu granicu, pa je $x^\star = (18{,}5714;\ 10)$. \checkmark
+
+Vrijednost cilja: $c\T x^\star = -50\cdot18{,}5714 + 100 = -828{,}5714$.
+
+\begin{napomena}[cijena robusnosti]
+\[
+\frac{-828{,}5714 - (-900)}{|-900|} = \frac{71{,}43}{900} \approx 7{,}9\,\%
+\]
+Za zaštitu od $\pm5\,\%$ nesigurnosti platili smo oko $8\,\%$ lošiju vrijednost
+cilja. To je \textbf{cijena robusnosti} (engl.\ \emph{price of robustness}) ---
+uvijek postoji, i uvijek je treba svjesno odvagnuti.
+
+Zauzvrat: nominalno rješenje $(20,10)$ postaje \textbf{nedopustivo} već pri
+malom odstupanju --- npr.\ za $a_3 = (1{,}05;\ 1{,}05)$ vrijedi
+$1{,}05\cdot30 = 31{,}5 > 30$. Robusno rješenje ostaje dopustivo za sve
+perturbacije unutar $\pm5\,\%$.
+\end{napomena}
+
+\subsection{Zapis preko relativnih perturbacija}
+\str{10}
+
+\[
+\begin{aligned}
+\min_x \; & c\T x = \begin{pmatrix}-50 & 10\end{pmatrix}x \\
+\uzogr
+& a_1\T x = (-1)(1+\delta_1)x_1 + (-1)(1+\delta_2)x_2 \le -10 \\
+& a_2\T x = (1)(1+\delta_3)x_1 + (-1)(1+\delta_4)x_2 \le 10 \\
+& a_3\T x = (1)(1+\delta_5)x_1 + (1)(1+\delta_6)x_2 \le 30 \\
+& a_4\T x = (-1)(1+\delta_7)x_1 + (1)(1+\delta_8)x_2 \le 10 \\
+& -0{,}05 \le \delta_i \le 0{,}05, \quad i = 1,\dots,8
+\end{aligned}
+\]
+
+\textbf{Legenda sa slajda:} \textcolor{tamnoplava}{\textbf{plavo}} ---
+nominalni koeficijenti; \textcolor{fsbcrvena}{\textbf{crveno}} --- relativne
+perturbacije (u ovom slučaju $\pm5\,\%$).
+
+\textbf{Ključno:} ima \textbf{osam nezavisnih} perturbacija $\delta_1,\dots,
+\delta_8$ --- po jedna za svaki element matrice $A$. Svaka može poprimiti svoju
+vrijednost neovisno o ostalima.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{08-robusni-lp.png}
+\caption{Lijevo: nominalni problem, optimum u vrhu $(20,10)$. Desno: robusni
+skup (presjek dozvoljenih skupova preko svih perturbacija) je \emph{manji} od
+nominalnog, pa se optimum pomiče u $(18{,}5714;\ 10)$. Isprekidane linije su
+nivo krivulje funkcije cilja.}
+\end{figure}
+
+\begin{crtanje}[nominalni i robusni dozvoljeni skup]
+\textbf{Korak 1.} Nacrtajte osi $x_1$, $x_2$, obje od $-2$ do $34$, jednako
+mjerilo.
+
+\textbf{Korak 2 --- prvo ograničenje $-x_1-x_2 \le -10$.} Granica je pravac
+$x_1 + x_2 = 10$, kroz $(10,0)$ i $(0,10)$. Testna točka $(20,20)$:
+$-40 \le -10$ \checkmark, dakle dopušteno je \textbf{iznad-desno} od pravca.
+
+\textbf{Korak 3 --- drugo ograničenje $x_1 - x_2 \le 10$.} Granica kroz
+$(10,0)$ s nagibom $+1$. Testna točka $(0,0)$: $0 \le 10$ \checkmark, dopušteno
+je \textbf{gore-lijevo}.
+
+\textbf{Korak 4 --- treće ograničenje $x_1 + x_2 \le 30$.} Granica kroz
+$(30,0)$ i $(0,30)$. Dopušteno je \textbf{dolje-lijevo} (ishodište:
+$0 \le 30$ \checkmark).
+
+\textbf{Korak 5 --- četvrto ograničenje $-x_1 + x_2 \le 10$.} Granica kroz
+$(0,10)$ s nagibom $+1$; dopušteno je \textbf{dolje-desno}.
+
+\textbf{Korak 6 --- nominalni skup.} Presjek je \textbf{romb} s vrhovima
+$(0,10)$, $(10,0)$, $(20,10)$, $(10,20)$. Osjenčajte ga.
+
+\textbf{Korak 7 --- nivo krivulje cilja.} $c\T x = -50x_1 + 10x_2 = $ konst.\
+su paralelni pravci strmog nagiba ($x_2 = (\text{konst.} + 50x_1)/10$, dakle
+nagib $+5$). Cilj pada \emph{udesno}. Klizite pravcem udesno dok dodiruje
+romb --- zadnji dodir je vrh $(20,10)$.
+
+\textbf{Korak 8 --- robusni skup.} Svaka granica se \textbf{pomiče prema
+unutra} za iznos koji odgovara najgoroj perturbaciji. Nacrtajte novi, manji
+romb unutar starog --- s vrhovima približno $(0;\ 10)$, $(10;\ 0{,}5)$,
+$(18{,}57;\ 10)$, $(10;\ 18{,}57)$.
+
+\textbf{Korak 9 --- robusni optimum.} Ponovite korak 7 na manjem rombu: zadnji
+dodir je vrh $(18{,}5714;\ 10)$.
+
+\textbf{Što graf znači.} Robusnost \textbf{sužava} dozvoljeni skup, jer svaka
+točka mora preživjeti \emph{sve} perturbacije. Optimum se povlači prema
+unutrašnjosti, a vrijednost cilja se pogoršava --- to je cijena robusnosti,
+vidljiva izravno na slici.
+\end{crtanje}
+
+% =====================================================================
+\section{Primjer 2: zajedničke perturbacije i vrhovi politopa}
+\label{sec:robusno-primjer2}
+\str{11--19}
+
+\subsection{Postavka --- što se promijenilo}
+\str{11}
+
+\[
+\begin{aligned}
+\min_x \; & c\T x = \begin{pmatrix}-50 & 10\end{pmatrix}x \\
+\uzogr
+& a_1\T x = (-1)(1+\delta_1)x_1 + (-1)(1+\delta_2)x_2 \le -10 \\
+& a_2\T x = (1)(1+\delta_1)x_1 + (-1)(1+\delta_2)x_2 \le 10 \\
+& a_3\T x = (1)(1+\delta_1)x_1 + (1)(1+\delta_2)x_2 \le 30 \\
+& a_4\T x = (-1)(1+\delta_1)x_1 + (1)(1+\delta_2)x_2 \le 10 \\
+& \delta_{1,\min} \le \delta_1 \le \delta_{1,\max}, \qquad
+  \delta_{2,\min} \le \delta_2 \le \delta_{2,\max}
+\end{aligned}
+\]
+
+\textbf{Interpretacija (doslovno sa slajda):} \emph{u praksi se projektne
+varijable $x_1$ i $x_2$ ne mogu implementirati egzaktno, već samo s nekim
+perturbacijama (nesigurnostima). $\delta_i$ modelira relativnu nesigurnost
+varijable $x_i$.}
+
+\textbf{Uočite da za razliku od prethodnog primjera ovdje se iste nesigurnosti
+$\delta_1$ i $\delta_2$ javljaju u više ograničenja.}
+
+\begin{napomena}[zašto je ta razlika bitna]
+U Primjeru 1 svaka je nesigurnost bila \emph{nezavisna}, pa se najgori slučaj
+tražio za svako ograničenje posebno. Ovdje su $\delta_1$ i $\delta_2$
+\textbf{iste} u svim ograničenjima --- fizikalno, one opisuju grešku u
+\emph{izvedbi} varijabli $x_1, x_2$ (npr.\ tolerancija obrade), a ne grešku u
+poznavanju modela.
+
+Posljedica: skup nesigurnosti ima samo \textbf{dva} parametra umjesto osam, pa
+je problem manje konzervativan --- ali zahtijeva drukčiji postupak rješavanja.
+\end{napomena}
+
+\subsection{Matrični zapis i konveksna ljuska}
+\str{12}
+
+\[
+\min_x c\T x \qquad \uzogr
+\underbrace{\begin{pmatrix}-1&-1\\1&-1\\1&1\\-1&1\end{pmatrix}}_{A}
+\left(\begin{pmatrix}1&0\\0&1\end{pmatrix}
++ \underbrace{\begin{pmatrix}\delta_1&0\\0&\delta_2\end{pmatrix}}_{\Delta}
+\right)x
+\le \begin{pmatrix}-10\\10\\30\\10\end{pmatrix}
+\]
+
+\[
+\Delta = \begin{pmatrix}\delta_1&0\\0&\delta_2\end{pmatrix} \in \boldsymbol\Delta
+\]
+\[
+\boldsymbol\Delta = \operatorname{co}\left\{
+\underbrace{\begin{pmatrix}\delta_{1,\min}&0\\0&\delta_{2,\min}\end{pmatrix}}_{\Delta_1},
+\underbrace{\begin{pmatrix}\delta_{1,\max}&0\\0&\delta_{2,\min}\end{pmatrix}}_{\Delta_2},
+\underbrace{\begin{pmatrix}\delta_{1,\max}&0\\0&\delta_{2,\max}\end{pmatrix}}_{\Delta_3},
+\underbrace{\begin{pmatrix}\delta_{1,\min}&0\\0&\delta_{2,\max}\end{pmatrix}}_{\Delta_4}
+\right\}
+\]
+gdje je $\operatorname{co}(\Delta_1,\Delta_2,\Delta_3,\Delta_4)$ konveksna
+ljuska od (generatora / vrhova) $\Delta_1,\Delta_2,\Delta_3,\Delta_4$.
+
+\textbf{Zašto četiri vrha.} Skup dopuštenih parova $(\delta_1,\delta_2)$ je
+\textbf{pravokutnik} u ravnini, a pravokutnik je konveksna ljuska svoja
+\textbf{četiri kuta}. Svaki kut daje jednu matricu $\Delta_i$.
+
+\subsection{Redukcija na vrhove}
+\str{13--14}
+
+\begin{teorem}[Vrhovi su dovoljni]
+\[
+\begin{aligned}
+\min_x \; & c\T x \\
+\uzogr & A(I+\Delta)x \le b \\
+& \text{za sve } \Delta \in \boldsymbol\Delta
+   = \operatorname{co}(\Delta_1,\dots,\Delta_k)
+\end{aligned}
+\qquad\Updownarrow\qquad
+\begin{aligned}
+\min_x \; & c\T x \\
+\uzogr & A(I+\Delta_1)x \le b \\
+& A(I+\Delta_2)x \le b \\
+& \quad\vdots \\
+& A(I+\Delta_k)x \le b
+\end{aligned}
+\]
+\end{teorem}
+
+\textbf{Dokaz (sa slajda 13).} Potrebno je dokazati samo $\Uparrow$ smjer, jer
+smjer $\Downarrow$ je očit (svi $\Delta_i$ su u $\boldsymbol\Delta$, pa ako su
+zadovoljene nejednakosti u gornjem problemu, onda su nužno zadovoljene i
+nejednakosti iz donjeg problema).
+
+\textbf{Dokaz za smjer $\Uparrow$} \str{14}\textbf{.} Ponovimo: konveksna
+ljuska skupa $S$ je skup svih konveksnih kombinacija točaka iz $S$.
+
+Imamo da se svaki $\Delta \in \boldsymbol\Delta =
+\operatorname{co}(\Delta_1,\dots,\Delta_k)$ može zapisati kao
+\[
+\Delta = \theta_1\Delta_1 + \theta_2\Delta_2 + \dots + \theta_k\Delta_k
+\]
+gdje je $\theta_1 + \theta_2 + \dots + \theta_k = 1$ i $\theta_i \ge 0$,
+$i = 1,\dots,k$.
+
+Pretpostavimo da su nejednakosti u donjem problemu s prethodnog slajda
+zadovoljene. Za svaki $\Delta \in \boldsymbol\Delta$ tada nužno vrijedi
+\begin{align}
+A(I+\Delta)x
+&= A\big(I + \theta_1\Delta_1 + \dots + \theta_k\Delta_k\big)x \\
+&= A\big((\theta_1 + \dots + \theta_k)I
+   + \theta_1\Delta_1 + \dots + \theta_k\Delta_k\big)x \\
+&= \theta_1A(I+\Delta_1)x + \dots + \theta_kA(I+\Delta_k)x \\
+&\le \theta_1b + \dots + \theta_kb = b
+\end{align}
+
+\textbf{Zaključak:} nejednakosti iz donjeg problema impliciraju nejednakosti iz
+gornjeg problema ($A(I+\Delta)x \le b$ za sve $\Delta \in \boldsymbol\Delta$).
+$\blacksquare$
+
+\emph{Ključni trik u drugom retku:} identiteta $I$ se „razdijeli” koristeći
+$\theta_1 + \dots + \theta_k = 1$, tj.\ $I = (\theta_1+\dots+\theta_k)I$. Time
+se cijeli izraz grupira u konveksnu kombinaciju izraza po vrhovima.
+
+\begin{napomena}[isti argument, treći put]
+Ovo je \emph{potpuno ista} logika kao kod:
+\begin{itemize}
+  \item kvadratne stabilnosti na konveksnoj ljusci
+        (poglavlje~\ref{ch:dinamicki} \str{7:26}),
+  \item robusne stabilizacije njihala (Zadatak~\ref{zad:pendulum}).
+\end{itemize}
+\textbf{Pravilo koje vrijedi zapamtiti:} ako nesigurnost ulazi u ograničenja
+\emph{afino} i njezin skup je \emph{politop}, dovoljno je provjeriti
+\textbf{vrhove}.
+\end{napomena}
+
+\subsection{Konkretni brojevi}
+\str{15--16}
+
+\textbf{Originalan robusni opt.\ problem (beskonačno puno nejednakosti!)}
+\str{15}\textbf{,} uz $\pm5\,\%$:
+\[
+\boldsymbol\Delta = \operatorname{co}\left\{
+\begin{pmatrix}-0{,}05&0\\0&-0{,}05\end{pmatrix},
+\begin{pmatrix}0{,}05&0\\0&-0{,}05\end{pmatrix},
+\begin{pmatrix}0{,}05&0\\0&0{,}05\end{pmatrix},
+\begin{pmatrix}-0{,}05&0\\0&0{,}05\end{pmatrix}
+\right\}
+\]
+
+\textbf{Ekvivalentan LP problem (konačan broj nejednakosti!)} \str{16}\textbf{:}
+četiri skupine od po četiri nejednakosti, po jedna za svaki vrh:
+\[
+A\left(\begin{pmatrix}1&0\\0&1\end{pmatrix}
++ \begin{pmatrix}\pm0{,}05&0\\0&\pm0{,}05\end{pmatrix}\right)x \le b
+\qquad\text{za sve četiri kombinacije predznaka}
+\]
+
+Ukupno $4 \times 4 = 16$ linearnih nejednakosti --- običan LP.
+
+\subsection{Rezultati}
+\str{17--19}
+
+\begin{center}
+\begin{tabular}{p{5.4cm}p{3.6cm}p{3.4cm}}
+\toprule
+\textbf{Slučaj} & \textbf{Minimizator} & \textbf{Slajd} \\
+\midrule
+$\pm5\,\%$ na $x_1$ i $x_2$
+  & $x^\star = \begin{pmatrix}18{,}5714\\10\end{pmatrix}$ & 17 \\[8pt]
+$\pm5\,\%$ na $x_1$, $\pm15\,\%$ na $x_2$
+  & \emph{(nije naveden na slajdu)} & 18 \\[8pt]
+isto, uz promijenjenu funkciju cilja $c\T = [0\;\; -50]$
+  & \emph{(nije naveden na slajdu)} & 19 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Zapažanje.} Rezultat za $\pm5\,\%$ identičan je onome iz Primjera 1
+($18{,}5714;\ 10$) --- iako su modeli nesigurnosti različiti. To je slučajnost
+ovog konkretnog primjera: aktivna ograničenja su ista, a na njima se oba modela
+podudaraju jer su sva $|a_{ij}| = 1$.
+
+\begin{napomena}[dopuna izvorniku]
+Slajdovi 18 i 19 prikazuju samo \emph{slike} robusnih rješenja za dvije
+varijante; brojčane minimizatore ne navode. Vlastitim računom
+(skripta \texttt{scripts/fig\_08\_robusno.py}, ista metoda vrhova) dobiva se:
+\begin{itemize}
+  \item slajd 18 ($\delta_1 = \pm0{,}05$, $\delta_2 = \pm0{,}15$):
+        $x^\star = (17{,}6190;\ 10)$;
+  \item slajd 19 (isto, uz $c\T = [0\;\; -50]$):
+        $x^\star = (10;\ 16{,}9565)$.
+\end{itemize}
+Ti brojevi \textbf{nisu} preuzeti iz izvornika --- navedeni su radi potpunosti
+i izričito su označeni kao vlastiti izračun.
+\end{napomena}
+
+\textbf{Interpretacija triju slika:}
+
+\begin{itemize}
+  \item \textbf{slajd 17:} simetrična nesigurnost $\pm5\,\%$ --- robusni skup se
+        sužava jednoliko u oba smjera;
+  \item \textbf{slajd 18:} veća nesigurnost u $x_2$ ($\pm15\,\%$) --- skup se
+        \emph{jače} sužava u smjeru $x_2$. Budući da cilj gura prema velikom
+        $x_1$, optimum se ipak pomiče (na $17{,}62$), jer aktivno ograničenje
+        $x_1+x_2 \le 30$ pati i od nesigurnosti u $x_2$;
+  \item \textbf{slajd 19:} promjena cilja u $c\T = [0\;\; -50]$ znači da sada
+        gura prema velikom $x_2$ --- a to je smjer u kojem je nesigurnost
+        \emph{veća}, pa je i „kazna” veća.
+\end{itemize}
+
+\textbf{Pouka:} učinak nesigurnosti ovisi o tome \textbf{poklapa li se smjer
+nesigurnosti sa smjerom u kojem cilj gura}. Ako se poklapa, cijena robusnosti
+je velika; ako ne, mala.
+
+% =====================================================================
+\section{Robusni LP s elipsoidnim nesigurnostima}
+\str{20--21}
+
+\subsection{Postavka}
+\str{20}
+
+Promotrimo LP
+\[
+\min_x c\T x \qquad \uzogr a_i\T x \le b_i, \quad i = 1,\dots,m
+\]
+i pretpostavimo da su vektori $a_i \in \R^n$ nesigurni u smislu da ne znamo
+njihove vrijednosti, već znamo samo da $a_i \in \mathcal{E}_i$, gdje je
+\[
+\mathcal{E}_i = \{\, \bar a_i + P_iu \mid \|u\|_2 \le 1 \,\}
+\]
+za poznate $\bar a_i \in \R^n$ i $P_i \in \R^{n\times n}$.
+
+\textbf{Robusni LP:}
+\[
+\min_x c\T x \qquad \uzogr
+a_i\T x \le b_i \text{ za sve } a_i \in \mathcal{E}_i, \quad i = 1,\dots,m
+\]
+
+\subsection{Ekvivalentan CQP}
+\str{21}
+
+\begin{itemize}
+  \item centar elipsoida $\mathcal{E}_i$ je $\bar a_i$;
+  \item poluosi su određene \textbf{singularnim vrijednostima} i singularnim
+        vektorima matrice $P_i$.
+\end{itemize}
+
+\begin{teorem}[Robusni LP s elipsoidnom nesigurnošću]
+Robusni LP je ekvivalentan sljedećem \textbf{CQP}:
+\[
+\min_x c\T x \qquad \uzogr
+\bar a_i\T x + \|P_i\T x\|_2 \le b_i, \quad i = 1,\dots,m
+\]
+\end{teorem}
+
+\textbf{Što slijedi iz toga što je}
+\[
+\sup_{\|u\|_2\le1}(\bar a_i + P_iu)\T x = \bar a_i\T x + \|P_i\T x\|_2
+\]
+
+Ovo je \textbf{isti rezultat} koji smo detaljno izveli u
+odjeljku~\ref{sec:robusni-lp-cqp} \str{6:15}; ondje su i svi međukoraci
+(Cauchy-Schwarz, izbor najgoreg $u^\star = P_i\T x/\|P_i\T x\|_2$).
+
+\begin{napomena}[poliedarska vs.\ elipsoidna nesigurnost --- kako birati]
+\begin{center}
+\begin{tabular}{p{3.0cm}p{4.6cm}p{4.8cm}}
+\toprule
+& \textbf{poliedarska} $\mathcal{P}_i$ & \textbf{elipsoidna} $\mathcal{E}_i$ \\
+\midrule
+robusna kontrapartija & \textbf{LP} & \textbf{CQP} \\
+kada koristiti & granice po komponentama
+  („svaki koeficijent $\pm5\,\%$”) & statistička nesigurnost (kovarijanca
+  mjerenja) \\
+konzervativnost & veća (kutija sadrži i „nemoguće” kombinacije)
+  & manja (elipsoid prati korelacije) \\
+\bottomrule
+\end{tabular}
+\end{center}
+Oba pristupa daju \textbf{rješiv konveksan problem} --- to je glavna poruka
+poglavlja. Robusnost ne izlazi iz okvira koji smo gradili kroz cijeli kolegij.
+\end{napomena}
+
+% =====================================================================
+\section{Sažetak poglavlja}
+
+\textbf{Osnovna ideja:} zamijeni „$a\T x \le b$ za sve $a \in \mathcal{U}$” s
+\[
+\sup_{a\in\mathcal{U}} a\T x \le b
+\]
+i zatim taj \emph{supremum} izračunaj u zatvorenom obliku ili dualiziraj.
+
+\textbf{Tri načina, ovisno o obliku skupa nesigurnosti $\mathcal{U}$:}
+
+\begin{center}
+\begin{tabular}{p{3.6cm}p{4.4cm}p{4.6cm}}
+\toprule
+\textbf{Skup $\mathcal{U}$} & \textbf{Tehnika} & \textbf{Rezultat} \\
+\midrule
+poliedar $\{a \mid Ca \le d\}$
+  & \textbf{dualizacija} unutarnjeg LP-a; nove varijable $\mu_i \ge 0$
+  & LP \eqref{eq:robusni-lp-ekv} \\
+politop zadan vrhovima
+  & \textbf{provjera samo u vrhovima} (nesigurnost ulazi afino)
+  & LP s $k\cdot m$ nejednakosti \\
+elipsoid $\{\bar a + Pu \mid \|u\|_2\le1\}$
+  & \textbf{zatvorena formula} za $\sup$ (Cauchy-Schwarz)
+  & CQP \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Što treba zapamtiti:}
+
+\begin{enumerate}
+  \item Robusna formulacija je uvijek \textbf{konzervativnija} od nominalne ---
+        dozvoljeni skup se sužava, cilj se pogoršava. To je \textbf{cijena
+        robusnosti} (u Primjeru 1 oko $8\,\%$).
+  \item Zauzvrat, nominalno rješenje često postaje nedopustivo već pri
+        \emph{malom} odstupanju --- pa je ta cijena obično opravdana.
+  \item \textbf{Model nesigurnosti je inženjerska odluka}: nezavisne
+        perturbacije po elementima (Primjer 1) daju drukčiji, konzervativniji
+        problem od zajedničkih perturbacija po varijablama (Primjer 2).
+  \item Ključni alati su oni iz cijelog kolegija: \textbf{dualnost}
+        (poglavlje~\ref{ch:dualnost}), \textbf{konveksna ljuska}
+        (poglavlje~\ref{ch:definicije}) i \textbf{konusne formulacije}
+        (poglavlje~\ref{ch:qcpsdp}).
+\end{enumerate}
+
+\textbf{Terminologija (hrvatski $\leftrightarrow$ engleski):}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Hrvatski} & \textbf{Engleski} \\
+\midrule
+robusno optimiranje & robust optimisation \\
+skup nesigurnosti & uncertainty set \\
+robusna kontrapartija & robust counterpart \\
+poliedarska nesigurnost & polyhedral uncertainty \\
+elipsoidna nesigurnost & ellipsoidal uncertainty \\
+nominalni problem / rješenje & nominal problem / solution \\
+najgori slučaj & worst case \\
+cijena robusnosti & price of robustness \\
+konveksna ljuska & convex hull \\
+generatori / vrhovi & generators / vertices \\
+\bottomrule
+\end{tabular}
+\end{center}
