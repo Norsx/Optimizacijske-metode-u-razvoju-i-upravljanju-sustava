@@ -1,4 +1,1210 @@
-\chapter{Konicno kvadratno i semidefinitno programiranje}
+\chapter{Konično kvadratno i semidefinitno programiranje}
 \label{ch:qcpsdp}
 
-\emph{Poglavlje je u izradi.}
+\begin{izvor}
+\textbf{Izvori:} \texttt{06\_QCP\_SDP.pdf} (str.\ 1--31) i
+\texttt{Vjezbe\_4.pdf} (str.\ 31--41: geometrijski problemi) --- oboje obrađeno
+u cijelosti.
+\end{izvor}
+
+Ovo poglavlje širi krug rješivih problema izvan LP-a i QP-a. Sjetite se
+„moderne podjele svijeta optimiranja” \str{2:10}:
+\[
+\text{LP} \;\subset\; \text{CQP} \;\subset\; \text{SDP} \;\subset\;
+\text{konveksno optimiranje}
+\]
+Sada popunjavamo dva srednja člana tog lanca.
+
+% =====================================================================
+\section{Podsjetnik: definitnost matrica}
+\str{4--5}
+
+Slajdovi 4 i 5 doslovno ponavljaju definicije i karakterizaciju iz
+odjeljka~\ref{sec:definitnost}: $H \succeq 0$ ako je $H$ simetrična i
+$x\T Hx \ge 0$ za sve $x$; $H \succ 0$ ako je $x\T Hx > 0$ za $x \ne 0$;
+analogno $\preceq$, $\prec$; karakterizacija preko predznaka svojstvenih
+vrijednosti; upozorenja da „nije $\succeq 0$” ne znači „$\preceq 0$” i da
+pozitivno definitne matrice smiju imati negativne elemente.
+
+Ako vam to nije svježe, vratite se na odjeljak~\ref{sec:definitnost} --- cijelo
+ovo poglavlje počiva na tim pojmovima.
+
+% =====================================================================
+\section{Konveksni konusi i generalizirane nejednakosti}
+\str{6--9}
+
+\subsection{Konveksan konus}
+\str{6}
+
+\begin{definicija}[Konična kombinacija i konveksan konus]
+\textbf{Konična (nenegativna) kombinacija} od $x_1$ i $x_2$ je točka oblika
+\[
+x = \theta_1x_1 + \theta_2x_2
+\]
+gdje su $\theta_1 \ge 0$, $\theta_2 \ge 0$.
+
+\textbf{Konveksan konus} (stožac) je skup koji sadrži sve konične kombinacije
+točaka iz tog istog skupa.
+\end{definicija}
+
+\begin{napomena}[konveksna vs.\ konična kombinacija]
+Usporedite s konveksnom kombinacijom (odjeljak~\ref{sec:konveksno}):
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+& \textbf{uvjet na težine} & \textbf{što nastane iz dviju točaka} \\
+\midrule
+konveksna kombinacija & $\theta_i \ge 0$, $\sum\theta_i = 1$ & \textbf{dužina} \\
+konična kombinacija & $\theta_i \ge 0$ (bez uvjeta na zbroj)
+  & \textbf{beskonačan „klin”} (stožac) \\
+\bottomrule
+\end{tabular}
+\end{center}
+Konus je dakle „konveksan skup koji se proteže u beskonačnost iz vrha”: ako
+sadrži točku $x$, sadrži i cijelu zraku $\theta x$, $\theta \ge 0$.
+\end{napomena}
+
+\subsection{Pozitivno semidefinitan konus}
+\str{7}
+
+\textbf{Notacija sa slajda:}
+\begin{itemize}
+  \item $\mathbb{S}^n$ je skup simetričnih $n\times n$ matrica;
+  \item $\mathbb{S}^n_+$: skup pozitivno (semi)definitnih simetričnih
+        $n\times n$ matrica.
+\end{itemize}
+
+$\mathbb{S}^n_+$ je \textbf{pozitivno semidefinitan konus} i to je konveksan
+konus:
+\[
+X_1 \in \mathbb{S}^n_+,\; X_2 \in \mathbb{S}^n_+
+\;\Longrightarrow\;
+\theta_1X_1 + \theta_2X_2 \in \mathbb{S}^n_+
+\quad\text{za sve } \theta_1 \ge 0,\; \theta_2 \ge 0
+\]
+
+\emph{Dokaz u jednom retku:} za bilo koji vektor $z$,
+\[
+z\T(\theta_1X_1 + \theta_2X_2)z
+= \theta_1\underbrace{z\T X_1z}_{\ge0}
++ \theta_2\underbrace{z\T X_2z}_{\ge0} \ge 0
+\]
+--- zbroj nenegativnih brojeva pomnoženih nenegativnim težinama. \checkmark
+
+\begin{napomena}[tipfeler na slajdu 7]
+Na slajdu je napisano
+$\mathbb{S}^n_+ = \{X \in \mathbb{S}^n \mid X \succ 0\}$ (strogo), ali se u
+istom retku skup naziva \emph{pozitivno semidefinitnim} konusom, a i sljedeći
+redak koristi svojstvo koje vrijedi za $\succeq$. Standardna definicija (i ona
+koja se dalje koristi) je
+\[
+\mathbb{S}^n_+ = \{\, X \in \mathbb{S}^n \mid X \succeq 0 \,\}
+\]
+Uz strogu nejednakost skup ne bi bio zatvoren, pa ne bi bio ni \emph{pravilan}
+konus u smislu sljedećeg odjeljka.
+\end{napomena}
+
+Slajd uz to prikazuje sliku PSD konusa za $2\times2$ matrice --- „sladoledni”
+stožac u trodimenzionalnom prostoru parametara
+$\begin{psmallmatrix}x & y\\ y & z\end{psmallmatrix}$.
+
+\subsection{Pravilan konus}
+\str{8}
+
+\begin{definicija}[Pravilan konus (engl.\ \emph{proper cone})]
+Konveksan konus $K \subseteq \R^n$ je \textbf{pravilan konus} ako vrijedi:
+\begin{itemize}
+  \item $K$ je \textbf{zatvoren} (sadrži svoj rub) (engl.\ \emph{closed});
+  \item $K$ ima \textbf{unutrašnjost koja nije prazna} (engl.\ \emph{solid});
+  \item $K$ je \textbf{usmjeren} (ne sadrži pravac) (engl.\ \emph{pointed}).
+\end{itemize}
+\end{definicija}
+
+\textbf{Primjeri sa slajda:}
+
+\begin{itemize}
+  \item \textbf{nenegativan ortant}
+        $K = \R^n_+ = \{\, x \in \R^n \mid x_i \ge 0,\; i = 1,\dots,n \,\}$;
+  \item \textbf{pozitivno semidefinitan konus} $K = \mathbb{S}^n_+$;
+  \item \textbf{nenegativni polinomi} na intervalu $[0,1]$:
+        \[
+        K = \{\, x \in \R^n \mid x_1 + x_2t + x_3t^2 + \dots + x_nt^{n-1} \ge 0
+        \text{ za sve } t \in [0,1] \,\}
+        \]
+\end{itemize}
+
+\emph{Zašto tri uvjeta:} „usmjeren” osigurava da konus ima pravi „vrh” (npr.\
+cijela ravnina jest konveksan konus, ali sadrži pravce, pa nije pravilan);
+„solid” osigurava da ne degenerira u nižu dimenziju. Bez tih uvjeta
+generalizirana nejednakost koja slijedi ne bi se ponašala kao pravi poredak.
+
+\subsection{Generalizirane nejednakosti}
+\str{9}
+
+\begin{definicija}[Generalizirana nejednakost]
+(Nestriktna i striktna) generalizirana nejednakost definirana pravilnim
+konusom $K$:
+\begin{align}
+x \preceq_K y \quad&\Leftrightarrow\quad y - x \in K \\
+x \prec_K y \quad&\Leftrightarrow\quad y - x \in \operatorname{int}K
+\end{align}
+gdje $\operatorname{int}K$ označava \textbf{unutrašnjost} od $K$.
+\end{definicija}
+
+\textbf{Primjeri sa slajda:}
+
+\begin{itemize}
+  \item \textbf{nejednakost po elementima}, za $K = \R^n_+$:
+        \[
+        x \preceq_K y \quad\Leftrightarrow\quad x_i \le y_i,\; i = 1,\dots,n
+        \]
+  \item \textbf{matrične nejednakosti}, za $K = \mathbb{S}^n_+$:
+        \[
+        X \preceq_K Y \quad\Leftrightarrow\quad Y - X \text{ je poz.\ semidef.}
+        \]
+\end{itemize}
+
+\textbf{Napomena sa slajda:} mnoga svojstva generaliziranih nejednakosti
+$\preceq_K$ slična su kao za $\le$ u $\R$, npr.
+\[
+x \preceq_K y, \quad u \preceq_K v
+\quad\Longrightarrow\quad x + u \preceq_K y + v
+\]
+
+\begin{napomena}[velika ideja iza cijelog poglavlja]
+Do sada su nam ograničenja nejednakosti bila oblika $g(x) \le 0$ --- usporedba
+\emph{brojeva}. Generalizirana nejednakost dopušta da uspoređujemo
+\textbf{vektore} (po komponentama) ili čak \textbf{matrice} (preko
+definitnosti), a da sva teorija (konveksnost, dualnost, KKT) ostane na snazi.
+
+Različiti izbori konusa $K$ daju različite klase problema:
+\begin{center}
+\begin{tabular}{llp{4.6cm}}
+\toprule
+$K$ & \textbf{klasa} & \textbf{tip ograničenja} \\
+\midrule
+$\R^n_+$ & LP & obične nejednakosti $Ax \le b$ \\
+konus 2.\ stupnja $K_{SO}$ & CQP & $\|A_ix + b_i\|_2 \le c_i\T x + d_i$ \\
+$\mathbb{S}^n_+$ & SDP & $F(x) \succeq 0$ (matrična nejednakost) \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{napomena}
+
+% =====================================================================
+\section{Konično kvadratno programiranje (CQP)}
+\label{sec:cqp}
+\str{11--15}
+
+\begin{definicija}[Konus drugog stupnja \str{11}]
+Konus drugog stupnja (engl.\ \emph{second-order cone}), za definiranje
+nejednakosti kod CQP problema:
+\[
+K_{SO} = \Big\{\, x \in \R^n \;\Big|\;
+x_n \ge \sqrt{x_1^2 + \dots + x_{n-1}^2} \,\Big\}
+\]
+\end{definicija}
+
+\textbf{Kako to izgleda.} U $\R^3$ to je uvjet $x_3 \ge \sqrt{x_1^2+x_2^2}$ ---
+skup iznad plašta kružnog stošca s vrhom u ishodištu, otvorenog prema gore. U
+literaturi se zove i \emph{ice-cream cone} ili \emph{Lorentzov konus}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.56\textwidth]{06-konus.png}
+\caption{Konus drugog stupnja u $\R^3$. CQP ograničenje traži da vektor
+$(A_ix - b_i)$ leži unutar takvog konusa.}
+\end{figure}
+
+\begin{definicija}[Konično kvadratno programiranje (CQP) \str{11}]
+\begin{equation}
+\label{eq:cqp}
+\begin{aligned}
+\min \quad & c\T x \\
+\uzogr & A_ix - b_i \succeq_K 0, \quad i = 1,\dots,m \\
+       & Fx = g
+\end{aligned}
+\end{equation}
+\end{definicija}
+
+\textbf{Alternativna formulacija CQP} \str{12}:
+\begin{equation}
+\label{eq:cqp-alt}
+\begin{aligned}
+\min \quad & c\T x \\
+\uzogr & \|\tilde A_ix + \tilde b_i\|_2 \le \hat a_i\T x + \hat b_i,
+         \quad i = 1,\dots,m \\
+       & Fx = g
+\end{aligned}
+\end{equation}
+
+\emph{Veza dvaju zapisa:} uvjet $y \in K_{SO}$ za vektor
+$y = (y_1,\dots,y_{n-1}, y_n)$ glasi $\|(y_1,\dots,y_{n-1})\|_2 \le y_n$.
+Ako prvih $n-1$ komponenata bude $\tilde A_ix + \tilde b_i$, a zadnja
+$\hat a_i\T x + \hat b_i$, dobiva se točno \eqref{eq:cqp-alt}. \checkmark
+
+\textbf{Dva granična slučaja (sa slajda 12):}
+\begin{itemize}
+  \item za $\tilde A_i = 0$, CQP se \textbf{reducira u LP}
+        (lijeva strana postane $\|\tilde b_i\|_2$, konstanta, pa je
+        ograničenje linearno);
+  \item za $\hat a_i = 0$, CQP se reducira u \textbf{kvadratno ograničen
+        kvadratni program (QCQP)} (engl.\ \emph{quadratically constrained
+        quadratic program}).
+\end{itemize}
+
+\subsection{Kvadratno ograničen kvadratni program (QCQP)}
+\str{13}
+
+\begin{definicija}[QCQP]
+\begin{equation}
+\begin{aligned}
+\min_x \quad & 0{,}5\,x\T P_0x + q_0\T x + r_0 \\
+\uzogr & 0{,}5\,x\T P_ix + q_i\T x + r_i \le 0, \quad i = 1,\dots,m \\
+       & Fx = g
+\end{aligned}
+\end{equation}
+gdje su $P_i \in \mathbb{S}^n_+$, pa su funkcija cilja i funkcije ograničenja
+konveksne funkcije.
+\end{definicija}
+
+\textbf{Tvrdnja sa slajda:} kad su sve matrice $P_1,\dots,P_m$ pozitivno
+definitne, dozvoljeni skup je \textbf{presjek $m$ elipsoida} i afinog skupa
+(definiranog s ograničenjem jednakosti).
+
+\begin{napomena}[usporedba QP i QCQP]
+Kod \textbf{QP}-a \eqref{eq:qp} kvadratna je \emph{samo funkcija cilja}, a
+ograničenja su linearna --- dozvoljeni skup je politop. Kod \textbf{QCQP}-a su
+i ograničenja kvadratna, pa dozvoljeni skup ima \emph{zaobljene} rubove
+(presjek elipsoida). To je strogo šira klasa: svaki QP je QCQP (uz
+$P_i = 0$), ali ne i obratno.
+\end{napomena}
+
+\subsection{Primjer: robusno linearno programiranje}
+\label{sec:robusni-lp-cqp}
+\str{14--15}
+
+\textbf{Postavka} \str{14}\textbf{.} Promotrimo LP
+\[
+\min_x c\T x \qquad \uzogr a_i\T x \le b_i, \quad i = 1,\dots,m
+\]
+i pretpostavimo da su vektori $a_i$ \textbf{nesigurni} u smislu da ne znamo
+njihove vrijednosti, već znamo samo da $a_i \in \mathcal{E}_i$.
+
+\textbf{Robusni LP:}
+\begin{equation}
+\label{eq:robusni-lp}
+\min_x c\T x \qquad \uzogr a_i\T x \le b_i \;\;\textbf{za sve } a_i \in \mathcal{E}_i,
+\quad i = 1,\dots,m
+\end{equation}
+
+\begin{napomena}[što znači „za sve”]
+Ovo je \textbf{polu-beskonačno} ograničenje: jedna nejednakost za \emph{svaku}
+od beskonačno mnogo mogućih vrijednosti $a_i$. Ne može se izravno predati
+rješavaču. Cijeli trik robusnog optimiranja (i poglavlja~\ref{ch:robusno}) je
+u tome da se taj beskonačan skup uvjeta zamijeni \textbf{jednim} uvjetom na
+najgori slučaj.
+\end{napomena}
+
+\textbf{Slučaj elipsoidne nesigurnosti} \str{15}\textbf{.} U slučaju kad su
+$\mathcal{E}_i$ elipsoidi:
+\[
+\mathcal{E}_i = \{\, \bar a_i + P_iu \mid \|u\|_2 \le 1 \,\},
+\qquad \bar a_i \in \R^n,\; P_i \in \R^{n\times n} \text{ poznati}
+\]
+\begin{itemize}
+  \item centar elipsoida $\mathcal{E}_i$ je $\bar a_i$;
+  \item poluosi su određene \textbf{singularnim vrijednostima} i singularnim
+        vektorima matrice $P_i$.
+\end{itemize}
+
+\begin{teorem}[Robusni LP kao CQP \str{15}]
+Robusni LP je ekvivalentan sljedećem CQP:
+\begin{equation}
+\label{eq:robusni-lp-cqp}
+\min_x c\T x \qquad \uzogr
+\bar a_i\T x + \|P_i\T x\|_2 \le b_i, \quad i = 1,\dots,m
+\end{equation}
+\end{teorem}
+
+\textbf{Zašto} (sa slajda): to slijedi iz toga što je
+\[
+\sup_{\|u\|_2 \le 1}(\bar a_i + P_iu)\T x
+= \bar a_i\T x + \|P_i\T x\|_2
+\]
+
+\emph{Raspis (na slajdu nije prikazan).}
+\[
+(\bar a_i + P_iu)\T x = \bar a_i\T x + (P_iu)\T x
+= \bar a_i\T x + u\T P_i\T x
+\]
+Prvi član ne ovisi o $u$. Drugi je skalarni produkt $\langle u, P_i\T x\rangle$,
+koji je po $\|u\|_2 \le 1$ maksimalan kad je $u$ \textbf{u smjeru} $P_i\T x$ i
+jedinične duljine: $u^\star = P_i\T x/\|P_i\T x\|_2$. Tada je
+\[
+u^{\star\top}P_i\T x = \frac{\|P_i\T x\|_2^2}{\|P_i\T x\|_2} = \|P_i\T x\|_2
+\]
+\checkmark (Ista Cauchy-Schwarzova ideja kao kod Chebyshevljevog centra,
+odjeljak~5.5.2.)
+
+\begin{napomena}[tipfeler na slajdu 15]
+U izrazu za supremum na slajdu piše
+$\sup_{\|u\|_2\le1}(\bar a_i + P_iu)\T = \bar a_ix + \|P_i\T x\|_2$: na lijevoj
+strani nedostaje $x$ nakon transponata, a na desnoj nedostaje transponat u
+$\bar a_i\T x$. Ispravno je kako je napisano gore.
+\end{napomena}
+
+\textbf{Interpretacija:} $\|P_i\T x\|_2$ je \textbf{sigurnosna rezerva} ---
+koliko moramo „ostaviti mjesta” da bi ograničenje vrijedilo i za najgori
+mogući $a_i$. Što je elipsoid nesigurnosti veći (veći $P_i$), to je rezerva
+veća i rješenje konzervativnije.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.70\textwidth]{06-robusni-lp.png}
+\caption{Elipsoidni skup nesigurnosti oko $\bar a_i$. Za zadani smjer $x$,
+najgori $a_i$ je onaj koji najdalje strši u tom smjeru; njegov doprinos je
+$\bar a_i\T x + \|P_i\T x\|_2$.}
+\end{figure}
+
+% =====================================================================
+\section{Linearne matrične nejednakosti (LMI)}
+\label{sec:lmi}
+\str{17--22}
+
+\begin{definicija}[Linearna matrična nejednakost \str{17}]
+\begin{equation}
+\label{eq:lmi}
+F(x) = F_0 + x_1F_1 + \dots + x_nF_n \prec 0
+\end{equation}
+\begin{itemize}
+  \item Vektor $x = \begin{pmatrix}x_1 & x_2 & \dots & x_n\end{pmatrix}\T$ je
+        vektor projektnih varijabli.
+  \item Matrice $F_0, F_1, \dots, F_n$ su \textbf{simetrične} matrice
+        ($F_i = F_i\T$), $\to$ $F(x) = F(x)\T$.
+  \item $F(x)$ je (matrična) \textbf{afina} funkcija od projektnih varijabli
+        $x$ (svaki element od $F(x)$ je afina funkcija od $x$).
+\end{itemize}
+\end{definicija}
+
+\textbf{Što znači $\prec 0$} (sa slajda):
+\begin{align}
+F(x) \prec 0
+&\Leftrightarrow z\T F(x)z < 0 \text{ za svaki vektor } z \ne 0 \\
+&\Leftrightarrow \text{sve svojstvene vrijednosti od } F(x)
+   \text{ su negativne} \\
+&\Leftrightarrow \text{najveća svojstvena vrijednost od } F(x)
+   \text{ je negativna, } \lambda_{\max}(F(x)) < 0
+\end{align}
+
+$F(x) \prec G(x)$ znači $F(x) - G(x) \prec 0$ (ekvivalentno za $\preceq$,
+$\succ$, $\succeq$). Na sličan način definirane su i matrične nejednadžbe
+$F(x) \preceq 0$, $F(x) \succ 0$, $F(x) \succeq 0$ \str{18}.
+
+\subsection{Primjer rastava na standardni oblik}
+\str{19--20}
+
+\[
+F(x) = \begin{pmatrix}
+1 + x_1 & -1 + x_1 + 2x_2 \\
+-1 + x_1 + 2x_2 & -3 + x_2
+\end{pmatrix}
+\]
+
+\textbf{Rastav} \str{20}:
+\[
+F(x) = \underbrace{\begin{pmatrix}1 & -1 \\ -1 & -3\end{pmatrix}}_{F_0}
+     + x_1\underbrace{\begin{pmatrix}1 & 1 \\ 1 & 0\end{pmatrix}}_{F_1}
+     + x_2\underbrace{\begin{pmatrix}0 & 2 \\ 2 & 1\end{pmatrix}}_{F_2}
+\]
+
+\textbf{Kako se to čita.} Svaki element matrice je afina funkcija od $x$;
+grupiraju se po varijablama:
+\begin{itemize}
+  \item \textbf{konstantni dio} svakog elementa ide u $F_0$: $(1,1)$-element
+        ima konstantu $1$, $(1,2)$-element ima $-1$, $(2,2)$-element ima $-3$;
+  \item \textbf{koeficijenti uz $x_1$} idu u $F_1$: element $(1,1)$ ima $1$,
+        element $(1,2)$ ima $1$, element $(2,2)$ ima $0$;
+  \item \textbf{koeficijenti uz $x_2$} idu u $F_2$: element $(1,1)$ ima $0$,
+        element $(1,2)$ ima $2$, element $(2,2)$ ima $1$.
+\end{itemize}
+Sve tri matrice ispadaju simetrične, kao što definicija traži. \checkmark
+
+\subsection{LMI definira konveksan skup}
+\str{21}
+
+\begin{teorem}
+Linearna matrična nejednadžba definira \textbf{konveksna ograničenja} na $x$ u
+smislu da je skup
+\[
+\Feas := \{\, x \mid F(x) \prec 0 \,\}
+\]
+konveksan skup. Isto vrijedi i za skupove $\{x \mid F(x) \preceq 0\}$,
+$\{x \mid F(x) \succ 0\}$, $\{x \mid F(x) \succeq 0\}$.
+\end{teorem}
+
+\textbf{Dokaz (sa slajda).} Za $x_1, x_2 \in \Feas$ i $\alpha \in \R$ vrijedi
+\[
+F(\alpha x_1 + (1-\alpha)x_2) = \alpha F(x_1) + (1-\alpha)F(x_2) \prec 0.
+\]
+
+\emph{Dopuna dokaza (slajd je sažet).} Prva jednakost vrijedi jer je $F$ afina
+i $\alpha + (1-\alpha) = 1$ --- konstantni član $F_0$ se „ne razdvoji”. Zadnja
+nejednakost vrijedi za $\alpha \in [0,1]$: tada su oba koeficijenta
+nenegativna, a konus negativno definitnih matrica je konveksan konus (isti
+argument kao za $\mathbb{S}^n_+$ u odjeljku \str{7}). \checkmark
+
+\textbf{Dodatna tvrdnja sa slajda:} funkcija
+$f : x \mapsto \lambda_{\max}(F(x))$ je \textbf{konveksna} funkcija.
+
+\subsection{Matrične varijable}
+\str{22}
+
+Iako se svaka LMN može svesti na standardni oblik \eqref{eq:lmi}, često se
+projektne varijable ostavljaju kao \textbf{matrice} u zapisu LMN-a.
+
+\textbf{Primjer sa slajda:}
+\[
+A\T P + PA \prec 0
+\]
+je LMN s $A$ zadanom kvadratnom matricom i $P$ simetričnom kvadratnom
+matricom koja je projektna varijabla (\textbf{svi elementi ove matrice su
+projektne varijable}).
+
+\textbf{Uočite da je $A\T P + PA$ simetrična matrica.}
+
+\emph{Provjera:} $(A\T P + PA)\T = P\T A + A\T P\T = PA + A\T P$ (jer je
+$P = P\T$) $= A\T P + PA$. \checkmark
+
+\begin{napomena}[koliko varijabli zapravo ima]
+Ako je $P$ simetrična $n\times n$ matrica, ona ima $n(n+1)/2$ nezavisnih
+elemenata --- toliko je i projektnih varijabli. Za $n = 4$ to je $10$. Zapis s
+matričnom varijablom je samo kraći način pisanja; standardni oblik
+\eqref{eq:lmi} dobio bi se izborom baze simetričnih matrica.
+
+Ovu konkretnu LMN, $A\T P + PA \prec 0$, srest ćemo u
+poglavlju~\ref{ch:dinamicki} kao \textbf{Ljapunovljevu nejednakost} --- uvjet
+stabilnosti dinamičkog sustava.
+\end{napomena}
+
+% =====================================================================
+\section{Semidefinitno programiranje (SDP)}
+\str{23--25}
+
+\begin{definicija}[Općenit semidefinitan program \str{23}]
+Neka su $F_1,\dots,F_m$ funkcije koje mapiraju $X$ u skup simetričnih matrica.
+Općenit SDP problem je
+\begin{equation}
+\label{eq:sdp}
+\begin{aligned}
+\min_x \quad & f(x) \\
+\uzogr & x \in X, \quad F_1(x) \preceq 0,\; \dots,\; F_m(x) \preceq 0
+\end{aligned}
+\end{equation}
+\end{definicija}
+
+\textbf{Tvrdnje sa slajda:}
+
+\begin{itemize}
+  \item Ovakva formulacija uključuje probleme \textbf{nelinearnog
+        programiranja} kao poseban slučaj.
+  \item Ovo je \textbf{konveksan SDP} ako su $f, F_1,\dots,F_m$ konveksne
+        funkcije.
+  \item Ovo je \textbf{optimizacijski problem s linearnim matričnim
+        nejednakostima} (engl.\ \emph{Linear matrix inequality (LMI)
+        optimization problem}) ili \textbf{linearan SDP} ako su
+        $f, F_1,\dots,F_m$ afine funkcije.
+\end{itemize}
+
+\subsection{Blok-dijagonalna svojstva}
+\str{24--25}
+
+\begin{teorem}[Dijagonalni blokovi \str{24}]
+Neka je kvadratna simetrična matrica $A$ particionirana na sljedeći način
+\[
+A = \begin{pmatrix}
+A_{11} & \dots & A_{1m} \\
+\vdots & \ddots & \vdots \\
+A_{m1} & \dots & A_{mm}
+\end{pmatrix} \prec 0
+\]
+gdje su matrice na dijagonali $A_{11},\dots,A_{mm}$ kvadratne. Tada
+$A \prec 0$ implicira $A_{11} \prec 0,\; \dots,\; A_{mm} \prec 0$.
+\end{teorem}
+
+\textbf{Dokaz.} Na ploči. \emph{(Tako stoji na slajdu; dokaz nije zapisan.)}
+
+\begin{napomena}[ideja dokaza]
+Slajd upućuje na ploču, pa ga ne prepisujem. Skica koja slijedi izravno iz
+definicije: uzmite vektor $z$ koji je nula svugdje osim u bloku $k$, gdje je
+jednak proizvoljnom $w \ne 0$. Tada je $z\T Az = w\T A_{kk}w$, a lijeva strana
+je $< 0$ po pretpostavci --- dakle $A_{kk} \prec 0$.
+\end{napomena}
+
+\textbf{Skup LMN-ova kao jedna LMN} \str{25}\textbf{.} Skup pojedinačnih
+LMN-ova može se zapisati kao \emph{jedna} LMN:
+\[
+F_1(x) \prec 0,\; \dots,\; F_k(x) \prec 0
+\qquad\text{je isto kao i}\qquad
+F(x) = \begin{pmatrix}
+F_1(x) & 0 & \dots & 0 \\
+0 & \ddots & & 0 \\
+0 & 0 & \dots & F_k(x)
+\end{pmatrix} \prec 0
+\]
+
+\textbf{Primjer sa slajda:}
+\[
+P \succ 0, \quad A\T P + PA \prec 0
+\qquad\Longleftrightarrow\qquad
+\begin{pmatrix} -P & 0 \\ 0 & A\T P + PA \end{pmatrix} \prec 0
+\]
+
+\emph{Zašto:} $P \succ 0$ je isto što i $-P \prec 0$. Blok-dijagonalna matrica
+je negativno definitna točno onda kad je svaki dijagonalni blok negativno
+definitan (prethodni teorem daje jedan smjer; obrat je jednako lak).
+
+\textbf{Praktična vrijednost:} rješavači SDP-a očekuju \emph{jednu} matričnu
+nejednakost. Ovim se trikom proizvoljno mnogo uvjeta spakira u jedan.
+
+% =====================================================================
+\section{Transformacija kongruencije}
+\label{sec:kongruencija}
+\str{26}
+
+\begin{definicija}[Kongruencija]
+Kvadratne matrice $A$ i $B$ su \textbf{kongruentne} ako postoji regularna
+kvadratna matrica $T$ takva da je
+\[
+T\T AT = B.
+\]
+\textbf{Transformacija kongruencije} s matricom $T$: $A \to T\T AT$.
+\end{definicija}
+
+\begin{teorem}[Kongruencija čuva definitnost]
+Neka je $T$ regularna kvadratna matrica. Tada vrijedi
+\[
+\begin{aligned}
+A \prec 0 &\;\to\; T\T AT \prec 0 &\qquad
+A \succ 0 &\;\to\; T\T AT \succ 0 \\
+A \preceq 0 &\;\to\; T\T AT \preceq 0 &\qquad
+A \succeq 0 &\;\to\; T\T AT \succeq 0
+\end{aligned}
+\]
+\end{teorem}
+
+\textbf{Pitanja sa slajda:} \emph{Zašto? Što ako $T$ nije regularna? Ili ako je
+„visoka” matrica, ali stupci jesu/nisu linearno nezavisni?}
+
+\textbf{Odgovori} (slajd postavlja pitanja, ali ne daje odgovore; niže slijedi
+izvod iz same definicije definitnosti):
+
+\emph{Zašto vrijedi:} za proizvoljan $z \ne 0$ stavimo $w := Tz$. Tada je
+\[
+z\T(T\T AT)z = (Tz)\T A(Tz) = w\T Aw
+\]
+Ako je $T$ regularna, $z \ne 0$ povlači $w \ne 0$, pa je $w\T Aw < 0$ po
+pretpostavci $A \prec 0$. Dakle $z\T(T\T AT)z < 0$ za svaki $z \ne 0$.
+\checkmark
+
+\emph{Ako $T$ nije regularna:} postoji $z \ne 0$ s $Tz = 0$, pa je
+$z\T(T\T AT)z = 0$. Stroga nejednakost se \textbf{gubi} --- ostaje samo
+$T\T AT \preceq 0$. Nestroge relacije ($\preceq$, $\succeq$) preživljavaju i
+bez regularnosti.
+
+\emph{Ako je $T$ „visoka”} ($k \times n$, $k > n$): tada je $T\T AT$ dimenzija
+$n \times n$. Presudno je jesu li \textbf{stupci} od $T$ linearno nezavisni:
+ako jesu, $Tz = 0$ povlači $z = 0$, pa stroga definitnost \emph{ostaje}; ako
+nisu, opet se gubi na $\preceq$.
+
+% =====================================================================
+\section{Schurov komplement}
+\label{sec:schur}
+\str{27--28}
+
+\begin{teorem}[Pravilo Schurovog komplementa]
+Simetrična matrica
+$M = \begin{pmatrix} M_{11} & M_{12} \\ M_{21} & M_{22}\end{pmatrix}$
+je \textbf{negativno definitna}
+
+\medskip
+\textbf{ako i samo ako}\quad
+$M_{11} \prec 0$ \quad i \quad $M_{22} - M_{21}M_{11}^{-1}M_{12} \prec 0$
+
+\medskip
+\textbf{ako i samo ako}\quad
+$M_{22} \prec 0$ \quad i \quad $M_{11} - M_{12}M_{22}^{-1}M_{21} \prec 0$
+
+\medskip
+Matrice $S_1 := M_{22} - M_{21}M_{11}^{-1}M_{12}$ i
+$S_2 := M_{11} - M_{12}M_{22}^{-1}M_{21}$ zovu se \textbf{Schurovi
+komplementi}.
+\end{teorem}
+
+\textbf{Dokaz (sa slajda 28).} Lijeva strana jednakosti
+\[
+\begin{pmatrix} I & 0 \\ -M_{11}^{-1}M_{12} & I \end{pmatrix}\T
+\begin{pmatrix} M_{11} & M_{12} \\ M_{21} & M_{22} \end{pmatrix}
+\begin{pmatrix} I & 0 \\ -M_{11}^{-1}M_{12} & I \end{pmatrix}
+= \begin{pmatrix} M_{11} & 0 \\ 0 & S_1 \end{pmatrix}
+\]
+je oblika $T\T MT$ gdje je $T$ nesingularna matrica (transformacija
+kongruencije).
+
+\textbf{Kako dokaz funkcionira, u tri rečenice.} Matrica $T$ je donje
+trokutasta s jedinicama na dijagonali, pa je uvijek regularna --- transformacija
+kongruencije dakle \textbf{čuva definitnost} (odjeljak~\ref{sec:kongruencija}).
+Rezultat transformacije je \emph{blok-dijagonalna} matrica, a ona je negativno
+definitna točno onda kad su oba bloka negativno definitna \str{24}. Time je
+$M \prec 0 \Leftrightarrow M_{11}\prec0$ i $S_1 \prec 0$. $\blacksquare$
+
+\begin{napomena}[zašto je Schurov komplement najvažniji alat SDP-a]
+Schurov komplement je \textbf{stroj za pretvaranje nelinearnih uvjeta u
+linearne matrične nejednakosti}. Uvjet
+\[
+M_{22} - M_{21}M_{11}^{-1}M_{12} \prec 0
+\]
+je \emph{nelinearan} u nepoznanicama (sadrži inverz i umnožak), ali je
+ekvivalentan uvjetu $M \prec 0$, koji je \textbf{afin} u istim nepoznanicama.
+
+Zato: kad god u problemu vidite kvadratni član ili inverz, pokušajte ga
+„razmotati” Schurovim komplementom u LMN. Upravo tako nastaje SDP formulacija
+u sljedećem odjeljku, a i cijelo poglavlje~\ref{ch:dinamicki}.
+\end{napomena}
+
+% =====================================================================
+\section{Primjer: minimizacija norme matrice}
+\str{29}
+
+\textbf{Zadatak.} Minimizacija 2.\ inducirane norme matrice:
+\[
+\min_x \; \|A(x)\|_2 = \big(\lambda_{\max}(A(x)\T A(x))\big)^{1/2}
+\]
+gdje je $\lambda_{\max}$ najveća svojstvena vrijednost matrice.
+
+\textbf{Ključni lanac ekvivalencija:}
+\begin{equation}
+\label{eq:norma-lmi}
+\|A\|_2 \le t
+\quad\Leftrightarrow\quad
+A\T A \preceq t^2I,\; t \ge 0
+\quad\Leftrightarrow\quad
+\begin{pmatrix} tI & A \\ A\T & tI \end{pmatrix} \succeq 0
+\end{equation}
+
+pa je ekvivalentan SDP problem
+\[
+\begin{aligned}
+\min_{t,x} \quad & t \\
+\uzogr & \begin{pmatrix} tI & A(x) \\ A(x)\T & tI \end{pmatrix} \succeq 0
+\end{aligned}
+\]
+
+\textbf{Objašnjenje lanca:}
+
+\begin{itemize}
+  \item \emph{Prva ekvivalencija:} po definiciji je $\|A\|_2^2 =
+        \lambda_{\max}(A\T A)$, pa $\|A\|_2 \le t$ znači da su sve svojstvene
+        vrijednosti od $A\T A$ najviše $t^2$ --- a to je upravo
+        $A\T A \preceq t^2 I$.
+  \item \emph{Druga ekvivalencija:} to je \textbf{Schurov komplement}
+        primijenjen na blok-matricu. Uz $M_{11} = tI \succ 0$ (za $t>0$),
+        uvjet $M \succeq 0$ svodi se na
+        \[
+        M_{22} - M_{21}M_{11}^{-1}M_{12} = tI - A\T(tI)^{-1}A
+        = tI - \tfrac1t A\T A \succeq 0
+        \]
+        Množenjem s $t > 0$: $t^2I - A\T A \succeq 0$, tj.\
+        $A\T A \preceq t^2I$. \checkmark
+\end{itemize}
+
+\textbf{Poanta:} cilj je bio \emph{nelinearna} funkcija (korijen najveće
+svojstvene vrijednosti), a rezultat je \textbf{linearan} SDP --- cilj $t$ je
+linearan, a ograničenje je afino u $(t,x)$ ako je $A(x)$ afina. To je isti
+trik s pomoćnom varijablom kao kod $\infty$-norme
+(odjeljak~2.20.2), samo u matričnom svijetu.
+
+% =====================================================================
+\section{Hijerarhija: LP $\subset$ CQP $\subset$ SDP}
+\str{30--31}
+
+\subsection{LP kao podskup od SDP}
+\str{30}
+
+\[
+\begin{aligned}
+\text{\textbf{LP}} \qquad
+\min_x \; & c\T x \\
+\uzogr & Ax \le b \\
+& Gx = h
+\end{aligned}
+\qquad\Updownarrow\qquad
+\begin{aligned}
+\text{\textbf{linearni SDP}} \qquad
+\min_x \; & c\T x \\
+\uzogr & \diag(Ax - b) \preceq 0 \\
+& Gx = h
+\end{aligned}
+\]
+
+\emph{Zašto:} $\diag(v)$ je dijagonalna matrica s elementima vektora $v$ na
+dijagonali. Njezine svojstvene vrijednosti \emph{jesu} ti elementi, pa je
+$\diag(v) \preceq 0$ točno onda kad su svi $v_i \le 0$ --- dakle isto što i
+$v \le 0$ po komponentama. \checkmark
+
+\subsection{CQP kao podskup od SDP}
+\str{31}
+
+\[
+\begin{aligned}
+\text{\textbf{CQP}} \qquad
+\min \; & f\T x \\
+\uzogr & \|A_ix + b_i\|_2 \le c_i\T x + d_i, \; i = 1,\dots,m \\
+& Gx = h
+\end{aligned}
+\]
+\[
+\Updownarrow
+\]
+\[
+\begin{aligned}
+\text{\textbf{linearni SDP}} \qquad
+\min_x \; & f\T x \\
+\uzogr & \begin{pmatrix}
+(c_i\T x + d_i)I & A_ix + b_i \\
+(A_ix + b_i)\T & c_i\T x + d_i
+\end{pmatrix} \succeq 0 \\
+& Gx = h
+\end{aligned}
+\]
+
+\emph{Zašto:} opet Schurov komplement. Označimo $y := A_ix + b_i$ i
+$s := c_i\T x + d_i$. Uz $M_{11} = sI \succ 0$, uvjet $M \succeq 0$ svodi se na
+\[
+s - y\T(sI)^{-1}y = s - \frac{\|y\|_2^2}{s} \ge 0
+\]
+što je (za $s > 0$) isto što i $s^2 \ge \|y\|_2^2$, tj.\ $\|y\|_2 \le s$.
+\checkmark
+
+\begin{teorem}[Zaključak]
+\[
+\text{LP} \;\subset\; \text{CQP} \;\subset\; \text{SDP}
+\]
+Svaki LP je CQP, svaki CQP je SDP. SDP je najšira od triju klasa i za nju
+postoje učinkoviti rješavači (metode unutrašnje točke).
+\end{teorem}
+
+\begin{napomena}[praktični savjet]
+Ako uspijete problem zapisati kao LP --- učinite to, jer je najbrži. Ako ne, pa
+uspijete kao CQP --- i to je odlično. Ako ni to, ali uspijete kao SDP --- problem
+je i dalje \emph{rješiv} i to pouzdano. Tek ako ni SDP ne prolazi, ulazite u
+područje općeg (ili nekonveksnog) optimiranja gdje nema jamstava.
+\end{napomena}
+
+% =====================================================================
+\section{Vježbe 4: geometrijski problemi --- klasifikacija}
+\label{sec:klasifikacija}
+\str{V4:31--41}
+
+Ovo je zaključni dio Vježbi 4 i najprirodnije mjesto za njega je ovdje: problem
+robusne klasifikacije je QP koji se izvodi \emph{dualnošću}, i vodi izravno na
+poznati \emph{support vector} klasifikator.
+
+\subsection{Linearna klasifikacija}
+\str{V4:32}
+
+\begin{definicija}[Linearna klasifikacija]
+\textbf{Cilj:} separirati (razdvojiti) dva zadana skupa točaka
+$\{x_1,\dots,x_N\}$, $\{y_1,\dots,y_M\}$ s \textbf{hiperravninom}
+($x_i \in \R^n$, $y_j \in \R^n$) $\to$ pronaći $a \in \R^n$ i $b \in \R$ takve
+da vrijedi
+\[
+a\T x_i + b > 0,\; i = 1,\dots,N, \qquad
+a\T y_j + b < 0,\; j = 1,\dots,M.
+\]
+\end{definicija}
+
+\textbf{Normalizacija} (sa slajda). Budući da su gore predstavljene
+nejednakosti \textbf{homogene} u $a$ i $b$ (ako vrijedi $a\T x_i + b > 0$, onda
+vrijedi i $\tilde a\T x_i + \tilde b > 0$, gdje su $\tilde a = \alpha a$,
+$\tilde b = \alpha b$ za $\alpha > 0$), možemo problem ekvivalentno formulirati
+kao: nađi $a$ i $b$ takve da vrijedi
+\begin{equation}
+\label{eq:klasifikacija}
+a\T x_i + b \ge 1,\; i = 1,\dots,N, \qquad
+a\T y_j + b \le -1,\; j = 1,\dots,M.
+\end{equation}
+
+\textbf{Ovo je skup linearnih nejednakosti u $a$ i $b$, pa se problem svodi na
+LP.}
+
+\begin{napomena}[zašto smijemo staviti baš $\pm1$]
+Stroge nejednakosti ($> 0$) nezgodne su za rješavače --- optimum bi bio na rubu
+koji nije uključen. Skaliranjem se strogi uvjet pretvara u nestrogi s
+„rezervom”: ako postoji rješenje s $a\T x_i + b > 0$ za sve $i$, onda je
+najmanja od tih vrijednosti neki $\varepsilon > 0$, pa dijeljenjem cijelog para
+$(a,b)$ s $\varepsilon$ dobivamo $\ge 1$. Vrijednost $1$ je proizvoljna --- bitno
+je samo da je pozitivna i fiksna.
+\end{napomena}
+
+\subsection{Robusna linearna klasifikacija}
+\str{V4:33}
+
+\textbf{Motivacija.} Ako se skupovi mogu razdvojiti, obično postoji
+\emph{beskonačno mnogo} hiperravnina koje to čine. Koju odabrati? Onu koja je
+\textbf{najdalje} od obiju skupina --- najotporniju na šum u podacima.
+
+\textbf{Euklidska udaljenost između hiperravnina}
+\[
+H_1 := \{\, z \mid a\T z + b = 1 \,\}, \qquad
+H_2 := \{\, z \mid a\T z + b = -1 \,\}
+\]
+je
+\[
+\dist(H_1, H_2) = \min_{z_1,z_2}\{\, \|z_1 - z_2\|_2 \mid
+z_1 \in H_1,\; z_2 \in H_2 \,\}
+\]
+
+\textbf{Problem robusne linearne klasifikacije:}
+\begin{equation}
+\label{eq:robusna-klasifikacija}
+\begin{aligned}
+\max_{a,b} \quad & \dist(H_1, H_2) \\
+\uzogr & a\T x_i + b \ge 1, && i = 1,\dots,N \\
+       & a\T y_j + b \le -1, && j = 1,\dots,M
+\end{aligned}
+\end{equation}
+
+\subsection{Izračun udaljenosti dualnošću}
+\str{V4:34--38}
+
+Cijeli je posao izračunati $\dist(H_1,H_2)$ kao funkciju od $a$. Slajdovi to
+rade \textbf{Lagrangeovom dualnošću} --- lijep primjer primjene
+poglavlja~\ref{ch:dualnost}.
+
+\textbf{Dva primarna problema} \str{V4:34}:
+
+\[
+\begin{aligned}
+\text{\textbf{Primarni problem 1}} \\
+\min_{z_1,z_2} \; & \|z_1 - z_2\|_2 \\
+\uzogr & a\T z_1 + b - 1 = 0 \\
+& a\T z_2 + b + 1 = 0
+\end{aligned}
+\qquad\Rightarrow\qquad
+\begin{aligned}
+\text{\textbf{Primarni problem 2}} \\
+\min_{z_1,z_2} \; & \|z_1 - z_2\|_2^2 = (z_1-z_2)\T(z_1-z_2) \\
+\uzogr & a\T z_1 + b - 1 = 0 \\
+& a\T z_2 + b + 1 = 0
+\end{aligned}
+\]
+
+(Kvadriranje norme je uobičajeni trik iz odjeljka~2.20.2.)
+
+\textbf{Jaka dualnost vrijedi. Lagrangian (za primarni problem 2)}
+\str{V4:35}:
+\begin{align}
+L(\lambda_1,\lambda_2,z_1,z_2)
+&= (z_1-z_2)\T(z_1-z_2) + \lambda_1(a\T z_1 + b - 1)
+   + \lambda_2(a\T z_2 + b + 1) \\
+&= (z_1-z_2)\T(z_1-z_2)
+   + \begin{pmatrix}\lambda_1a\T & \lambda_2a\T\end{pmatrix}
+     \begin{pmatrix}z_1\\z_2\end{pmatrix}
+   + (\lambda_1+\lambda_2)b + (\lambda_2 - \lambda_1)
+\end{align}
+
+\textbf{Korak 1 --- kada je dualna funkcija $-\infty$} \str{V4:36}\textbf{.}
+Uočimo da za $\lambda_1 + \lambda_2 \ne 0$ imamo
+$\ell(\lambda_1,\lambda_2) = -\infty$, jer možemo uvijek izabrati
+$z_1 = z_2 = z$, pa je $Q = 0$ i $L = (\lambda_1+\lambda_2)a\T z$, te za svaki
+$a \ne 0$ izborom $z$ možemo $L$ načiniti proizvoljno malim.
+
+\emph{(Oznake $Q$ i $L$ sa slajda: $Q$ je kvadratni član
+$(z_1-z_2)\T(z_1-z_2)$, $L$ je linearni član.)}
+
+\textbf{Korak 2 --- stacionarnost za $\lambda_1 = \lambda$,
+$\lambda_2 = -\lambda$} \str{V4:36}\textbf{.} Za $\lambda_1 + \lambda_2 = 0$
+infimum se postiže kad gradijent Lagrangiana po primarnim varijablama
+$(z_1,z_2)$ izjednačimo s nulom:
+\[
+2\begin{pmatrix} I & -I \\ -I & I\end{pmatrix}
+\begin{pmatrix}z_1\\z_2\end{pmatrix}
++ \begin{pmatrix}\lambda a \\ -\lambda a\end{pmatrix} = 0
+\quad\Longrightarrow\quad
+(z_1^\star - z_2^\star) = -\tfrac12\lambda a
+\]
+
+\emph{Raspis:} gornji blok jednadžbe glasi $2(z_1 - z_2) + \lambda a = 0$, pa je
+$z_1 - z_2 = -\lambda a/2$. (Donji blok daje istu jednadžbu s obrnutim
+predznakom --- sustav je singularan, jer $L$ ovisi samo o razlici $z_1 - z_2$.)
+\checkmark
+
+\textbf{Korak 3 --- dualna funkcija} \str{V4:37}\textbf{.} Za
+$\lambda_1 = \lambda$, $\lambda_2 = -\lambda$ imamo
+\[
+L(\lambda_1,\lambda_2,z_1,z_2)
+= \underbrace{(z_1-z_2)\T(z_1-z_2)}_{Q}
++ \underbrace{\lambda a\T(z_1-z_2)}_{L} - 2\lambda
+\]
+(članovi s $b$ se pokrate jer je $\lambda_1 + \lambda_2 = 0$, a
+$\lambda_2 - \lambda_1 = -2\lambda$).
+
+Uvrštavanjem $(z_1 - z_2) = -\tfrac12\lambda a$:
+\[
+\ell(\lambda,-\lambda) = -\tfrac14 a\T a\,\lambda^2 - 2\lambda
+\]
+
+\emph{Raspis uvrštavanja:}
+\begin{align}
+Q &= \left(-\tfrac12\lambda a\right)\T\left(-\tfrac12\lambda a\right)
+   = \tfrac14\lambda^2 a\T a \\
+L &= \lambda a\T\left(-\tfrac12\lambda a\right) = -\tfrac12\lambda^2 a\T a \\
+Q + L - 2\lambda
+  &= \tfrac14\lambda^2a\T a - \tfrac12\lambda^2a\T a - 2\lambda
+   = -\tfrac14 a\T a\,\lambda^2 - 2\lambda \quad\checkmark
+\end{align}
+
+\textbf{Korak 4 --- maksimizacija po $\lambda$.}
+$\max_\lambda \ell(\lambda,-\lambda)$ se postiže za
+\[
+\lambda^\star = -4\,\frac{1}{a\T a} = -\frac{4}{\|a\|_2^2}
+\]
+
+\emph{Raspis:} $\dfrac{\dd\ell}{\dd\lambda} = -\tfrac12 a\T a\,\lambda - 2 = 0
+\Rightarrow \lambda = -\dfrac{4}{a\T a}$. \checkmark
+
+\textbf{Korak 5 --- optimalna vrijednost dualnog problema} za primarni problem 2:
+\[
+d^\star = -\tfrac14 a\T a(\lambda^\star)^2 - 2\lambda^\star
+= \frac{4}{a\T a} = \frac{4}{\|a\|_2^2}
+\]
+
+\emph{Raspis:}
+\[
+-\tfrac14 a\T a\cdot\frac{16}{(a\T a)^2} - 2\cdot\left(-\frac{4}{a\T a}\right)
+= -\frac{4}{a\T a} + \frac{8}{a\T a} = \frac{4}{a\T a} \quad\checkmark
+\]
+
+\textbf{Korak 6 --- povratak na primarni problem 1} \str{V4:38}\textbf{.}
+Optimalna vrijednost dualnog problema $=$ optimalna vrijednost primarnog
+problema 2 (jaka dualnost):
+\[
+d^\star = 4/\|a\|_2^2 = p_2^\star
+\]
+Budući da je problem 2 kvadrirana verzija problema 1, vrijedi
+\[
+p_1^\star = \sqrt{p_2^\star} = \sqrt{4/\|a\|_2^2} = \frac{2}{\|a\|_2}
+\]
+
+\begin{napomena}[tipfeler na slajdu V4:38]
+Na slajdu je napisano $p_1^\star = \sqrt{p_1^\star} = \sqrt{4/\|a\|_2^2}$ ---
+pod korijenom treba stajati $p_2^\star$, ne $p_1^\star$. Rezultat
+$2/\|a\|_2$ je ispravan.
+\end{napomena}
+
+\begin{teorem}[Margina]
+\[
+\dist(H_1, H_2) = \frac{2}{\|a\|_2}
+\]
+\end{teorem}
+
+\subsection{Konačna QP formulacija}
+\str{V4:39}
+
+Budući da je $\dist(H_1,H_2) = 2/\|a\|_2$, maksimizacija udaljenosti je isto
+što i \emph{minimizacija} $\|a\|_2$:
+\[
+\begin{aligned}
+\max_{a,b} \; & \dist(H_1,H_2) \\
+& a\T x_i + b \ge 1, \; i = 1,\dots,N \\
+& a\T y_j + b \le -1, \; j = 1,\dots,M
+\end{aligned}
+\qquad\Longleftrightarrow\qquad
+\begin{aligned}
+\min_{a,b} \; & \tfrac12\|a\|_2^2 \\
+& a\T x_i + b \ge 1, \; i = 1,\dots,N \\
+& a\T y_j + b \le -1, \; j = 1,\dots,M
+\end{aligned}
+\]
+
+\textbf{Problem robusne linearne klasifikacije formuliran je kao konveksan
+QP.}
+
+\emph{Zašto smijemo kvadrirati i staviti $\tfrac12$:} $2/\|a\|_2$ je najveće
+kad je $\|a\|_2$ najmanje; kvadriranje i množenje pozitivnom konstantom ne
+mijenjaju minimizator. Faktor $\tfrac12$ je konvencija koja pojednostavljuje
+gradijent ($\nabla\tfrac12\|a\|^2 = a$).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{06-klasifikacija.png}
+\caption{Robusna linearna klasifikacija. Traži se hiperravnina s najširim
+pojasom između $H_1$ i $H_2$; širina pojasa je $2/\|a\|_2$, pa se maksimizacija
+margine svodi na minimizaciju $\|a\|_2$.}
+\end{figure}
+
+\begin{crtanje}[margina klasifikatora]
+\textbf{Korak 1.} Nacrtajte osi $z_1$, $z_2$, jednako mjerilo. Ucrtajte dvije
+skupine točaka --- npr.\ krugove gore desno i kvadrate dolje lijevo.
+
+\textbf{Korak 2 --- razdjelna hiperravnina.} Povucite pravac koji ih razdvaja.
+To je skup $\{z \mid a\T z + b = 0\}$. Vektor $a$ je okomit na njega
+(odjeljak~\ref{sec:hiperravnine}).
+
+\textbf{Korak 3 --- dvije margine.} Povucite dva pravca paralelna s njim: $H_1$
+kroz najbližu točku prve skupine i $H_2$ kroz najbližu točku druge. To su
+$a\T z + b = 1$ i $a\T z + b = -1$.
+
+\textbf{Korak 4 --- margina.} Nacrtajte dvosmjernu strelicu okomito između
+$H_1$ i $H_2$. Njezina duljina je $2/\|a\|_2$.
+
+\emph{Zašto baš to:} pomak od $H_2$ do $H_1$ u smjeru $a/\|a\|_2$ mijenja
+vrijednost $a\T z + b$ za $\|a\|_2$ po jedinici duljine; treba je promijeniti
+za $1 - (-1) = 2$, dakle prijeđena udaljenost je $2/\|a\|_2$. \checkmark
+
+\textbf{Korak 5 --- što graf znači.} Manji $\|a\|$ znači \emph{širu} marginu.
+Zato minimizacija $\tfrac12\|a\|_2^2$ uz zadana ograničenja daje klasifikator
+koji je najotporniji na pomake podataka. Točke koje leže \emph{točno} na $H_1$
+ili $H_2$ zovu se \textbf{potporni vektori} --- samo one određuju rješenje; sve
+ostale mogu se pomicati bez ikakvog učinka (njihova ograničenja su neaktivna,
+pa im je $\mu = 0$, po komplementarnosti iz poglavlja~\ref{ch:uvjeti}).
+\end{crtanje}
+
+\subsection{Aproksimativna linearna klasifikacija}
+\str{V4:40--41}
+
+\textbf{Problem.} Kad skupovi točaka \textbf{ne mogu} biti odvojeni
+hiperravninom (ne postoji egzaktna linearna klasifikacija), ograničenja
+\eqref{eq:klasifikacija} nemaju rješenje. Rješenje: dopustiti kršenje, ali ga
+kazniti.
+
+\textbf{LP formulacija} \str{V4:40}:
+\begin{equation}
+\begin{aligned}
+\min_{a,b,u,v} \quad & \mathbf{1}\T u + \mathbf{1}\T v \\
+\uzogr & a\T x_i + b \ge 1 - u_i, && i = 1,\dots,N \\
+       & a\T y_j + b \le -(1 - v_j), && j = 1,\dots,M \\
+       & u \ge 0, \quad v \ge 0
+\end{aligned}
+\end{equation}
+
+\textbf{Ovo je LP.} Ekvivalentno minimizaciji sume „narušenosti” originalnih
+ograničenja.
+
+\textbf{QP formulacija --- \emph{support vector classifier}} \str{V4:41}:
+\begin{equation}
+\label{eq:svc}
+\begin{aligned}
+\min_{a,b,u,v} \quad & \|a\|_2 + \gamma\big(\mathbf{1}\T u + \mathbf{1}\T v\big) \\
+\uzogr & a\T x_i + b \ge 1 - u_i, && i = 1,\dots,N \\
+       & a\T y_j + b \le -(1 - v_j), && j = 1,\dots,M \\
+       & u \ge 0, \quad v \ge 0
+\end{aligned}
+\end{equation}
+
+\textbf{Ovo je QP.} \emph{Izborom vrijednosti $\gamma$ radi se kompromis između
+robusnosti i klasifikacijske greške.}
+
+\textbf{Kako čitati varijable $u$ i $v$.} $u_i$ je „koliko je $i$-ta točka
+prve skupine \emph{prekršila}” svoj uvjet:
+\begin{itemize}
+  \item $u_i = 0$: točka je ispravno klasificirana i izvan margine;
+  \item $0 < u_i < 1$: točka je unutar margine, ali na ispravnoj strani;
+  \item $u_i > 1$: točka je \textbf{pogrešno} klasificirana.
+\end{itemize}
+Zbroj $\mathbf{1}\T u + \mathbf{1}\T v$ je ukupna „mjera greške”.
+
+\begin{napomena}[uloga $\gamma$ --- opet Pareto kompromis]
+Ovo je ista struktura kao regularizirana aproksimacija
+(odjeljak~\ref{sec:regularizacija}): dva suprotstavljena cilja, skalarizirana
+težinom $\gamma$.
+\begin{itemize}
+  \item mali $\gamma$: dominira $\|a\|_2$, dakle \textbf{široka margina}, ali se
+        tolerira više grešaka;
+  \item velik $\gamma$: dominira kazna za greške, dakle \textbf{malo grešaka},
+        ali uska margina i osjetljivost na šum.
+\end{itemize}
+Formulacija \eqref{eq:svc} je klasični \emph{support vector machine} --- jedan od
+najpoznatijih algoritama strojnog učenja, a kao što vidite, to je samo QP.
+\end{napomena}
+
+\begin{napomena}[tipfeler na slajdovima V4:40--41]
+U ograničenju za drugu skupinu na slajdu piše $-(1 - v_i)$, s indeksom $i$
+iako se sumira po $j$. Ispravno je $-(1 - v_j)$, jer $v$ ima $M$ komponenata,
+po jednu za svaku točku $y_j$.
+\end{napomena}
+
+% =====================================================================
+\section{Sažetak poglavlja}
+
+\textbf{Hijerarhija klasa:}
+\[
+\text{LP} \;\subset\; \text{CQP} \;\subset\; \text{SDP}
+\]
+
+\begin{center}
+\begin{tabular}{p{2.0cm}p{4.4cm}p{6.4cm}}
+\toprule
+\textbf{Klasa} & \textbf{Konus $K$} & \textbf{Oblik ograničenja} \\
+\midrule
+LP & $\R^n_+$ & $Ax \le b$ \\
+CQP & konus 2.\ stupnja $K_{SO}$
+   & $\|\tilde A_ix + \tilde b_i\|_2 \le \hat a_i\T x + \hat b_i$ \\
+SDP & $\mathbb{S}^n_+$ & $F_0 + x_1F_1 + \dots + x_nF_n \succeq 0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Tri alata koja morate znati koristiti:}
+
+\begin{enumerate}
+  \item \textbf{Generalizirana nejednakost} $x \preceq_K y \Leftrightarrow
+        y - x \in K$ --- ista teorija, širi pojam „$\le$”.
+  \item \textbf{Transformacija kongruencije} $A \to T\T AT$ čuva definitnost
+        kad je $T$ regularna.
+  \item \textbf{Schurov komplement} --- pretvara nelinearne uvjete (inverzi,
+        umnošci, norme) u \textbf{afine} matrične nejednakosti. Najvažniji alat
+        poglavlja.
+\end{enumerate}
+
+\textbf{Katalog pretvorbi:}
+
+\begin{center}
+\begin{tabular}{p{6.2cm}p{2.0cm}p{4.6cm}}
+\toprule
+\textbf{Problem} & \textbf{Klasa} & \textbf{Trik} \\
+\midrule
+robusni LP, elipsoidna nesigurnost & CQP
+  & $\sup$ po elipsoidu $= \bar a\T x + \|P\T x\|_2$ \\
+$\min\|A(x)\|_2$ & SDP & Schur na $\begin{psmallmatrix}tI & A\\ A\T & tI
+  \end{psmallmatrix}$ \\
+više LMN-ova odjednom & SDP & blok-dijagonalno slaganje \\
+robusna klasifikacija (margina) & QP & $\dist = 2/\|a\|_2$ \\
+klasifikacija s greškama (SVM) & QP & varijable $u, v \ge 0$ i težina $\gamma$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Terminologija (hrvatski $\leftrightarrow$ engleski):}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Hrvatski} & \textbf{Engleski} \\
+\midrule
+konveksan konus (stožac) & convex cone \\
+pravilan konus & proper cone \\
+generalizirana nejednakost & generalised inequality \\
+konus drugog stupnja & second-order cone \\
+konično kvadratno programiranje & second-order cone programming (SOCP/CQP) \\
+kvadratno ograničen kvadratni program & quadratically constrained QP (QCQP) \\
+linearna matrična nejednakost & linear matrix inequality (LMI) \\
+semidefinitno programiranje & semidefinite programming (SDP) \\
+transformacija kongruencije & congruence transformation \\
+Schurov komplement & Schur complement \\
+margina & margin \\
+potporni vektori & support vectors \\
+\bottomrule
+\end{tabular}
+\end{center}

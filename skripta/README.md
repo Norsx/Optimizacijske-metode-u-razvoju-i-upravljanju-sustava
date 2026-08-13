@@ -89,7 +89,7 @@ Legenda: ✅ obrađeno i zapisano · 🔄 u tijeku · ⬜ nije počelo
 | `03_Uvjeti_optimalnosti.pdf` | 1–68 | ✅ | cijelo predavanje, poglavlje 3 |
 | `04_Lagrangeova_dualnost.pdf` | 1–34 | ✅ | cijelo predavanje, poglavlje 4 |
 | `05_LP_QP.pdf` | 1–40 | ✅ | cijelo predavanje, poglavlje 5 |
-| `06_QCP_SDP.pdf` | 1–31 | ⬜ | |
+| `06_QCP_SDP.pdf` | 1–31 | ✅ | cijelo predavanje, poglavlje 6 |
 | `07_Dinamicki_sustavi_Ljapunov_disipativnost.pdf` | 1–55 | ⬜ | |
 | `08_Robusno_optimiranje.pdf` | 1–21 | ⬜ | |
 
@@ -100,7 +100,7 @@ Legenda: ✅ obrađeno i zapisano · 🔄 u tijeku · ⬜ nije počelo
 | `Vjezbe_1.pdf` | 1–34 | ✅ | ugrađeno inline u poglavlje 2 (zadaci 1–4) |
 | `Vjezbe_2.pdf` | 1–11 | ✅ | ugrađeno inline u poglavlje 2 (Primjer 1 + norme) |
 | `Vjezbe_3.pdf` | 1–42 | ✅ | ugrađeno inline u poglavlje 4 (Primjer 1 + Primjer 2 a–f) |
-| `Vjezbe_4.pdf` | 1–41 | 🔄 | str. 1–30 u poglavlju 5; str. 31–41 (geometrijski) idu u 6 |
+| `Vjezbe_4.pdf` | 1–41 | ✅ | str. 1–30 u poglavlju 5; str. 31–41 (geometrijski) u poglavlju 6 |
 | `Vjezbe_5.pdf` | 1–7 | 🔄 | Zad. 1 (str. 2–4) u poglavlju 5; Zad. 2 (str. 5–7) ide u 7 |
 
 ### Detaljna evidencija — poglavlje 1
@@ -269,6 +269,32 @@ Vježbe 5 (Zadatak 1):
 > kao QP aparatom poglavlja 5, a odgovor na pitanje o investiciji očitan je iz
 > dualnih varijabli (poglavlje 4). Brojevi su dobiveni skriptom
 > `scripts/solve_vj5_mreza.py`, koja je dio repozitorija.
+
+### Detaljna evidencija — poglavlje 6
+
+Predavanje 06:
+
+| Str. izvora | Tema | Odjeljak skripte |
+|---|---|---|
+| 4–5 | podsjetnik: definitnost matrica | 6.1 |
+| 6–9 | konveksni konusi, pravilan konus, generalizirane nejednakosti | 6.2 |
+| 11–13 | CQP, konus drugog stupnja, QCQP | 6.3 |
+| 14–15 | robusni LP s elipsoidnom nesigurnošću kao CQP | 6.3.3 |
+| 17–22 | linearne matrične nejednakosti (LMI) | 6.4 |
+| 23–25 | SDP, blok-dijagonalno slaganje LMN-ova | 6.5 |
+| 26 | transformacija kongruencije | 6.6 |
+| 27–28 | Schurov komplement | 6.7 |
+| 29 | minimizacija norme matrice kao SDP | 6.8 |
+| 30–31 | LP i CQP kao podskupovi SDP-a | 6.9 |
+
+Vježbe 4 (str. 31–41):
+
+| Str. izvora | Tema | Odjeljak skripte |
+|---|---|---|
+| 32 | linearna klasifikacija kao LP | 6.10.1 |
+| 33–38 | robusna klasifikacija: margina izvedena dualnošću | 6.10.2–6.10.3 |
+| 39 | konačna QP formulacija (maksimizacija margine) | 6.10.4 |
+| 40–41 | aproksimativna klasifikacija (support vector classifier) | 6.10.5 |
 
 ## Izvan opsega
 
