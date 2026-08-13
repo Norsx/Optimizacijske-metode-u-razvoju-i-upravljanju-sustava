@@ -1,0 +1,1693 @@
+\chapter{Uvod}
+\label{ch:uvod}
+
+\begin{izvor}
+\textbf{Izvor:} \texttt{01\_Uvod.pdf}, stranice 1--79 (obrađeno u cijelosti).
+\end{izvor}
+
+\section{Što je optimizacija?}
+\str{2--7}
+
+\textbf{Etimologija.} Riječ \emph{optimizacija} potječe od latinske riječi
+\textbf{„optimus”}, što znači \emph{najbolji}.
+
+\begin{definicija}[opisna, sa slajda]
+Optimizacija sadrži skup aktivnosti čiji je cilj pronaći \textbf{„najbolje
+rješenje”}, tzv.\ \textbf{optimum}, uz poštivanje zadanih \textbf{ograničenja}.
+\end{definicija}
+
+Uočite da su u toj rečenici već sadržana \textbf{tri} ključna sastojka svakog
+optimizacijskog problema, i vrijedi ih odmah imenovati jer ćemo se na njih
+vraćati kroz cijeli kolegij:
+
+\begin{enumerate}
+  \item \textbf{Nešto se bira} --- postoje veličine koje mi možemo mijenjati
+        (npr.\ dimenzije konstrukcije, količina proizvedene robe, iznosi struja).
+  \item \textbf{Postoji mjerilo „najboljeg”} --- moramo imati broj koji svakom
+        izboru pridružuje ocjenu (cijena, masa, potrošnja\dots), inače riječ
+        „najbolje” nema značenja.
+  \item \textbf{Ne smije se birati što god} --- izbori moraju zadovoljiti
+        ograničenja (npr.\ ne možemo proizvesti više nego što tvornica može,
+        dimenzija ne može biti negativna).
+\end{enumerate}
+
+\textbf{Optimizacija kao matematička disciplina.} Sa slajda:
+
+\begin{quote}
+Optimizacija = matematička teorija i algoritmi („matematička mašinerija”) ne
+samo za donošenje najboljih odluka, već često i ključna za donošenje odluka
+općenito (izabrati najbolje rješenje od svih mogućih \emph{vs.}\ da li uopće
+postoji rješenje).
+\end{quote}
+
+Ta je zagrada važnija nego što se čini. Kod složenih inženjerskih problema
+često uopće \textbf{nije očito postoji li ijedan izbor} koji zadovoljava sva
+ograničenja. Pitanje „postoji li dopušteno rješenje?” je samo po sebi
+optimizacijski problem --- i to ćemo formalno riješiti već na kraju ovog
+poglavlja (odjeljak~\ref{sec:trikovi}).
+
+\textbf{Povijest.} Ljudi teže „optimiranju” od davnina, ali korijeni
+\textbf{moderne} optimizacije smještaju se u vrijeme \textbf{2.\ svjetskog
+rata} --- tada nastaju metode \emph{operacijskih istraživanja} (engl.\
+\emph{operations research}).
+
+\textbf{Terminologija.} Pojam \textbf{„matematičko programiranje”} (engl.\
+\emph{mathematical programming}) često se koristi kao sinonim za optimiranje.
+Odatle nam dolaze i imena cijelih klasa problema koje ćemo obrađivati:
+
+\begin{itemize}
+  \item \emph{linear programming} (linearno programiranje, LP)
+        $\to$ poglavlje~\ref{ch:lpqp},
+  \item \emph{nonlinear programming} (nelinearno programiranje),
+  \item \emph{quadratic programming} (kvadratno programiranje, QP)
+        $\to$ poglavlje~\ref{ch:lpqp},
+  \item \dots\ i tako dalje.
+\end{itemize}
+
+\begin{napomena}[riječ „programiranje”]
+Riječ „programiranje” ovdje \textbf{nema veze s računalnim programiranjem}.
+Potječe iz vojnog konteksta 1940-ih, gdje je „program” značio \emph{plan} ili
+\emph{raspored} (npr.\ program opskrbe). To je uobičajen izvor zabune kod ljudi
+koji se prvi put susreću s temom.
+\end{napomena}
+
+\textbf{Jezična opaska sa slajda} \str{7}\textbf{.} Predavač posebno ističe
+riječ \emph{najoptimalnije} --- kao primjer \emph{pogrešne} upotrebe. Razlog:
+„optimalno” već znači \emph{najbolje}. Ne postoji „optimalnije” ni
+„najoptimalnije”, kao što ne postoji „najnajbolje”. Ispravno je reći
+\textbf{optimalno}.
+
+% =====================================================================
+\section{Optimizacijski problem --- standardna forma}
+\label{sec:standardna-forma}
+\str{8--9}
+
+Ovo je \textbf{središnja definicija cijelog kolegija}. Sve što slijedi u
+poglavljima \ref{ch:definicije}--\ref{ch:robusno} samo je razrada ovog zapisa.
+
+\subsection{Zapis s pojedinačnim ograničenjima}
+
+\begin{definicija}[Optimizacijski problem]
+\begin{equation}
+\begin{aligned}
+\minim & f(x) \\
+\uzogr & h_i(x) = 0, \quad i = 1,\dots,m \\
+       & g_j(x) \le 0, \quad j = 1,\dots,p
+\end{aligned}
+\end{equation}
+\end{definicija}
+
+\subsection{Objašnjenje svakog simbola od nule}
+
+\textbf{Vektor projektnih varijabli $x$.}
+\[
+x = \begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{pmatrix}
+\]
+
+\begin{itemize}
+  \item To su \textbf{projektne varijable} (engl.\ \emph{decision variables},
+        hrv.\ i \emph{varijable odluke}).
+  \item Ovo su veličine koje \textbf{mi biramo} --- one su „nepoznanice”
+        problema.
+  \item $n$ je broj tih veličina. Vektor $x$ je dakle stupac od $n$ realnih
+        brojeva; pišemo $x \in \R^n$.
+  \item Notacija $\R$ označava skup realnih brojeva, a $\R^n$ skup svih
+        uređenih $n$-torki realnih brojeva. Npr.\ $\R^2$ je obična ravnina.
+\end{itemize}
+
+\textbf{Funkcija cilja $f$.}
+\[
+f : \R^n \to \R
+\]
+
+\begin{itemize}
+  \item Naziva se \textbf{funkcija cilja}, \textbf{ciljna funkcija} ili
+        \textbf{kriterij} (engl.\ \emph{objective function}, \emph{cost
+        function}).
+  \item Zapis $f : \R^n \to \R$ čita se: „$f$ je funkcija koja uzima vektor iz
+        $\R^n$ i vraća \textbf{jedan realan broj}”. Baš zato što vraća
+        \textbf{jedan} broj, možemo dva različita izbora $x$ međusobno
+        usporediti i reći koji je bolji.
+  \item Konvencija je da \textbf{minimiziramo}. Ako želimo maksimizirati,
+        koristimo trik iz odjeljka~\ref{sec:trikovi}.
+\end{itemize}
+
+\textbf{Ograničenja jednakosti $h_i$.}
+\[
+h_i : \R^n \to \R, \quad i = 1,\dots,m
+\]
+
+\begin{itemize}
+  \item Engl.\ \emph{equality constraints}.
+  \item Uvjet $h_i(x) = 0$ mora biti zadovoljen \textbf{točno}, bez ikakvog
+        odstupanja.
+  \item Tipično dolaze iz fizikalnih zakona ili definicijskih veza (npr.\
+        „površina mora biti točno $A$”, „proizvodnja mora biti jednaka
+        potrošnji”).
+  \item $m$ je broj ograničenja jednakosti.
+\end{itemize}
+
+\textbf{Ograničenja nejednakosti $g_j$.}
+\[
+g_j : \R^n \to \R, \quad j = 1,\dots,p
+\]
+
+\begin{itemize}
+  \item Engl.\ \emph{inequality constraints}.
+  \item Uvjet $g_j(x) \le 0$ dopušta „rezervu”: dovoljno je da vrijednost ne
+        prijeđe nulu.
+  \item Tipično dolaze iz tehničkih ili resursnih ograničenja („naprezanje ne
+        smije prijeći dopušteno”, „ne možemo proizvesti više od kapaciteta”).
+  \item $p$ je broj ograničenja nejednakosti.
+\end{itemize}
+
+\textbf{Projektni prostor.} Općenito pišemo $x \in X$, gdje je $X$
+\textbf{projektni prostor}. U svemu što slijedi u ovom kolegiju bit će
+$X = \R^n$.
+
+\subsection{Kompaktni („vektorski”) zapis}
+\str{9}
+
+Umjesto da nabrajamo ograničenja jedno po jedno, sve $h_i$ složimo u jedan
+vektorski zapis, i isto za $g_j$:
+
+\begin{equation}
+\begin{aligned}
+\minim & f(x) \\
+\uzogr & h(x) = 0 \\
+       & g(x) \le 0
+\end{aligned}
+\end{equation}
+
+gdje je sada
+\[
+h : \R^n \to \R^m, \quad
+h(x) = \begin{pmatrix} h_1(x) \\ \vdots \\ h_m(x) \end{pmatrix}, \qquad
+g : \R^n \to \R^p, \quad
+g(x) = \begin{pmatrix} g_1(x) \\ \vdots \\ g_p(x) \end{pmatrix}
+\]
+
+\begin{napomena}[kako čitati $g(x) \le 0$ kad je $g(x)$ vektor]
+Nejednakost između vektora ovdje se čita \textbf{po komponentama}:
+$g(x) \le 0$ znači $g_1(x) \le 0$ \emph{i} $g_2(x) \le 0$ \emph{i} \dots\
+\emph{i} $g_p(x) \le 0$. Sve nejednakosti moraju vrijediti istovremeno. Nula na
+desnoj strani je nul-vektor odgovarajuće dimenzije.
+\end{napomena}
+
+\subsection{Što je optimalno rješenje}
+\str{9}
+
+\begin{definicija}[Optimalno rješenje]
+\textbf{Optimalno rješenje $x\opt$} je vektor projektnih varijabli koji, od
+svih vektora iz projektnog prostora koji zadovoljavaju ograničenja, ima
+\textbf{najmanju} vrijednost funkcije cilja $f$.
+\end{definicija}
+
+Uočite da definicija ima dva dijela i oba su nužna:
+
+\begin{enumerate}
+  \item $x\opt$ mora \textbf{sam zadovoljavati ograničenja} (inače nije
+        kandidat),
+  \item među svim takvim kandidatima ima \textbf{najmanji} $f$.
+\end{enumerate}
+
+Zvjezdica $\opt$ je standardna oznaka za optimalnu vrijednost; koristit ćemo je
+kroz cijelu skriptu ($x\opt$, $f(x\opt)$, kasnije $p\opt$, $\lambda\opt$,
+\dots).
+
+\subsection{Dozvoljeni skup}
+\str{78}
+
+Skup svih $x$ koji zadovoljavaju \textbf{sva} ograničenja zove se
+\textbf{dozvoljeni skup} (ili \emph{dozvoljeno područje}, \emph{dozvoljeni
+projektni prostor}; engl.\ \emph{feasible set}):
+
+\begin{definicija}[Dozvoljeni skup]
+\begin{equation}
+\Feas = \{\, x \mid h(x) = 0, \; g(x) \le 0 \,\}
+\end{equation}
+\end{definicija}
+
+Notacija $\{\, x \mid \text{uvjet} \,\}$ čita se: „skup svih $x$ \textbf{takvih
+da} vrijedi uvjet”. Uspravna crta $\mid$ znači „takvih da”.
+
+Uz tu oznaku problem se piše najkraće:
+\[
+\min_{x \in \Feas} f(x)
+\]
+
+% =====================================================================
+\section{Uvodni primjer s potpunim grafom}
+\label{sec:uvodni-primjer}
+\str{10--15}
+
+Ovo je prvi konkretan problem u kolegiju i vrijedi ga proći vrlo pažljivo, jer
+se na njemu vidi \emph{sve} iz prethodnog odjeljka odjednom.
+
+\subsection{Postavka problema}
+\str{10}
+
+\begin{equation}
+\begin{aligned}
+\min_x \quad & (x_1 - 2)^2 + (x_2 - 1)^2 \\
+\uzogr &
+\begin{cases}
+x_1^2 - x_2 \le 0 \\
+x_1 + x_2 \le 2
+\end{cases}
+\end{aligned}
+\end{equation}
+
+\textbf{Projektni prostor} \str{10}: $X = \R^n$ s varijablama
+$x = (x_1, x_2)$, dakle $n = 2$.
+
+\subsection{Prepoznavanje elemenata standardne forme}
+\str{11--12}
+
+\textbf{Dozvoljeni skup} \str{11}:
+\[
+\Feas = \{\, x \mid g(x) \le 0 \,\}, \qquad
+g(x) = \begin{pmatrix} g_1(x) \\ g_2(x) \end{pmatrix}
+= \begin{pmatrix} x_1^2 - x_2 \\ x_1 + x_2 - 2 \end{pmatrix} \le 0
+\]
+
+Obratite pažnju na \textbf{prebacivanje na standardnu formu}: ograničenje je
+zadano kao $x_1 + x_2 \le 2$, a standardna forma traži oblik $g_j(x) \le 0$.
+Zato \textbf{oduzmemo 2 s obje strane}:
+\[
+x_1 + x_2 \le 2 \quad \Longleftrightarrow \quad x_1 + x_2 - 2 \le 0
+\quad \Longrightarrow \quad g_2(x) = x_1 + x_2 - 2
+\]
+
+Prvo ograničenje već je u pravom obliku: $g_1(x) = x_1^2 - x_2$.
+
+\textbf{Funkcija cilja} \str{12}:
+\[
+f(x) = (x_1 - 2)^2 + (x_2 - 1)^2
+\]
+
+\textbf{Geometrijsko značenje funkcije cilja.} $f(x)$ je \textbf{kvadrat
+udaljenosti} točke $x = (x_1, x_2)$ od točke $(2, 1)$. (Po Pitagorinu poučku,
+udaljenost je $\sqrt{(x_1-2)^2 + (x_2-1)^2}$, a $f$ je taj izraz na kvadrat.)
+Dakle problem glasi: \textbf{„nađi točku dozvoljenog skupa koja je najbliža
+točki $(2,1)$”}. Bez ograničenja rješenje bi trivijalno bilo $x = (2,1)$ s
+$f = 0$; ograničenja to zabranjuju i zato problem nije trivijalan.
+
+\subsection{Rješenje}
+\str{15}
+
+\[
+x\opt = \begin{pmatrix} x_1\opt \\ x_2\opt \end{pmatrix}
+= \begin{pmatrix} 1 \\ 1 \end{pmatrix}, \qquad f(x\opt) = 1
+\]
+
+\textbf{Provjera da je $x\opt$ doista dozvoljena točka} (uvrštavanje korak po
+korak):
+\begin{align}
+g_1(x\opt) &= (x_1\opt)^2 - x_2\opt = 1^2 - 1 = 1 - 1 = 0 \le 0 \quad \checkmark\\
+g_2(x\opt) &= x_1\opt + x_2\opt - 2 = 1 + 1 - 2 = 2 - 2 = 0 \le 0 \quad \checkmark
+\end{align}
+
+Oba ograničenja su zadovoljena \textbf{s jednakošću} --- kažemo da su
+\textbf{aktivna} u $x\opt$ (taj ćemo pojam formalno uvesti u
+poglavlju~\ref{ch:uvjeti}).
+
+\textbf{Provjera vrijednosti funkcije cilja:}
+\[
+f(x\opt) = (1 - 2)^2 + (1 - 1)^2 = (-1)^2 + 0^2 = 1 + 0 = 1 \quad \checkmark
+\]
+
+\subsection{Graf}
+
+Slajdovi 13, 14 i 15 grade upravo ovaj crtež u tri koraka: prvo ograničenje
+$g_1$, zatim ograničenje $g_2$, pa oba zajedno s nivo krivuljama.
+
+\begin{crtanje}[dozvoljeni skup i nivo krivulje]
+\textbf{Korak 1 --- prazan koordinatni sustav.}
+Nacrtajte vodoravnu os i označite je $x_1$, te okomitu os i označite je $x_2$.
+Raspon kao na slajdu: $x_1$ od $-2$ do $3$, $x_2$ od $-2$ do $4$. Označite
+jedinice na obje osi (cijeli brojevi). Koristite \textbf{jednako mjerilo} na
+obje osi --- inače će kružnice iz koraka 5 izgledati kao elipse i izgubit će se
+geometrijsko značenje.
+
+\medskip
+\textbf{Korak 2 --- prvo ograničenje $g_1$} (odgovara slajdu 13).
+Granica ograničenja $g_1$ je krivulja gdje vrijedi jednakost:
+\[
+g_1(x) = 0 \quad \Longleftrightarrow \quad x_1^2 - x_2 = 0
+\quad \Longleftrightarrow \quad x_2 = x_1^2
+\]
+To je \textbf{obična parabola} s tjemenom u ishodištu $(0,0)$, otvorena prema
+gore. Nacrtajte je kroz nekoliko točaka koje lako izračunate:
+
+\begin{center}
+\begin{tabular}{lccccc}
+\toprule
+$x_1$ & $-2$ & $-1$ & $0$ & $1$ & $2$ \\
+$x_2 = x_1^2$ & $4$ & $1$ & $0$ & $1$ & $4$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\emph{Koju stranu sjenčati?} Ograničenje traži $x_1^2 - x_2 \le 0$, tj.\
+$x_2 \ge x_1^2$. Dakle dopušteno je ono što je \textbf{iznad} parabole.
+Provjera testnom točkom: uzmimo $(0, 1)$ --- tada je $g_1 = 0^2 - 1 = -1 \le 0$
+\checkmark, a točka $(0,1)$ leži iznad parabole. Dakle: \textbf{osjenčajte (kao
+nedopušteno) područje ispod parabole}, a zadržite područje iznad nje.
+
+\medskip
+\textbf{Korak 3 --- drugo ograničenje $g_2$} (odgovara slajdu 14).
+Granica je pravac:
+\[
+g_2(x) = 0 \quad \Longleftrightarrow \quad x_1 + x_2 - 2 = 0
+\quad \Longleftrightarrow \quad x_2 = 2 - x_1
+\]
+Pravac s nagibom $-1$. Najlakše ga je nacrtati kroz dvije točke --- sjecišta s
+osima:
+\begin{itemize}
+  \item za $x_1 = 0$: $x_2 = 2$ $\to$ točka $(0, 2)$,
+  \item za $x_2 = 0$: $x_1 = 2$ $\to$ točka $(2, 0)$.
+\end{itemize}
+Povucite pravac kroz te dvije točke.
+
+\emph{Koju stranu sjenčati?} Ograničenje traži $x_1 + x_2 - 2 \le 0$, tj.\
+$x_2 \le 2 - x_1$, dakle dopušteno je \textbf{ispod} pravca. Provjera testnom
+točkom: ishodište $(0,0)$ daje $g_2 = 0 + 0 - 2 = -2 \le 0$ \checkmark, a
+ishodište je ispod pravca. Dakle: \textbf{osjenčajte (kao nedopušteno)
+područje iznad pravca}.
+
+\medskip
+\textbf{Korak 4 --- odnos dviju krivulja i dozvoljeni skup.}
+Parabola i pravac se sijeku ondje gdje vrijedi i $x_2 = x_1^2$ i
+$x_2 = 2 - x_1$:
+\[
+x_1^2 = 2 - x_1 \;\Longrightarrow\; x_1^2 + x_1 - 2 = 0
+\;\Longrightarrow\; (x_1 + 2)(x_1 - 1) = 0
+\;\Longrightarrow\; x_1 = -2 \;\text{ ili }\; x_1 = 1
+\]
+Pripadni $x_2$:
+\begin{itemize}
+  \item za $x_1 = -2$: $x_2 = 2 - (-2) = 4$ $\to$ sjecište $(-2, 4)$,
+  \item za $x_1 = 1$: $x_2 = 2 - 1 = 1$ $\to$ sjecište $(1, 1)$.
+\end{itemize}
+Dozvoljeni skup je presjek dvaju područja: \textbf{iznad parabole i ispod
+pravca}. To je oblik \textbf{„leće”} (na slajdu bijelo područje) omeđen odozdo
+parabolom, a odozgo pravcem, s vrhovima točno u dvjema sjecišnim točkama
+$(-2,4)$ i $(1,1)$. Sve ostalo na crtežu je nedopušteno (na slajdu obojeno
+crveno).
+
+\medskip
+\textbf{Korak 5 --- nivo krivulje funkcije cilja} (odgovara slajdu 15).
+\textbf{Nivo krivulja} (engl.\ \emph{level curve}, \emph{contour}) funkcije $f$
+za razinu $c$ je skup svih točaka u kojima $f$ ima \emph{istu} vrijednost $c$:
+$\{\, x \mid f(x) = c \,\}$. (Pojam se detaljnije obrađuje u
+poglavlju~\ref{ch:definicije}.) Ovdje:
+\[
+(x_1 - 2)^2 + (x_2 - 1)^2 = c
+\]
+To je \textbf{kružnica sa središtem u $(2,1)$ i polumjerom $\sqrt{c}$}.
+Nacrtajte nekoliko koncentričnih kružnica oko točke $(2,1)$, npr.\ za
+\[
+c = 0{,}25 \;(r = 0{,}5), \quad c = 1 \;(r = 1), \quad c = 2 \;(r \approx 1{,}41),
+\quad c = 4 \;(r = 2), \quad c = 9 \;(r = 3)
+\]
+Što je kružnica manja, to je vrijednost funkcije cilja manja --- jer je $f$
+kvadrat udaljenosti od središta.
+
+\medskip
+\textbf{Korak 6 --- očitavanje optimuma.}
+Označite točku $(2,1)$ (križić) --- to bi bio minimum \emph{da nema
+ograničenja}, ali ona leži u crvenom (nedopuštenom) području: provjerimo,
+$g_1(2,1) = 2^2 - 1 = 3 > 0$, dakle nedopustiva. Sada „napuhujte” kružnice od polumjera
+$0$ prema van i gledajte \textbf{koja prva dotakne bijelu leću}. Ta prva dodirna
+točka je optimum. To je točno kružnica $c = 1$, a dodiruje leću u vrhu $(1,1)$
+--- dakle $x\opt = (1,1)$, $f(x\opt) = 1$.
+
+\medskip
+\textbf{Korak 7 --- što graf znači.}
+Optimum leži u \textbf{vrhu} dozvoljenog skupa, ondje gdje se sijeku obje
+granice, dakle \textbf{oba ograničenja su aktivna}. Optimalna vrijednost
+$f(x\opt) = 1$ strogo je veća od nule (vrijednosti neograničenog minimuma) ---
+to je „cijena” koju plaćamo zato što nas ograničenja tjeraju dalje od željene
+točke $(2,1)$. U poglavlju~\ref{ch:uvjeti} naučit ćemo algebarski uvjet (KKT
+uvjete) koji formalno opisuje upravo ovakvu situaciju.
+\end{crtanje}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.86\textwidth]{01-uvodni-primjer.png}
+\caption{Dozvoljeni skup (bijela „leća”), nivo krivulje funkcije cilja
+(koncentrične kružnice oko $(2,1)$) i optimum $x\opt=(1,1)$.
+Nedopušteno područje je crveno.}
+\end{figure}
+
+\begin{napomena}[tiskarska pogreška na slajdu 15]
+Na slajdu 15 prvo ograničenje je otipkano kao $g_1(x) = x_1^2 - x^2 \le 0$, dok
+na slajdovima 10--14 svugdje piše $g_1(x) = x_1^2 - x_2 \le 0$. Ispravno je
+$x_1^2 - x_2$ --- to potvrđuje i sam crtež na slajdu (parabola $x_2 = x_1^2$) i
+rješenje $x\opt = (1,1)$.
+\end{napomena}
+
+% =====================================================================
+\section{Gdje i zašto se optimira?}
+\str{16--17}
+
+\subsection{Optimiranje rada sustava / procesa („on-line”)}
+\begin{itemize}
+  \item Planiranje proizvodnje u elektroenergetskoj mreži
+  \item Upravljanje motorom automobila
+  \item Upravljanje tokovima snage i energijom u hibridnom automobilu
+  \item Traženje najkraćeg puta (npr.\ GPS u autu, „preračunavam”)
+  \item Gibanje robota prilikom obavljanja zadatka
+  \item Plan bušenja rupa na ploči za elektroniku
+  \item Web tražilica
+  \item Optimalno upravljanje dinamičkim sustavima (bogata inženjerska /
+        znanstvena grana za sebe)
+  \item \dots
+\end{itemize}
+
+\subsection{U fundamentalnim fizikalnim zakonima / problemima}
+\begin{itemize}
+  \item Traženje \textbf{ravnotežnog položaja} minimizacijom potencijalne
+        energije
+  \item \textbf{Stabilnost dinamičkih sustava} --- traženje Ljapunovljeve
+        funkcije
+\end{itemize}
+
+Ove dvije stavke nisu samo ilustracija: prva se detaljno rješava u
+poglavlju~\ref{ch:uvjeti}, a druga je tema cijelog poglavlja~\ref{ch:dinamicki}.
+
+\subsection{U prirodi}
+\begin{itemize}
+  \item Oblik stabla (optimiranje oblika obzirom na vlastitu težinu i vanjska
+        opterećenja)
+  \item Struktura kosti
+  \item Trajektorija šišmiša u lovu na plijen
+  \item Oblik jabuke
+  \item Prilagodba vrste na uvjete života u zadanoj okolini
+  \item \dots
+\end{itemize}
+
+\subsection{Optimalno projektiranje}
+\begin{itemize}
+  \item Optimalna raspodjela vjetroturbina u vjetroparku
+  \item Optimiranje topologije, oblika, dimenzija mehanizama i nosivih
+        konstrukcija --- \textbf{u ovom kolegiju}
+  \item \dots
+\end{itemize}
+
+\dots\ i još puno, puno toga.
+
+% =====================================================================
+\section{Sadržaj kolegija i ishodi učenja}
+\str{18--32}
+
+Kompletan popis tema sa slajdova (gradi se inkrementalno kroz 15 slajdova):
+
+\begin{enumerate}
+  \item \textbf{Uvod}: Ciljevi kolegija i ishodi učenja.
+  \item \textbf{Optimizacijski problem}: definicije i klasifikacija. Konveksni
+        opt.\ problemi.
+  \item \textbf{Uvjeti optimalnosti.} Geometrijska interpretacija i primjene.
+  \item \textbf{Lagrangeova dualnost}, alternative i analiza osjetljivosti.
+  \item \textbf{Linearno programiranje.} Pristupi rješavanju i primjeri.
+  \item \textbf{Kvadratno programiranje} s primjenama. Formulacija i značajke.
+  \item \textbf{Linearne matrične nejednadžbe i semidefinitno programiranje.}
+  \item \textbf{Numerički algoritmi} za rješavanje opt.\ problema (pregled).
+  \item \textbf{Optimiranje mehatroničkih sustava} --- od linearnog do
+        semidefinitnog programiranja: primjeri iz prakse.
+  \item \textbf{Formulacija stabilnosti i disipativnost dinamičkih sustava} kao
+        opt.\ problema.
+  \item Formulacije kriterija i analiza učinkovitosti dinamičkih sustava.
+  \item Formulacije \textbf{optimalnog upravljanja} i pristupi rješavanju.
+  \item \textbf{Robusno optimiranje 1}
+  \item \textbf{Robusno optimiranje 2}
+  \item \textbf{Višeciljna optimizacija} i višeciljno upravljanje
+\end{enumerate}
+
+\textbf{Kako se to preslikava na ovu skriptu:} teme 1--2 $\to$
+poglavlja~\ref{ch:uvod}--\ref{ch:definicije}; tema 3 $\to$
+poglavlje~\ref{ch:uvjeti}; tema 4 $\to$ poglavlje~\ref{ch:dualnost}; teme 5--6
+$\to$ poglavlje~\ref{ch:lpqp}; teme 7 i 9 $\to$ poglavlje~\ref{ch:qcpsdp}; teme
+10--12 $\to$ poglavlje~\ref{ch:dinamicki}; teme 13--14 $\to$
+poglavlje~\ref{ch:robusno}.
+
+% =====================================================================
+\section{Motivacijski primjeri iz prakse}
+\str{33--43}
+
+\subsection{Planiranje proizvodnje u elektroenergetskoj mreži}
+\str{33--34}
+
+\textbf{Problem:} planiranje rada električnih generatora.
+
+Sa slajda, sa svrstavanjem svake stavke u element standardne forme:
+
+\begin{center}
+\begin{tabular}{p{7.4cm}p{6.0cm}}
+\toprule
+\textbf{Sa slajda} & \textbf{Element opt.\ problema} \\
+\midrule
+tipično noć prije dana proizvodnje & (vremenski okvir odluke) \\
+proizvodnja $=$ predviđenoj potrošnji & \textbf{ograničenje jednakosti} $h(x)=0$ \\
+minimiziranje troškova proizvodnje & \textbf{funkcija cilja} $f(x)$ \\
+ograničenja na tok snage u dalekovodima & \textbf{ograničenja nejednakosti} $g(x)\le 0$ \\
+planovi u slučaju kvara & \textbf{robusnost} (poglavlje~\ref{ch:robusno}) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Dodatno \str{34}:
+\begin{itemize}
+  \item Optimiranje (optimalno upravljanje) je \textbf{„skrivena tehnologija”}
+        za razvoj naprednih mreža u budućnosti.
+  \item Matematička formulacija tržišta i kreiranja tržišnih cijena:
+        \textbf{Lagrangeova dualnost}.
+\end{itemize}
+
+Zadnja rečenica je najava Vježbi 3, gdje se cijeli „Primjer 1: Tržište i
+formiranje cijena” rješava upravo preko dualnosti --- vidi
+poglavlje~\ref{ch:dualnost}.
+
+\subsection{Upravljanje tokovima snage i energijom u hibridnom automobilu}
+\str{35}
+
+\begin{itemize}
+  \item Nije dobro imati napunjenu bateriju: želimo je (polu)praznu da bismo je
+        mogli puniti prilikom kočenja (rekuperacija).
+  \item \textbf{dobro $\to$ optimalno}
+  \item Optimiranje je „skrivena tehnologija” koja daje „inteligenciju”
+        procesu: pojmovi \emph{dobro--loše} moraju biti vezani uz neki kriterij
+        $\to$ \textbf{formalizacija funkcije cilja}.
+\end{itemize}
+
+\subsection{Prediktivno upravljanje dinamičkim sustavima}
+\str{36--37}
+
+Slajdovi su ilustracija koncepta MPC-a (engl.\ \emph{Model Predictive
+Control}): u svakom koraku se, na temelju modela, riješi optimizacijski problem
+na konačnom horizontu predikcije, primijeni se prvi upravljački potez, pa se
+postupak ponovi.
+
+\subsection{Optimalno upravljanje --- pozicioniranje glave tvrdog diska}
+\str{38}
+
+Slajd prikazuje mehanizam tvrdog diska (ruka s glavom, \emph{pivot},
+\emph{voice coil motor} VCM) i regulacijsku petlju: regulator $K$ prima signal
+pogreške $e$ i daje upravljanje $u$; $y_r$ je referenca, $y$ izlaz, $d$
+poremećaj.
+
+Podaci sa slajda: ${>}15\,000$ o/min, $12\,000$ traka na $1$ cm.
+
+\textbf{Formulacija problema (sa slajda):}
+\begin{equation}
+\min_K \; \max_{\|d\| \ne 0} \frac{\|e\|}{\|d\|}, \qquad
+K \in \{\,\text{stabilizirajući regulatori}\,\}
+\end{equation}
+
+\textbf{Kako to čitati.} $\|\cdot\|$ je \textbf{norma} --- mjera „veličine”
+signala (formalno u poglavlju~\ref{ch:definicije}). Omjer $\|e\|/\|d\|$ je
+„koliko se poremećaj $d$ pojača u pogrešku $e$”. Unutarnji $\max$ uzima
+\textbf{najgori mogući} poremećaj, a vanjski $\min$ bira regulator koji taj
+najgori slučaj čini što manjim. Ovakav \textbf{min--max} zapis je tipičan za
+robusno projektiranje i vratit ćemo mu se u
+poglavljima~\ref{ch:dinamicki}~i~\ref{ch:robusno}.
+
+\subsection{Ravnotežni položaj sustava u potencijalnom polju}
+\str{39--40}
+
+\textbf{Postavka} \str{39}\textbf{.} Točka mase $m$ obješena je u vertikalnoj
+ravnini o dvije elastične opruge zanemarive mase s konstantama $k_1$, $k_2$ i
+duljinama $l_1$, $l_2$, dok je razmak objesišta jednak $d$.
+
+Geometrija sa slajda: koordinatni sustav $(x, y)$; lijevo objesište je u
+ishodištu $(0,0)$, desno objesište je na osi $x$ na udaljenosti $d$, tj.\ u
+$(d, 0)$; masa $m$ visi ispod, u točki $(x, y)$ (s $y < 0$). Lijeva opruga ima
+parametre $k_1, l_1$, desna $k_2, l_2$.
+
+\textbf{Zadatak:} izračunati ravnotežni položaj mase.
+
+\textbf{Rješenje} \str{40}\textbf{.} Potencijalna energija mase $m$ u položaju
+$(x,y)$ je
+\begin{equation}
+V(x,y) = mgy
++ \frac{k_1}{2}\left(l_1 - \sqrt{x^2 + y^2}\right)^2
++ \frac{k_2}{2}\left(l_2 - \sqrt{(d-x)^2 + y^2}\right)^2
+\end{equation}
+
+\textbf{Rastav izraza član po član} (svaki je član oblika „energija”):
+
+\begin{itemize}
+  \item $mgy$ --- \textbf{gravitacijska potencijalna energija} mase u polju sile
+        teže ($g$ = ubrzanje sile teže). Budući da masa visi ispod osi $x$, $y$
+        je negativan pa je taj član negativan --- spuštanjem mase energija pada.
+  \item $\sqrt{x^2 + y^2}$ --- trenutna \textbf{duljina lijeve opruge}, tj.\
+        udaljenost od objesišta $(0,0)$ do mase $(x,y)$ (Pitagorin poučak).
+  \item $l_1 - \sqrt{x^2+y^2}$ --- \textbf{deformacija} lijeve opruge (razlika
+        nedeformirane duljine $l_1$ i trenutne duljine).
+  \item $\frac{k_1}{2}(\cdot)^2$ --- \textbf{elastična energija} lijeve opruge;
+        standardna formula $E = \tfrac{1}{2}k\,\Delta l^2$.
+  \item Analogno za desnu oprugu, samo je njezino objesište u $(d, 0)$, pa je
+        udaljenost do mase $\sqrt{(d-x)^2 + y^2}$.
+\end{itemize}
+
+\textbf{Ravnotežna točka} $(x\opt, y\opt)$ je ona koja \textbf{minimizira}
+potencijalnu energiju:
+\begin{equation}
+(x\opt, y\opt) = \argmin_{x,\,y} \; V(x,y)
+\end{equation}
+
+\begin{napomena}[notacija $\argmin$]
+$\min_x V(x)$ je \textbf{najmanja vrijednost} koju $V$ poprima (broj), dok je
+$\argmin_x V(x)$ \textbf{argument} u kojem se taj minimum postiže (točka). Za
+nas je obično zanimljiv $\argmin$ --- želimo znati \emph{gdje} je optimum, a ne
+samo \emph{koliko} iznosi.
+\end{napomena}
+
+Ovo je važan konceptualni primjer: \textbf{fizikalni zakon (ravnoteža) izražen
+je kao optimizacijski problem bez ograničenja.} Isti primjer se u
+poglavlju~\ref{ch:uvjeti} proširuje na slučaj s ograničenjima i rješava preko
+uvjeta optimalnosti.
+
+\subsection{Primjeri iz prirode}
+\str{41}
+
+Slajd je fotografska ilustracija tvrdnji iz odjeljka o prirodi (oblici koje
+priroda „optimira”). Nema dodatnih formula.
+
+\subsection{Raspodjela vjetroturbina u vjetroparku}
+\str{42--43}
+
+Slajd 43 prikazuje dva 3D grafa (površina prinosa nad tlocrtom parka, s
+ucrtanim pozicijama turbina kao točkama i označenim smjerom sjevera \textbf{N}):
+
+\begin{itemize}
+  \item lijevo: \textbf{optimalni položaji sa zanemarenim interakcijama preko
+        vrtloga},
+  \item desno: \textbf{optimalni položaji s uračunatim interakcijama preko
+        vrtloga}.
+\end{itemize}
+
+\textbf{Poanta:} ista funkcija cilja (ukupna proizvedena energija), ali bogatiji
+model (uzimanje u obzir da turbina u vjetrenoj sjeni druge turbine daje manje)
+daje \textbf{bitno drukčiji optimalni raspored}. Model ulazi u optimizaciju
+kroz ograničenja i funkciju cilja --- kvaliteta modela izravno određuje
+kvalitetu optimuma.
+
+% =====================================================================
+\section{Primjer: problem proizvodnje i distribucije robe}
+\str{44--45}
+
+Ovo je prvi potpuno formuliran „inženjersko-poslovni” problem u kolegiju i
+ujedno prvi primjer \textbf{linearnog programa} (LP), koji ćemo formalno
+obraditi u poglavlju~\ref{ch:lpqp}.
+
+\subsection{Opis problema}
+\str{44}
+
+\begin{itemize}
+  \item Tvrtka ima \textbf{2 tvornice} i \textbf{7 trgovina}.
+  \item U jednom proizvodnom vremenskom intervalu tvornica $i$ može proizvesti
+        do $a_i$ tona.
+  \item Svaka trgovina $j$ redovito ima potražnju od $b_j$ tona.
+  \item Troškovi transporta od tvornice $i$ do trgovine $j$ su $c_{ij}$
+        kuna/toni.
+  \item \textbf{Kako optimalno voditi tvrtku (minimizirati trošak)?}
+\end{itemize}
+
+\subsection{Projektne varijable}
+\str{45}
+
+\[
+x_{ij} \in \R: \text{ koliko tvornica } i \text{ dobavlja robe trgovini } j,
+\qquad x_{ij} \ge 0
+\]
+
+Budući da imamo $2$ tvornice i $7$ trgovina, ukupno je $2 \times 7 = 14$
+varijabli. Uvjet $x_{ij} \ge 0$ je fizikalne prirode: ne može se isporučiti
+negativna količina.
+
+\subsection{Potpuna formulacija}
+\str{45}
+
+\begin{equation}
+\begin{aligned}
+\min \quad & \sum_{i=1}^{2} \sum_{j=1}^{7} c_{ij} x_{ij} \\
+\uzogr & \sum_{j=1}^{7} x_{ij} \le a_i, \qquad i = 1, 2 \\
+       & \sum_{i=1}^{2} x_{ij} \ge b_j, \qquad j = 1, \dots, 7 \\
+       & x_{ij} \ge 0
+\end{aligned}
+\end{equation}
+
+\textbf{Čitanje svakog retka:}
+
+\begin{itemize}
+  \item \textbf{Funkcija cilja} $\sum_i \sum_j c_{ij} x_{ij}$: za svaku moguću
+        relaciju tvornica $\to$ trgovina pomnožimo prevezenu količinu $x_{ij}$
+        [t] s jediničnim troškom $c_{ij}$ [kn/t] i sve zbrojimo. Rezultat je
+        \textbf{ukupan trošak transporta} u kunama. (Simbol $\sum$ znači
+        „zbroji po svim vrijednostima indeksa”; dvostruka suma znači da
+        prolazimo po svim parovima $(i,j)$, dakle po svih 14 relacija.)
+  \item \textbf{Kapacitet tvornice} $\sum_{j} x_{ij} \le a_i$: sve što tvornica
+        $i$ pošalje (zbroj po svim trgovinama) ne smije prijeći njezin kapacitet
+        $a_i$. Dva takva ograničenja (po jedno za svaku tvornicu).
+  \item \textbf{Potražnja trgovine} $\sum_{i} x_{ij} \ge b_j$: sve što trgovina
+        $j$ primi (zbroj po objema tvornicama) mora biti barem $b_j$. Sedam
+        takvih ograničenja.
+  \item \textbf{Nenegativnost} $x_{ij} \ge 0$: 14 ograničenja.
+\end{itemize}
+
+\begin{napomena}[prevođenje u standardnu formu]
+Standardna forma traži $g_j(x)\le 0$, pa nejednakost „$\ge$” pomnožimo s $-1$
+(što okreće smjer): $\sum_i x_{ij} \ge b_j \Leftrightarrow
+b_j - \sum_i x_{ij} \le 0$, i $x_{ij} \ge 0 \Leftrightarrow -x_{ij} \le 0$.
+Kapacitet je već u pravom obliku nakon premještanja:
+$\sum_j x_{ij} - a_i \le 0$.
+\end{napomena}
+
+Uočite: i funkcija cilja i sva ograničenja su \textbf{linearne} funkcije
+varijabli $x_{ij}$. To je definicija linearnog programa
+(poglavlje~\ref{ch:lpqp}).
+
+% =====================================================================
+\section{Klasični primjeri optimiranja s potpunim rješenjima}
+\str{46--52}
+
+Slajdovi 46--52 rješavaju šest školskih ekstremalnih problema. Svi se rješavaju
+istim receptom, pa ga vrijedi jednom izreći:
+
+\begin{definicija}[Recept klasične analize --- ekstrem funkcije jedne varijable]
+\begin{enumerate}
+  \item Uvedi varijablu i izrazi \textbf{funkciju cilja} preko nje.
+  \item Ako postoji ograničenje jednakosti, iz njega \textbf{izrazi jednu
+        varijablu} i \textbf{uvrsti} u funkciju cilja (eliminacija) --- tako
+        problem s ograničenjem postaje problem bez ograničenja.
+  \item Deriviraj i izjednači s nulom: $\dfrac{\dd F}{\dd x} = 0$ $\to$
+        \textbf{stacionarne točke}.
+  \item Provjeri drugom derivacijom: $F'' > 0$ $\to$ \textbf{minimum},
+        $F'' < 0$ $\to$ \textbf{maksimum}.
+  \item Izračunaj vrijednost cilja u nađenoj točki.
+\end{enumerate}
+\end{definicija}
+
+Ovaj recept vrijedi za jednostavne, glatke probleme jedne varijable. U
+poglavlju~\ref{ch:uvjeti} generalizirat ćemo ga na više varijabli i na probleme
+gdje se ograničenja \emph{ne mogu} tako lako eliminirati --- tada nastupaju
+Lagrangeovi multiplikatori i KKT uvjeti.
+
+\subsection{Optimalno iskorištavanje materijala --- posuda iz limene ploče}
+\str{46--47}
+
+\textbf{Problem.} Iz kvadratne limene ploče stranice $a$ potrebno je izrezati
+uglove tako da se iz preostalog dijela načini posuda što većeg volumena.
+Izrezuju se četiri kvadratića stranice $x$ u uglovima; preostali „križ” se
+savine prema gore.
+
+\textbf{Ciljna funkcija je volumen:}
+\[
+V = (a - 2x)^2 \cdot x
+\]
+
+\emph{Odakle to:} nakon izrezivanja uglova stranice $x$ i savijanja, baza posude
+je kvadrat stranice $a - 2x$ (s obje strane oduzimamo po $x$), a visina posude
+je $x$.
+
+\textbf{Derivacija:}
+\[
+\frac{\dd V}{\dd x} = 12x^2 - 8ax + a^2
+\]
+
+\emph{Provjera računa} (raspis međukoraka koji na slajdu nije napisan):
+\begin{align}
+V &= x(a-2x)^2 = x(a^2 - 4ax + 4x^2) = a^2 x - 4a x^2 + 4x^3 \\
+\frac{\dd V}{\dd x} &= a^2 - 8ax + 12x^2 \quad \checkmark
+\end{align}
+
+\textbf{Izjednačavanje s nulom} daje kvadratnu jednadžbu
+$12x^2 - 8ax + a^2 = 0$, čija su rješenja (sa slajda):
+\[
+x_{1,2} = \frac{a}{3} \pm \frac{a}{6}; \qquad x_1 = a/2, \quad x_2 = a/6
+\]
+
+\emph{Provjera preko formule za kvadratnu jednadžbu:}
+\begin{align}
+x_{1,2} &= \frac{8a \pm \sqrt{(8a)^2 - 4\cdot 12 \cdot a^2}}{2 \cdot 12}
+= \frac{8a \pm \sqrt{64a^2 - 48a^2}}{24}
+= \frac{8a \pm \sqrt{16a^2}}{24}
+= \frac{8a \pm 4a}{24} \\
+x_1 &= \frac{12a}{24} = \frac{a}{2}, \qquad
+x_2 = \frac{4a}{24} = \frac{a}{6} \quad \checkmark
+\end{align}
+
+\textbf{Provjera drugom derivacijom:}
+\[
+V'' = \frac{\dd^2 V}{\dd x^2} = 24x - 8a
+\]
+\begin{align}
+V''\!\left(\tfrac{a}{2}\right) &= 24 \cdot \tfrac{a}{2} - 8a = 12a - 8a = 4a > 0
+\;\to\; \textbf{min.} \\
+V''\!\left(\tfrac{a}{6}\right) &= 24 \cdot \tfrac{a}{6} - 8a = 4a - 8a = -4a < 0
+\;\to\; \textbf{max.}
+\end{align}
+
+\textbf{Vrijednosti:}
+\[
+V_{\max} = \left(a - \frac{a}{3}\right)^{2} \cdot \frac{a}{6} = \frac{2}{27}a^3;
+\qquad V_{\min} = 0
+\]
+
+\emph{Provjera:} za $x = a/6$ je $a - 2x = a - a/3 = \tfrac{2a}{3}$, pa je
+$V = \left(\tfrac{2a}{3}\right)^2 \cdot \tfrac{a}{6}
+= \tfrac{4a^2}{9}\cdot\tfrac{a}{6} = \tfrac{4a^3}{54} = \tfrac{2a^3}{27}$
+\checkmark. Za $x = a/2$ je $a - 2x = 0$, pa je $V = 0$ --- geometrijski jasno:
+izrezali smo cijelu ploču, baza je nestala.
+
+\subsection{Minimizacija troškova izgradnje --- tlocrt kuće}
+\str{48}
+
+\textbf{Problem.} Kuća ima 3 prostorije površine $A$ [m\textsuperscript{2}].
+Troškovi izgradnje vanjskih zidova iznose $C$ [EUR/m], a troškovi za
+unutrašnje zidove iznose $2/3$ tih troškova. Odrediti mjere tlocrta tako da
+troškovi izgradnje zidova budu minimalni.
+
+Geometrija sa slajda: pravokutnik širine $x$ i visine $y$; unutar njega jedan
+okomiti zid (duljine $y$) koji odvaja desni dio, te u lijevom dijelu vodoravni
+zid duljine $2x/5$ --- tako se dobiju 3 prostorije.
+
+\textbf{Ograničenje jednakosti:}
+\[
+A = x\,y \; [\text{m}^2] \quad \to \quad y = A/x
+\]
+
+\textbf{Ciljna funkcija $\to$ minimalni troškovi:}
+\[
+F(x) = C\left(2x + 2\frac{A}{x}\right)
+     + \frac{2}{3}C\left(\frac{2}{5}x + \frac{A}{x}\right)
+\]
+
+\emph{Rastav:} prvi član su vanjski zidovi --- opseg pravokutnika je
+$2x + 2y = 2x + 2A/x$, uz cijenu $C$. Drugi član su unutarnji zidovi ---
+vodoravni duljine $\tfrac{2}{5}x$ i okomiti duljine $y = A/x$, uz cijenu
+$\tfrac{2}{3}C$.
+
+\textbf{Sređivanje (sa slajda):}
+\[
+F(x) = \frac{2}{3}C\left(\frac{17}{5}x + 4\frac{A}{x}\right)
+\]
+
+\emph{Raspis međukoraka koji na slajdu nije prikazan:}
+\begin{align}
+F(x) &= 2Cx + \frac{2CA}{x} + \frac{2}{3}C \cdot \frac{2}{5}x
+        + \frac{2}{3}C\frac{A}{x} \\
+     &= C\underbrace{\left(2 + \frac{4}{15}\right)}_{=\frac{30+4}{15}=\frac{34}{15}}x
+      + C\underbrace{\left(2 + \frac{2}{3}\right)}_{=\frac{6+2}{3}=\frac{8}{3}}\frac{A}{x}
+      = \frac{34}{15}Cx + \frac{8}{3}C\frac{A}{x}
+\end{align}
+a s druge strane
+\[
+\frac{2}{3}C\left(\frac{17}{5}x + \frac{4A}{x}\right)
+= \frac{2 \cdot 17}{3 \cdot 5}Cx + \frac{2\cdot 4}{3}C\frac{A}{x}
+= \frac{34}{15}Cx + \frac{8}{3}C\frac{A}{x} \quad \checkmark
+\]
+
+\textbf{Konstante prebacimo na lijevu stranu} (jer konstantni pozitivni faktor
+ne mijenja položaj minimuma --- ovo je važan i često korišten trik):
+\[
+F_0 = \frac{3F(x)}{2C} = \left(\frac{17}{5}x + 4\frac{A}{x}\right)
+\]
+
+\textbf{Derivacija i izjednačavanje s nulom:}
+\[
+\frac{\dd F_0}{\dd x} = \frac{17}{5} - \frac{4A}{x^2} = 0
+\quad \to \quad x^2 = \frac{20}{17}A = \frac{20}{17}xy
+\]
+
+\emph{Međukorak:} iz $\tfrac{17}{5} = \tfrac{4A}{x^2}$ slijedi
+$x^2 = \tfrac{4A \cdot 5}{17} = \tfrac{20A}{17}$; zatim se uvrsti $A = xy$.
+
+\textbf{Odakle treba biti:}
+\[
+\frac{x}{y} = \frac{20}{17}
+\]
+
+\emph{Međukorak:} iz $x^2 = \tfrac{20}{17}xy$ podijelimo obje strane s $x$
+(dopušteno jer $x > 0$) i dobijemo $x = \tfrac{20}{17}y$, tj.\ $x/y = 20/17$.
+
+\subsection{Maksimizacija volumena lijevka I}
+\str{49}
+
+\textbf{Problem.} Neka se iz okrugle ploče izreže isječak tako da se iz ostatka
+načini lijevak (stožac) što većeg volumena.
+
+Geometrija: iz kruga polumjera $r$ izreže se kružni isječak, a preostali dio
+(središnjeg kuta $\varphi$) se smota u plašt stošca. Nastali stožac ima polumjer
+baze $R$, izvodnicu $r$ (jer je to polumjer polazne ploče) i visinu $h$.
+
+\textbf{Polumjer baze (1):} duljina luka preostalog dijela postaje opseg baze:
+\begin{equation}
+2R\pi = r\varphi \quad \to \quad R = \frac{r\varphi}{2\pi}
+\end{equation}
+
+\textbf{Visina stošca (2):} iz pravokutnog trokuta (izvodnica, polumjer baze,
+visina):
+\begin{equation}
+h = \sqrt{r^2 - R^2}
+\end{equation}
+
+\textbf{Ciljna funkcija (3):} volumen stošca
+\begin{equation}
+V = \frac{\pi R^2 h}{3}
+\end{equation}
+
+\textbf{Uvrštenjem (1) i (2) u (3):}
+\[
+V = \frac{r^3}{12\pi}\varphi^2 \sqrt{1 - \frac{\varphi^2}{4\pi^2}}
+\]
+
+\emph{Raspis međukoraka:}
+\begin{align}
+R^2 &= \frac{r^2\varphi^2}{4\pi^2}, \qquad
+h = \sqrt{r^2 - \frac{r^2\varphi^2}{4\pi^2}}
+  = r\sqrt{1 - \frac{\varphi^2}{4\pi^2}} \\
+V &= \frac{\pi}{3}\cdot\frac{r^2\varphi^2}{4\pi^2}\cdot
+     r\sqrt{1 - \frac{\varphi^2}{4\pi^2}}
+   = \frac{r^3\varphi^2}{12\pi}\sqrt{1 - \frac{\varphi^2}{4\pi^2}}
+   \quad \checkmark
+\end{align}
+
+\textbf{Prebacivanjem konstanti na lijevu stranu i kvadriranjem, uređena ciljna
+funkcija je:}
+\[
+F(\varphi) = \left(\frac{12\pi V}{r^3}\right)^{2}
+= \varphi^4\left(1 - \frac{\varphi^2}{4\pi^2}\right)
+\]
+
+\begin{napomena}[zašto smijemo kvadrirati]
+Funkcija $t \mapsto t^2$ je \textbf{strogo rastuća} za $t \ge 0$, a $V \ge 0$.
+Strogo rastuća transformacija ne mijenja \emph{položaj} maksimuma, samo njegovu
+vrijednost. Isto vrijedi za množenje pozitivnom konstantom. Ovaj postupak
+(uklanjanje korijena kvadriranjem) koristit ćemo često --- vidi i Vježbe 2, gdje
+se isto radi s normama.
+\end{napomena}
+
+\textbf{Derivacija:}
+\[
+\frac{\dd F}{\dd \varphi} = 4\varphi^3 - \frac{3}{2\pi^2}\varphi^5 = 0
+\]
+
+\emph{Provjera:} $F(\varphi) = \varphi^4 - \dfrac{\varphi^6}{4\pi^2}$, pa je
+$F' = 4\varphi^3 - \dfrac{6\varphi^5}{4\pi^2}
+    = 4\varphi^3 - \dfrac{3\varphi^5}{2\pi^2}$ \checkmark
+
+\textbf{Iz toga slijedi:}
+\[
+\varphi^2 = \frac{8}{3}\pi^2 \quad \to \quad
+\varphi = \sqrt{\frac{2}{3}}\cdot 2\pi \,\text{rad} = 293{,}939^\circ
+\]
+
+\emph{Međukoraci:} podijelimo jednadžbu s $\varphi^3$ (za $\varphi \ne 0$):
+$4 = \tfrac{3}{2\pi^2}\varphi^2$, dakle $\varphi^2 = \tfrac{8\pi^2}{3}$. Zatim
+$\varphi = \sqrt{\tfrac{8\pi^2}{3}} = 2\pi\sqrt{\tfrac{2}{3}}$. Brojčano:
+$\sqrt{2/3} = 0{,}8165$, pa $\varphi = 0{,}8165 \cdot 6{,}2832 = 5{,}1302$ rad;
+u stupnjevima $5{,}1302 \cdot \tfrac{180}{\pi} = 293{,}94^\circ$ \checkmark
+
+\subsection{Maksimizacija volumena lijevka II}
+\str{50}
+
+\textbf{Problem.} Kakav oblik treba imati lijevak (stožac) da kod \textbf{zadane
+površine plašta} ima što veći volumen?
+
+\textbf{Površina plašta:}
+\[
+A = 2\pi r \cdot R / 2 = \pi R r \quad \to \quad r = \frac{A}{\pi R}
+\]
+
+(Ovdje je $r$ izvodnica stošca, $R$ polumjer baze.)
+
+\textbf{Volumen:}
+\[
+V = \frac{\pi R^2}{3}\sqrt{r^2 - R^2}
+  = \frac{\pi R^2}{3}\sqrt{\frac{A^2}{\pi^2R^2} - R^2}, \qquad
+V = \frac{R}{3}\sqrt{A^2 - \pi^2R^4}
+\]
+
+\emph{Raspis zadnjeg koraka:} izlučimo $\tfrac{1}{\pi^2R^2}$ iz korijena:
+\begin{align}
+\sqrt{\frac{A^2}{\pi^2R^2} - R^2} &= \frac{1}{\pi R}\sqrt{A^2 - \pi^2 R^4} \\
+V &= \frac{\pi R^2}{3}\cdot\frac{1}{\pi R}\sqrt{A^2 - \pi^2R^4}
+   = \frac{R}{3}\sqrt{A^2 - \pi^2R^4} \quad \checkmark
+\end{align}
+
+\textbf{Volumen $V$ bit će maksimalan kad i $(3V)^2$}, pa je (isti trik kao
+prije):
+\[
+F(R) = (3V)^2 = A^2R^2 - \pi^2R^6
+\]
+
+\textbf{Derivacija:}
+\[
+\frac{\dd F}{\dd R} = 2A^2R - 6\pi^2R^5 = 0 \quad \to \quad
+A = \sqrt{3\pi^2R^4} = \pi\sqrt{3}\,R^2
+\]
+
+\emph{Međukorak:} podijelimo s $2R$ ($R \ne 0$): $A^2 = 3\pi^2R^4$, pa
+korjenovanjem $A = \pi R^2\sqrt{3}$.
+
+\textbf{Iz $R^2 = \dfrac{A}{\pi\sqrt{3}}$ i
+$h^2 = r^2 - R^2 = \dfrac{A^2}{\pi^2R^2} - R^2$, slijedi:}
+\[
+\frac{h^2}{R^2} = 2 \quad \to \quad \frac{h}{R} = \sqrt{2}
+\]
+
+\emph{Raspis:}
+\[
+\frac{h^2}{R^2} = \frac{1}{R^2}\left(\frac{A^2}{\pi^2R^2} - R^2\right)
+= \frac{A^2}{\pi^2R^4} - 1
+\overset{A^2 = 3\pi^2R^4}{=} \frac{3\pi^2R^4}{\pi^2R^4} - 1 = 3 - 1 = 2
+\quad \checkmark
+\]
+
+\textbf{Zaključak:} optimalan lijevak ima omjer visine i polumjera baze
+$h/R = \sqrt{2}$.
+
+\subsection{Dimenzioniranje otvora vrata}
+\str{51}
+
+\textbf{Problem.} Kako visoka moraju biti vrata tornja ($h$) da se ljestve
+duljine $L$ mogu uvući u toranj?
+
+Geometrija sa slajda: zid tornja je okomit; ljestve $\overline{AB} = L$
+naslonjene su tako da im donji kraj $B$ klizi po podu na udaljenosti $x$ od
+zida, a gornji kraj $A$ je uz vanjski zid; $a$ je vodoravni odmak zida, $y$ je
+visina na kojoj ljestve prelaze preko brida vrata, a $h$ je tražena visina
+vrata.
+
+\textbf{Rješenje:} traži se \textbf{maksimalna visina $y$ za vrijeme uvlačenja}
+ljestvi u toranj.
+
+\textbf{Iz sličnosti trokuta (1):}
+\begin{equation}
+\frac{y}{x-a} = \frac{\sqrt{L^2 - x^2}}{x}
+\quad \to \quad
+y = \frac{x-a}{x}\sqrt{L^2 - x^2}
+\end{equation}
+
+(Ovdje je $\sqrt{L^2 - x^2}$ visina gornjeg kraja ljestvi $A$ nad podom ---
+Pitagorin poučak na trokutu s hipotenuzom $L$ i vodoravnom katetom $x$.)
+
+\textbf{Derivacija i stacionarna točka (2):}
+\begin{equation}
+\frac{\dd y}{\dd x} = \frac{aL^2 - x^3}{x^2\sqrt{L^2 - x^2}} = 0
+\quad \to \quad x_{\mathrm m} = \sqrt[3]{aL^2}
+\end{equation}
+
+\emph{Međukorak:} razlomak je nula kad je brojnik nula: $aL^2 - x^3 = 0
+\Rightarrow x^3 = aL^2 \Rightarrow x = \sqrt[3]{aL^2}$.
+
+\textbf{Uvrštenjem (2) u (1):}
+\[
+h \ge y_{\mathrm m} = \left[1 - \left(\frac{a}{L}\right)^{2/3}\right]^{3/2}\cdot L
+\]
+
+\emph{Raspis uvrštavanja (na slajdu nije prikazan):} uz
+$x_{\mathrm m} = a^{1/3}L^{2/3}$,
+\begin{align}
+\frac{a}{x_{\mathrm m}} &= \frac{a}{a^{1/3}L^{2/3}} = \frac{a^{2/3}}{L^{2/3}}
+= \left(\frac{a}{L}\right)^{2/3} \\
+\sqrt{L^2 - x_{\mathrm m}^2} &= \sqrt{L^2 - a^{2/3}L^{4/3}}
+= L\sqrt{1 - \left(\frac{a}{L}\right)^{2/3}} \\
+y_{\mathrm m} &= \left(1 - \frac{a}{x_{\mathrm m}}\right)
+                 \sqrt{L^2 - x_{\mathrm m}^2}
+= \left[1 - \left(\tfrac{a}{L}\right)^{2/3}\right]
+  \cdot L\left[1 - \left(\tfrac{a}{L}\right)^{2/3}\right]^{1/2}
+= L\left[1 - \left(\tfrac{a}{L}\right)^{2/3}\right]^{3/2} \; \checkmark
+\end{align}
+
+\textbf{Brojčani primjer sa slajda:}
+\[
+a = 2{,}7\,\text{m}; \quad L = 12{,}5\,\text{m}
+\;\to\; y_{\mathrm m} = 6{,}4\,\text{m}; \quad x_{\mathrm m} = 7{,}5\,\text{m}
+\]
+
+\emph{Provjera računa:}
+\begin{align}
+\frac{a}{L} &= \frac{2{,}7}{12{,}5} = 0{,}216 = 0{,}6^3
+\;\Rightarrow\; \left(\frac{a}{L}\right)^{2/3} = 0{,}6^2 = 0{,}36 \\
+y_{\mathrm m} &= 12{,}5\,(1 - 0{,}36)^{3/2} = 12{,}5 \cdot 0{,}64^{3/2}
+= 12{,}5 \cdot 0{,}8^3 = 12{,}5 \cdot 0{,}512 = 6{,}4\,\text{m} \quad \checkmark \\
+x_{\mathrm m} &= \sqrt[3]{2{,}7 \cdot 12{,}5^2} = \sqrt[3]{2{,}7 \cdot 156{,}25}
+= \sqrt[3]{421{,}875} = 7{,}5\,\text{m} \quad \checkmark
+\end{align}
+
+Slajd uz to prikazuje graf $y(x)$ za te brojke: krivulja kreće od nule pri
+$x = a = 2{,}7$, raste do vrha $y \approx 6{,}4$ pri $x = 7{,}5$, i pada natrag
+na nulu pri $x = L = 12{,}5$ (tada su ljestve okomite uz zid).
+
+\subsection{Optimalna ograda}
+\str{52}
+
+\textbf{Problem.} Površinu od 1 ha treba ograditi na način prema skici
+(pravokutnik $x \times y$ s jednim unutarnjim pregradnim zidom duljine $y$).
+Troškovi postavljanja ograde proporcionalni su duljini ograde. Odrediti
+dimenzije $x$ i $y$ tako da troškovi budu minimalni.
+
+\textbf{Ciljna funkcija je duljina ograde:}
+\begin{equation}
+L = 2x + 3y
+\end{equation}
+
+\emph{Odakle:} vanjski opseg je $2x + 2y$, a unutarnja pregrada je još jedan
+komad duljine $y$; ukupno $2x + 3y$.
+
+\textbf{Ograničenje je površina:}
+\begin{equation}
+A = x\,y = 10\,000\,\text{m}^2 \quad \to \quad h = xy - 10\,000 = 0
+\end{equation}
+
+(1 ha $=$ 10\,000 m\textsuperscript{2}. Zapis $h = xy - 10\,000 = 0$ je upravo
+standardna forma ograničenja jednakosti iz
+odjeljka~\ref{sec:standardna-forma}.)
+
+\textbf{Uvrštenjem (2) u (1)}, tj.\ $y = 10\,000/x$, \textbf{ciljna funkcija
+postaje:}
+\[
+L = 2x + \frac{3 \cdot 10\,000}{x}
+\quad \to \quad
+\frac{\dd L}{\dd x} = 2 - \frac{30\,000}{x^2} = 0
+\]
+
+\textbf{pa je:}
+\[
+x_{\text{opt}} = 100\sqrt{\frac{3}{2}}, \qquad
+y_{\text{opt}} = 100\sqrt{\frac{2}{3}}, \qquad
+\left(\frac{x}{y}\right)_{\text{opt}} = \frac{3}{2}
+\]
+
+\emph{Raspis:}
+\begin{align}
+2 &= \frac{30\,000}{x^2} \;\Rightarrow\; x^2 = 15\,000
+\;\Rightarrow\; x = \sqrt{15\,000} = \sqrt{10\,000 \cdot 1{,}5}
+= 100\sqrt{\tfrac{3}{2}} \approx 122{,}47\,\text{m} \\
+y &= \frac{10\,000}{x} = \frac{10\,000}{100\sqrt{3/2}} = \frac{100}{\sqrt{3/2}}
+= 100\sqrt{\tfrac{2}{3}} \approx 81{,}65\,\text{m} \\
+\frac{x}{y} &= \frac{100\sqrt{3/2}}{100\sqrt{2/3}} = \sqrt{\frac{3/2}{2/3}}
+= \sqrt{\frac{9}{4}} = \frac{3}{2} \quad \checkmark
+\end{align}
+
+\textbf{Interpretacija:} omjer stranica nije $1{:}1$ (kao kod običnog
+pravokutnika bez pregrade) nego $3{:}2$ --- jer pregradni zid „poskupljuje”
+smjer $y$, pa se isplati taj smjer skratiti.
+
+% =====================================================================
+\section{Vrste optimizacije konstrukcija}
+\str{53--56}
+
+\subsection{Dimenzionalna optimizacija (\emph{size optimization})}
+\str{53}
+
+Optimiranje \textbf{dimenzija} objekata \textbf{poznate strukture i oblika}.
+
+Primjeri:
+\begin{itemize}
+  \item dimenzije elemenata nosivih konstrukcija (presjeci štapova, debljine
+        limova, \dots)
+  \item dimenzije članova mehanizama
+\end{itemize}
+
+\subsection{Optimiranje oblika (\emph{shape optimization})}
+\str{54}
+
+Osnovni \textbf{oblik} objekta mijenja se postupkom optimizacije ovisno o
+zadanim parametrima problema (alat je često \textbf{FEM} analiza --- metoda
+konačnih elemenata).
+
+\subsection{Topološka optimizacija (\emph{topology optimization})}
+\str{55--56}
+
+Traži se optimalna \textbf{topologija (struktura)} konstrukcije u zadanoj
+domeni.
+
+\begin{napomena}
+Na slajdovima 55 i 56 topološka optimizacija je numerirana kao „2.” (očit
+tipfeler u prezentaciji --- dvije uzastopne stavke nose broj 2). Sadržajno je
+to \textbf{treća} vrsta.
+\end{napomena}
+
+\textbf{Razlika u tri riječi:} \emph{dimenzionalna} mijenja \textbf{brojeve}
+(koliko je štap debeo), \emph{oblikovna} mijenja \textbf{konture} (kako je rub
+zaobljen), \emph{topološka} mijenja \textbf{raspored materijala} (gdje uopće ima
+materijala, a gdje su rupe). Topološka je najslobodnija i najteža.
+
+% =====================================================================
+\section{Postavka problema}
+\str{57--58}
+
+\begin{teorem}[Ključna poruka slajda 57]
+Pravilna definicija, formulacija i točna matematička postavka optimizacijskog
+problema je često \textbf{najveći korak} prilikom rješavanja problema.
+
+Iz formulacije problema treba raspoznati o \textbf{kojoj se vrsti optimizacije
+radi}.
+\end{teorem}
+
+\subsection{Jednostavan primjer koji to ilustrira}
+\str{57--58}
+
+\textbf{Problem.} Površinu uz postojeću prirodnu ogradu (zid, stijena i sl.)
+treba ograditi s raspoloživom duljinom žičane ograde $L$ tako da ograđena
+površina bude \textbf{maksimalna}.
+
+Na slajdu su prikazana \textbf{tri oblika}:
+\begin{itemize}
+  \item \textbf{a)} pravokutnik naslonjen na zid (jedna stranica $x$ uz zid,
+        dvije stranice $y$),
+  \item \textbf{b)} polukrug polumjera $r$ naslonjen na zid,
+  \item \textbf{c)} pola pravilnog mnogokuta ($n$-terokut, konkretno $n = 8$)
+        naslonjenog na zid.
+\end{itemize}
+
+\textbf{Poanta (sa slajda):}
+
+\begin{quote}
+Iz gornje formulacije nije jasno da li se oblik ograde može odabrati po volji
+ili se postavljaju i neki drugi zahtjevi. Svaki od pokazanih oblika daje za istu
+duljinu ograde svoje rješenje, pri čemu se oblikom b) ograđuje \textbf{najveća}
+površina, a oblikom a) \textbf{najmanja}. Međutim, ako se radi o ogradi pašnjaka
+koju treba seliti duž zida, tada je oblik a) u „tehnološkoj” prednosti, jer se
+iskoristi sva raspoloživa površina.
+\end{quote}
+
+\textbf{Zaključak:} ista rečenica („ogradi maksimalnu površinu”) daje
+\textbf{tri različita optimizacijska problema}, ovisno o tome što smo prešutno
+pretpostavili. Zato je formulacija najvažniji korak.
+
+\subsection{Brojčana usporedba triju oblika, $L = 500$ m}
+\str{58}
+
+\subsubsection*{Oblik b) --- polukrug}
+\[
+L = r\pi \;\to\; A = \frac{\pi r^2}{2} = \frac{L^2}{2\pi} = \frac{500^2}{2\pi}
+= 39\,788{,}7\,\text{m}^2
+\]
+
+\emph{Raspis:} iz $L = r\pi$ slijedi $r = L/\pi$, pa je
+$A = \tfrac{\pi}{2}\cdot\tfrac{L^2}{\pi^2} = \tfrac{L^2}{2\pi}
+= \tfrac{250\,000}{6{,}2832} = 39\,788{,}7$ m\textsuperscript{2} \checkmark
+
+\subsubsection*{Oblik c) --- polovica pravilnog $n$-terokuta, $n = 8$ (osmerokut)}
+\[
+L = \frac{n}{2}a \;\to\; \varphi = \frac{2\pi}{n}; \qquad
+a = 2r\sin\frac{\varphi}{2} = 2r\sin\frac{\pi}{n}
+\]
+
+($a$ je duljina jedne stranice, $\varphi$ središnji kut nad jednom stranicom,
+$r$ polumjer opisane kružnice. Uz zid je polovica mnogokuta, pa ograda ima $n/2$
+stranica.)
+
+\[
+r = \frac{L}{n \cdot \sin\frac{\pi}{n}}
+\]
+
+\emph{Raspis:} iz $L = \tfrac{n}{2}a = \tfrac{n}{2}\cdot 2r\sin\tfrac{\pi}{n}
+= n\,r\sin\tfrac{\pi}{n}$ slijedi $r = \tfrac{L}{n\sin(\pi/n)}$ \checkmark
+
+\[
+A = \frac{1}{2}a\,r\cos\frac{\varphi}{2}\cdot\frac{n}{2}
+= \frac{n}{4}\cdot 2\frac{L}{n}\cdot\frac{L}{n\cdot\sin\frac{\pi}{n}}
+  \cos\frac{\pi}{n}
+= \frac{L^2}{2\,n \cdot \tan\frac{\pi}{n}}
+\]
+
+\[
+A = \frac{500^2}{2 \cdot 8 \cdot \tan\frac{\pi}{8}} = 37\,722{,}1\,\text{m}^2
+\qquad \left(\text{za } n \to \infty, \;
+\lim_{n\to\infty}\left(n\cdot\tan\frac{\pi}{n}\right) = \pi\right)
+\]
+
+\emph{Provjera brojki:} $\tan(\pi/8) = \tan 22{,}5^\circ = 0{,}41421$, pa je
+$2 \cdot 8 \cdot 0{,}41421 = 6{,}6274$ i
+$A = 250\,000/6{,}6274 = 37\,722$ m\textsuperscript{2} \checkmark
+
+\emph{Značenje granice:} kad $n \to \infty$, $n\tan(\pi/n) \to \pi$, pa formula
+za mnogokut prelazi u $A \to L^2/(2\pi)$ --- točno rezultat polukruga b).
+Mnogokut s mnogo stranica je praktički polukrug, što potvrđuje da je b)
+najbolji oblik.
+
+\subsubsection*{Oblik a) --- pravokutnik}
+\[
+L = x + 2y \;\to\; x = L - 2y \quad (\text{ograničenje jednakosti})
+\]
+\[
+A = xy = (L - 2y)\,y; \qquad
+\frac{\dd A}{\dd y} = L - 4y = 0 \;\to\;
+y = \frac{L}{4} = 125\,\text{m}; \quad x = \frac{L}{2} = 250\,\text{m}
+\]
+
+\emph{Raspis derivacije:} $A = Ly - 2y^2$, pa je
+$\tfrac{\dd A}{\dd y} = L - 4y$ \checkmark
+
+\[
+A = x\,y = 250 \cdot 125 = 31\,250\,\text{m}^2 \qquad (x : y = 2 : 1)
+\]
+
+\textbf{Rangiranje:} b) $39\,788{,}7$ $>$ c) $37\,722{,}1$ $>$ a) $31\,250$
+m\textsuperscript{2}. Razlika između najboljeg i najlošijeg oblika je oko
+\textbf{27\,\%} --- a sve uz istu duljinu ograde. Odabir \emph{strukture}
+(oblika) donosi veći dobitak nego optimiranje \emph{dimenzija} unutar zadane
+strukture. To je uvod u sljedeći odjeljak.
+
+% =====================================================================
+\section{Projektiranje kao proces}
+\str{59--77}
+
+\subsection{Slijed projektiranja}
+\str{59}
+
+Projektiranje tehničkog sustava ostvaruje se u \textbf{dva koraka}:
+
+\begin{enumerate}
+  \item \textbf{izbor strukture} sustava, odnosno \textbf{strukturalne sinteze};
+  \item \textbf{izbor brojčanih vrijednosti parametara} odabrane strukture
+        (sinteza parametara ili \textbf{dimenzionalna sinteza}).
+\end{enumerate}
+
+\begin{quote}
+\textbf{Strukturalna sinteza} jest (glavni) zadatak \textbf{stvaralačkog
+djelovanja inženjera} koji je općenito teško ili nemoguće automatizirati
+(algoritmizirati).
+\end{quote}
+
+To se izravno poklapa s primjerom ograde: odabir između oblika a), b), c) je
+strukturalna sinteza (kreativni čin), a računanje $x = 250$, $y = 125$ je
+dimenzionalna sinteza (algoritamski dio) --- i baš je taj drugi dio ono što ovaj
+kolegij formalizira.
+
+\subsection{Strukturalna sinteza}
+\str{60}
+
+Struktura projektiranog tehničkog sustava ili objekta (\textbf{topologija
+konstrukcije}) određena je poznatim \textbf{skupom elemenata strukture} i
+\textbf{vezama među njima}.
+
+\textbf{Poteškoće koje se pojavljuju u formalizaciji problema strukturalne
+sinteze:}
+\begin{itemize}
+  \item nemjerljive karakteristike elemenata strukture;
+  \item formalno nedefinirane veze između pojedinih elemenata i zahtjeva;
+  \item kvalitativni kriteriji;
+  \item neformalan opis funkcioniranja projektiranog objekta;
+  \item zahtjevi koji se odnose na funkcioniranje objekta.
+\end{itemize}
+
+\textbf{Temelj sinteze tehničkih sustava jest:} skup znanja i iskustva
+projektanata, intuicija, kreativnost, literatura, izvedeni projekti, sheme
+mogućih rješenja, metode projektiranja, računalna i programska podrška.
+
+Opis elemenata strukture, opis veza među njima kao i formiranje matematičkog
+modela strukture definira se pomoću prikladnog (konačnog) skupa veličina: to su
+\textbf{projektni parametri}.
+
+\subsection{Cilj projektiranja?}
+\str{61--67}
+
+\begin{enumerate}
+  \item Gradnja sustava s besprijekornim funkcioniranjem se \textbf{danas
+        podrazumijeva}.
+  \item U uvjetima konkurencije od presudne je važnosti projektirati
+        \textbf{najbolji ili što bolji} sustav (objekt ili proizvod).
+  \item Kriteriji po kojima je neki sustav najbolji su različiti, primjerice:
+        \textbf{cijena, težina, efikasnost, oblik, praktičnost, kompleksnost,
+        originalnost, pouzdanost, trajnost} i sl.
+  \item \textbf{Izbor dominantnog kriterija} predstavlja \textbf{stratešku
+        odluku} na početku samog procesa projektiranja. Kvaliteta rješenja
+        ocjenjuje se \textbf{kvantitativnom} usporedbom odabranih kriterija,
+        koji stoga moraju biti \textbf{funkcijom projektnih parametara}.
+  \item Izbor projektnih parametara najčešće \textbf{nije slobodan}, već njihove
+        veličine moraju zadovoljiti neke unaprijed zadane uvjete ili
+        \textbf{ograničenja}. Također trebaju biti ispunjeni uvjeti
+        \textbf{međusobne ovisnosti} parametara koji slijede iz strukture
+        projektiranog sustava.
+  \item Projektiranje je stoga \textbf{iterativni proces} određivanja strukture
+        i projektnih parametara projektiranog sustava, konstrukcije ili
+        proizvoda.
+  \item Konačnim projektnim rješenjem trebaju se ispuniti \textbf{svi} kriteriji
+        i tehnički zahtjevi projekta.
+\end{enumerate}
+
+Točka 4 je zapravo definicija \textbf{funkcije cilja} rečena inženjerskim
+jezikom („kriterij mora biti funkcija projektnih parametara”), a točka 5
+definicija \textbf{ograničenja}. Time se zatvara krug s
+odjeljkom~\ref{sec:standardna-forma}.
+
+\subsection{Proces projektiranja}
+\str{68}
+
+Prema primijenjenim metodama i projektnim zahtjevima proces projektiranja može
+biti:
+
+\textbf{a) Proces konvencionalnog projektiranja.} Osnovni cilj: besprijekorno
+funkcioniranje sustava ili proizvoda u okviru uvjeta postavljenih projektnim
+zadatkom (\emph{funkcionalno projektiranje}). Ovaj proces baziran je na
+\textbf{iskustvu i intuiciji}.
+
+\textbf{b) Proces optimalnog projektiranja.} Pored besprijekornog
+funkcioniranja sustava ili proizvoda, \textbf{jedan ili više projektnih
+kriterija treba biti ispunjen na optimalan način}. Postupak optimalnog
+projektiranja zahtijeva \textbf{strogu matematičku formulaciju problema} ---
+postavku matematičkog modela ili optimizacijskog problema.
+
+\subsection{Elementi optimizacijskog modela: projektni parametri i varijable}
+\str{69--70}
+
+\begin{definicija}[Projektni parametri]
+\textbf{Projektni parametri} su veličine pomoću kojih se \textbf{jednoznačno
+definiraju dimenzije i svojstva} konstrukcije ili projektiranog sistema.
+\end{definicija}
+
+Projektni parametri dijele se na \textbf{konstantne projektne parametre} i
+\textbf{projektne varijable}.
+
+\textbf{Konstantni projektni parametri} se u postupku optimizacije \textbf{ne
+mijenjaju}, a mogu se podijeliti na dvije vrste:
+
+\begin{itemize}
+  \item \textbf{taktički projektni parametri ($z$)} --- zadani su
+        \textbf{projektnim zadatkom} i ne mogu se mijenjati u cijelom procesu
+        projektiranja. Oni su konstante strukturalne i dimenzionalne sinteze
+        konstrukcije, tj.\ predstavljaju \textbf{taktičke performanse}
+        projektiranog sustava.
+  \item \textbf{tehnički projektni parametri ($y$)} --- projektne su konstante
+        \textbf{po zamisli projektanta}, i to prvenstveno iz
+        \textbf{konstrukcijskih ili tehnoloških} razloga.
+\end{itemize}
+
+\textbf{Hijerarhija sa slajda 70:}
+
+\begin{center}
+\begin{tabular}{c}
+\toprule
+\textbf{PROJEKTNI PARAMETRI} \\
+\midrule
+\begin{tabular}{p{5.0cm}|p{7.0cm}}
+\centering \textbf{PROJEKTNE VARIJABLE} & \centering\textbf{PROJEKTNE KONSTANTE} \tabularnewline
+\centering $x$ & \centering $y,\; z$ \tabularnewline
+ & \begin{tabular}{p{3.0cm}p{3.0cm}}
+   \textbf{TEHNIČKI} $y$ & \textbf{TAKTIČKI} $z$ \\
+   (odabrani od projektanta) & (zadani projektnim zadatkom)
+   \end{tabular}
+\end{tabular} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Dodatne tvrdnje sa slajda 70:}
+\begin{itemize}
+  \item Tehnički parametri su konstante \textbf{samo kod dimenzionalne sinteze
+        već poznate strukture (topologije)} objekta.
+  \item Projektant može mijenjati broj tehničkih parametara njihovim
+        \textbf{prebacivanjem u projektne varijable i obrnuto}.
+  \item Projektni parametri koji se \textbf{mijenjaju} u postupku sinteze
+        nazivaju se \textbf{projektnim varijablama ($x$)}.
+  \item \textbf{Suma broja projektnih varijabli i tehničkih parametara} u
+        postupku optimizacije iste strukture sistema je \textbf{konstantna}.
+  \item Ispravan izbor projektnih parametara i odgovarajuća matematička
+        formulacija problema glavne su poteškoće i preduvjeti uspješnog postupka
+        optimalnog projektiranja.
+\end{itemize}
+
+\begin{napomena}[veza sa standardnom formom]
+Vektor $x$ iz standardne forme $=$ projektne varijable. Parametri $y$ i $z$ ne
+pojavljuju se kao nepoznanice, nego kao \textbf{brojevi} u izrazima za $f$, $h$
+i $g$. U primjeru ograde: $x$ i $y$ (dimenzije) su projektne varijable, a
+$10\,000$ m\textsuperscript{2} je taktički parametar (zadan zadatkom).
+\end{napomena}
+
+\subsection{Optimizacijski model --- pravila izbora parametara}
+\str{71--77}
+
+Kod izbora projektnih parametara važno je sljedeće:
+
+\begin{enumerate}
+  \item Projektant treba dobro \textbf{proučiti problem} i matematički ga
+        opisati pomoću projektnih varijabli;
+  \item Projektni parametri trebaju biti \textbf{nezavisni};
+  \item Problem treba opisati sa \textbf{što manje} projektnih parametara;
+  \item Matematičku formulaciju problema treba u \textbf{početnoj fazi} provesti
+        sa \textbf{što manjim brojem tehničkih parametara}; to je važno radi
+        fleksibilnosti algoritma i otklanjanja eventualnih pogrešnih procjena o
+        utjecaju nekih tehničkih parametara na rezultat. U \textbf{kasnijoj
+        fazi} mogu se neke od varijabli odabrati kao konstante, i to:
+        \begin{itemize}
+          \item iz \textbf{konstrukcijskih ili tehnoloških} razloga;
+          \item jer je utvrđeno da \textbf{ne utječu bitno} na konačni rezultat
+                optimizacije;
+          \item jer je utvrđeno da optimalno rješenje odgovara \textbf{uvijek
+                vrijednosti neke varijable na rubu ograničenja}.
+        \end{itemize}
+\end{enumerate}
+
+\begin{napomena}
+\textbf{Zašto pravilo 2 (nezavisnost)?} Ako su dvije varijable povezane (npr.\
+uvedemo i polumjer $r$ i promjer $d = 2r$), ograničenje $d = 2r$ postaje suvišna
+jednadžba, a problem numerički degenerira (rješenje nije jedinstveno u
+parametrima). Bolje je odabrati samo jednu od njih.
+
+\textbf{Zašto pravilo 3 (što manje parametara)?} Broj varijabli $n$ izravno
+određuje dimenziju prostora u kojem tražimo optimum i time složenost
+rješavanja.
+
+Zadnja alineja pravila 4 najavljuje pojam \textbf{aktivnog ograničenja} iz
+poglavlja~\ref{ch:uvjeti}: ako znamo da optimum uvijek leži na rubu, možemo tu
+nejednakost zamijeniti jednakošću i eliminirati varijablu.
+\end{napomena}
+
+% =====================================================================
+\section{Neki korisni „trikovi”}
+\label{sec:trikovi}
+\str{79}
+
+Ovaj slajd zatvara predavanje 1 i ponavlja se na početku predavanja 2.
+
+\subsection{Minimizacija $\Leftrightarrow$ maksimizacija}
+
+\begin{equation}
+\begin{array}{ccc}
+\begin{array}{l}
+\max_x f(x) \\ \text{uz ogr.} \quad x \in \Feas
+\end{array}
+& \Longleftrightarrow &
+\begin{array}{l}
+\min_x -f(x) \\ \text{uz ogr.} \quad x \in \Feas
+\end{array}
+\end{array}
+\end{equation}
+
+\textbf{Zašto to vrijedi.} Ako $f$ postiže svoju \textbf{najveću} vrijednost u
+točki $x\opt$, onda $-f$ u istoj toj točki postiže svoju \textbf{najmanju}
+vrijednost (jer množenje s $-1$ „okreće” os vrijednosti). Dakle:
+
+\begin{itemize}
+  \item \textbf{argument} je isti: $\argmax f = \argmin (-f)$,
+  \item \textbf{vrijednosti} su suprotne: $\max f = -\min(-f)$ --- na to treba
+        paziti kad izvještavate optimalnu vrijednost!
+\end{itemize}
+
+Zbog ovog trika \textbf{cijela teorija se može razviti samo za minimizaciju},
+što i činimo u standardnoj formi iz odjeljka~\ref{sec:standardna-forma}.
+
+\subsection{Provjera je li dozvoljeni skup prazan (problem dopustivosti)}
+
+\textbf{Pitanje:} Je li skup $\Feas = \{\, x \mid g_i(x) \le 0,\;
+i = 1,\dots,p \,\}$ prazan? Ako nije, kako naći neki $x \in \Feas$?
+
+\textbf{Rješenje:} riješi optimizacijski problem
+
+\begin{equation}
+\label{eq:dopustivost}
+\begin{aligned}
+\min_{x,\,t} \quad & t \\
+\uzogr & g_i(x) \le t, \quad i = 1,\dots,p
+\end{aligned}
+\end{equation}
+
+Neka je $t\opt, x\opt$ rješenje. \textbf{Ako je $t\opt \le 0$, tada $\Feas$ nije
+prazan skup i $x\opt \in \Feas$.}
+
+\textbf{Detaljno objašnjenje} (jer je ideja lukavija nego što izgleda):
+
+\begin{itemize}
+  \item Uvodimo \textbf{novu, pomoćnu varijablu} $t \in \R$. Sada minimiziramo
+        po paru $(x, t)$, dakle problem ima $n + 1$ varijablu umjesto $n$.
+  \item Za \emph{bilo koji} $x$ uvijek možemo naći dovoljno velik $t$ da svi
+        uvjeti $g_i(x) \le t$ budu zadovoljeni (npr.\ $t = \max_i g_i(x)$). Zato
+        \textbf{novi problem nikad nije nedopustiv} --- uvijek ima rješenje, za
+        razliku od polaznog.
+  \item Funkcija cilja je samo $t$: guramo $t$ što niže. Za fiksni $x$ najmanji
+        dopušteni $t$ je točno $\max_i g_i(x)$ --- „najgore prekršeno
+        ograničenje”. Dakle problem \eqref{eq:dopustivost} zapravo rješava
+        \[
+        \min_x \; \max_{i} \; g_i(x)
+        \]
+        tj.\ traži $x$ koji \textbf{najmanje krši najgore ograničenje}.
+  \item \textbf{Ako je $t\opt \le 0$:} tada je $g_i(x\opt) \le t\opt \le 0$ za
+        sve $i$, dakle $x\opt$ zadovoljava \textbf{sva} izvorna ograničenja
+        $\to$ $x\opt \in \Feas$ i skup nije prazan. Bonus: dobili smo i
+        konkretnu dopuštenu točku.
+  \item \textbf{Ako je $t\opt > 0$:} ne postoji nijedan $x$ za koji su sva
+        $g_i(x) \le 0$ (jer bi za takav $x$ vrijednost $t = 0$ bila dopuštena i
+        dala manji cilj od $t\opt$) $\to$ $\Feas$ \textbf{je prazan}.
+\end{itemize}
+
+\begin{napomena}[faza I]
+Ovaj se postupak zove \textbf{faza I} (engl.\ \emph{phase I}) i standardni je
+prvi korak svakog ozbiljnog optimizacijskog algoritma: prije nego što tražimo
+\emph{najbolju} dopuštenu točku, moramo naći \emph{bilo koju}. Uočite i
+tehniku: \textbf{uvođenje pomoćne varijable koja „gura” min--max u obični min}
+--- istu ćemo tehniku sresti kod norma (Vježbe 2, poglavlje~\ref{ch:definicije})
+i kod robusnog optimiranja (poglavlje~\ref{ch:robusno}).
+\end{napomena}
+
+% =====================================================================
+\section{Sažetak poglavlja}
+
+\textbf{Što morate znati napamet nakon ovog poglavlja:}
+
+\begin{enumerate}
+  \item \textbf{Standardna forma:} $\min f(x)$ uz $h(x) = 0$, $g(x) \le 0$; što
+        je $x$, $f$, $h$, $g$, i što je dozvoljeni skup
+        $\Feas = \{x \mid h(x)=0,\, g(x)\le 0\}$.
+  \item \textbf{Definicija optimalnog rješenja} $x\opt$ (dopustivo \emph{i}
+        najmanji $f$).
+  \item \textbf{Nivo krivulja} $\{x \mid f(x) = c\}$ i kako se iz slike nivo
+        krivulja $+$ dozvoljenog skupa očita optimum
+        (odjeljak~\ref{sec:uvodni-primjer}).
+  \item \textbf{Prevođenje u standardnu formu:} premještanje konstante na lijevu
+        stranu, okretanje „$\ge$” množenjem s $-1$,
+        $\max f \Leftrightarrow \min(-f)$.
+  \item \textbf{Recept klasične analize} (eliminacija ograničenja jednakosti
+        uvrštavanjem $+$ $F' = 0$ $+$ provjera s $F''$) --- i svijest da on ne
+        funkcionira općenito, zbog čega nam trebaju
+        poglavlja~\ref{ch:uvjeti}~i~\ref{ch:dualnost}.
+  \item \textbf{Problem dopustivosti} \eqref{eq:dopustivost} i njegova
+        interpretacija.
+\end{enumerate}
+
+\textbf{Terminologija (hrvatski $\leftrightarrow$ engleski):}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Hrvatski} & \textbf{Engleski} \\
+\midrule
+projektne varijable / varijable odluke & decision variables \\
+funkcija cilja / ciljna funkcija & objective function \\
+ograničenja jednakosti & equality constraints \\
+ograničenja nejednakosti & inequality constraints \\
+dozvoljeni skup / dozvoljeno područje & feasible set \\
+nivo krivulja & level curve / contour \\
+dimenzionalna optimizacija & size optimization \\
+optimiranje oblika & shape optimization \\
+topološka optimizacija & topology optimization \\
+\bottomrule
+\end{tabular}
+\end{center}

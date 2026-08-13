@@ -1,0 +1,139 @@
+% =====================================================================
+%  Preambula skripte -- A4, za ispis
+% =====================================================================
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{polyglossia}
+\setdefaultlanguage{croatian}
+\setotherlanguage{english}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{microtype}
+
+\usepackage[
+  a4paper,
+  top=2.4cm, bottom=2.4cm, left=2.6cm, right=2.6cm,
+  headheight=14pt, footskip=1.1cm
+]{geometry}
+
+\usepackage{graphicx}
+\graphicspath{{figures/}{../figures/}}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{caption}
+
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={Optimizacijske metode u razvoju i upravljanju sustava --- skripta},
+  pdfauthor={Skripta sastavljena iz predavanja i vjezbi},
+  bookmarksnumbered=true
+}
+
+% --------------------------------------------------------------- boje
+\definecolor{fsbcrvena}{HTML}{9B1B30}
+\definecolor{tamnoplava}{HTML}{1F3864}
+\definecolor{svijetlosiva}{HTML}{F2F2F2}
+\definecolor{zelena}{HTML}{1E6B3A}
+\definecolor{narancasta}{HTML}{B35C00}
+
+% ------------------------------------------------------- naslovi
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{fsbcrvena}}
+  {\Large\MakeUppercase{\chaptertitlename} \thechapter}{10pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-20pt}{28pt}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{tamnoplava}}{\thesection}{0.7em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{tamnoplava}}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsection}{0.7em}{}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+
+% ------------------------------------------------------- zaglavlje
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\nouppercase{\leftmark}}
+\fancyhead[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}%
+  \renewcommand{\headrulewidth}{0pt}}
+
+% ------------------------------------------------------- razmaci
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\renewcommand{\arraystretch}{1.15}
+\setlist{itemsep=0.25em, topsep=0.35em, parsep=0pt}
+
+% =====================================================================
+%  Okviri za tipove sadrzaja
+% =====================================================================
+
+\newtcolorbox[auto counter, number within=chapter]{definicija}[1][]{%
+  enhanced, breakable, colback=svijetlosiva, colframe=tamnoplava,
+  boxrule=0.9pt, arc=2pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries\color{white},
+  title={Definicija~\thetcbcounter\ifstrempty{#1}{}{: #1}}}
+
+\newtcolorbox[auto counter, number within=chapter]{teorem}[1][]{%
+  enhanced, breakable, colback=white, colframe=fsbcrvena,
+  boxrule=0.9pt, arc=2pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries\color{white},
+  title={Teorem~\thetcbcounter\ifstrempty{#1}{}{: #1}}}
+
+\newtcolorbox[auto counter, number within=chapter]{zadatak}[1][]{%
+  enhanced, breakable, colback=white, colframe=zelena,
+  boxrule=1.1pt, arc=2pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries\color{white},
+  title={Zadatak~\thetcbcounter\ifstrempty{#1}{}{ --- #1}}}
+
+\newtcolorbox{napomena}[1][]{%
+  enhanced, breakable, colback=white, colframe=narancasta,
+  boxrule=0.6pt, arc=2pt, left=8pt, right=8pt, top=5pt, bottom=5pt,
+  borderline west={2.5pt}{0pt}{narancasta},
+  fonttitle=\bfseries,
+  title={\color{narancasta}Napomena\ifstrempty{#1}{}{: #1}}}
+
+\newtcolorbox{izvor}[1][]{%
+  enhanced, breakable, colback=svijetlosiva, colframe=svijetlosiva,
+  boxrule=0pt, arc=1pt, left=8pt, right=8pt, top=5pt, bottom=5pt,
+  borderline west={2.5pt}{0pt}{tamnoplava}}
+
+% okvir za upute za rucno crtanje grafa
+\newtcolorbox{crtanje}[1][]{%
+  enhanced, breakable, colback=white, colframe=tamnoplava,
+  boxrule=0.6pt, arc=2pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries\color{white},
+  title={Kako to nacrtati rukom\ifstrempty{#1}{}{: #1}}}
+
+% =====================================================================
+%  Kratice za matematiku
+% =====================================================================
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Feas}{\mathcal{F}}
+\newcommand{\T}{^{\top}}
+\newcommand{\opt}{^{\star}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\uzogr}{\text{uz ograničenja}\quad}
+\newcommand{\minim}{\text{minimiziraj}\quad}
+
+% oznaka izvorne stranice u slajdovima
+\newcommand{\str}[1]{\textcolor{gray}{\footnotesize[str.~#1]}}

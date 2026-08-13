@@ -1,0 +1,101 @@
+% =====================================================================
+%  Optimizacijske metode u razvoju i upravljanju sustava
+%  Skripta za ucenje, sastavljena iz predavanja 01-08 i vjezbi 1-5
+%  Format: A4, za ispis
+% =====================================================================
+\documentclass[11pt,a4paper,oneside]{report}
+
+\input{preambula}
+
+\begin{document}
+
+% ------------------------------------------------------- naslovnica
+\begin{titlepage}
+\centering
+\vspace*{2.5cm}
+
+{\Huge\bfseries\color{fsbcrvena} Optimizacijske metode\\[0.3cm]
+u razvoju i upravljanju sustava\par}
+
+\vspace{1.2cm}
+{\LARGE\bfseries Skripta za učenje\par}
+
+\vspace{0.6cm}
+{\large Cjelovita obrada gradiva --- od nule do ispita\par}
+
+\vspace{2.5cm}
+\rule{0.75\textwidth}{0.8pt}
+
+\vspace{0.8cm}
+\begin{minipage}{0.8\textwidth}
+\centering\large
+Skripta je sastavljena \textbf{isključivo} iz materijala kolegija:
+predavanja 01--08 i vježbi 1--5.\\[0.5em]
+\normalsize
+Svaka definicija, formula, izvod i postupak rješavanja preuzeti su iz
+izvornika i raspisani korak po korak. Ništa nije nadopunjeno iz drugih
+izvora; sva odstupanja od izvornika izričito su označena.
+\end{minipage}
+
+\vspace{0.8cm}
+\rule{0.75\textwidth}{0.8pt}
+
+\vfill
+{\large Sveučilište u Zagrebu --- Fakultet strojarstva i brodogradnje\par}
+\vspace{0.3cm}
+{\large Nositelj kolegija: prof.\ dr.\ sc.\ Andrej Jokić\par}
+\vspace{1.2cm}
+\end{titlepage}
+
+% ------------------------------------------------------- kako koristiti
+\chapter*{Kako koristiti ovu skriptu}
+\addcontentsline{toc}{chapter}{Kako koristiti ovu skriptu}
+\markboth{Kako koristiti ovu skriptu}{}
+
+Skripta pretpostavlja \textbf{nikakvo} predznanje iz optimizacije. Svaki pojam
+objašnjen je pri prvom spominjanju: što je, kako se označava i zašto je bitan.
+
+\textbf{Kako je gradivo posloženo.} Poglavlja slijede redoslijed predavanja
+(01--08). Zadaci s vježbi \emph{nisu} skupljeni na kraju, nego su ugrađeni
+odmah iza teorije koju koriste. Zadatak koji dodiruje više tema razlomljen je
+po podzadacima, pa svaki podzadatak stoji uz svoju teoriju.
+
+\textbf{Tipovi okvira u tekstu:}
+
+\begin{itemize}
+  \item \textcolor{tamnoplava}{\textbf{Definicija}} --- pojam koji morate znati
+        točno onako kako je zapisan.
+  \item \textcolor{fsbcrvena}{\textbf{Teorem}} --- tvrdnja iz predavanja, s
+        objašnjenjem što znači i kako se koristi.
+  \item \textcolor{zelena}{\textbf{Zadatak}} --- zadatak s vježbi, s potpunim
+        rješenjem raspisanim korak po korak.
+  \item \textcolor{narancasta}{\textbf{Napomena}} --- upozorenje, česta greška
+        ili tipfeler u izvorniku.
+  \item \textbf{Kako to nacrtati rukom} --- inkrementalne upute za crtanje
+        grafa, korak po korak, do potpune slike.
+\end{itemize}
+
+\textbf{Oznake stranica.} Uz naslove i tvrdnje stoji oznaka poput \str{15}
+koja pokazuje stranicu izvornog PDF-a odakle je sadržaj preuzet, da možete
+provjeriti original.
+
+\textbf{Napomena o izvorniku.} Prezentacije su rađene u Beameru, pa se većina
+slajdova pojavljuje u više „inkrementalnih” verzija (isti slajd koji se gradi
+natuknicu po natuknicu). Takvi nizovi ovdje su sažeti u jedan potpuni
+odjeljak, ali nijedna natuknica nije izostavljena.
+
+\clearpage
+\tableofcontents
+\clearpage
+
+% ------------------------------------------------------- poglavlja
+\include{poglavlja/01-uvod}
+\include{poglavlja/02-definicije-klasifikacija-konveksnost}
+\include{poglavlja/03-uvjeti-optimalnosti}
+\include{poglavlja/04-lagrangeova-dualnost}
+\include{poglavlja/05-lp-qp}
+\include{poglavlja/06-qcp-sdp}
+\include{poglavlja/07-dinamicki-sustavi-ljapunov-disipativnost}
+\include{poglavlja/08-robusno-optimiranje}
+
+\end{document}
