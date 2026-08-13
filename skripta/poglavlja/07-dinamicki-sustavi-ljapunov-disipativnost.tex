@@ -1,4 +1,1407 @@
-\chapter{Dinamicki sustavi, Ljapunov, disipativnost}
+\chapter{Dinamički sustavi, Ljapunov, disipativnost}
 \label{ch:dinamicki}
 
-\emph{Poglavlje je u izradi.}
+\begin{izvor}
+\textbf{Izvori:} \texttt{07\_Dinamicki\_sustavi\_Ljapunov\_disipativnost.pdf}
+(str.\ 1--55) i \texttt{Vjezbe\_5.pdf} (str.\ 5--7: Zadatak 2) --- oboje
+obrađeno u cijelosti.
+\end{izvor}
+
+Ovo je poglavlje u kojem se cijeli kolegij spaja: pitanja iz teorije upravljanja
+(je li sustav stabilan? kako projektirati regulator? koliko energije sustav
+troši?) prevode se u \textbf{LMI-jeve} iz poglavlja~\ref{ch:qcpsdp} i time
+postaju rješiva SDP-om.
+
+% =====================================================================
+\section{Stabilnost dinamičkih sustava}
+\str{4}
+
+\textbf{Uvodne napomene sa slajda:}
+
+\begin{itemize}
+  \item Za dinamičke sustave postoji niz različitih definicija stabilnosti.
+  \item Mi ćemo se uglavnom referirati na definicije vezane uz reprezentaciju
+        dinamičkih sustava \textbf{u prostoru stanja}
+        \[
+        \dot x(t) = Ax(t), \qquad
+        \dot x(t) = A(t)x(t), \qquad
+        \dot x(t) = f(t, x(t)), \qquad x(t_0) = 0
+        \]
+        a koje govore o ponašanju varijabli stanja $x(t)$ za $t \to \infty$ u
+        ovisnosti o početnim uvjetima $x_0$.
+\end{itemize}
+
+\begin{definicija}[Eksponencijalna stabilnost]
+Eksponencijalna stabilnost znači da postoje realne konstante $a > 0$
+(\textbf{brzina opadanja}) i $K$, takve da vrijedi
+\[
+\|x(t)\| \le \|x(t_0)\|\,K e^{-a(t-t_0)}
+\]
+za sve trajektorije i za svaki $t \ge t_0$.
+
+Pretpostavka je da $a$ i $K$ \textbf{ne ovise} o $t_0$ i o $x(t_0)$
+(\textbf{uniformnost}).
+\end{definicija}
+
+\textbf{Objašnjenje od nule.}
+
+\begin{itemize}
+  \item \textbf{Prostor stanja:} $x(t) \in \R^n$ je vektor \emph{varijabli
+        stanja} --- najmanji skup veličina koji potpuno opisuje trenutno stanje
+        sustava (npr.\ položaj i brzina). Jednadžba $\dot x = Ax$ kaže kako se
+        stanje mijenja u vremenu; točka iznad slova označava derivaciju po
+        vremenu.
+  \item \textbf{Stabilnost} znači da se sustav sam vraća u ravnotežu
+        ($x = 0$). \emph{Eksponencijalna} stabilnost je jaka verzija: povratak
+        mora biti barem toliko brz koliko opada $e^{-at}$.
+  \item Konstanta $K$ dopušta da odziv privremeno \emph{poraste} prije nego
+        počne padati (tzv.\ \emph{overshoot}); važno je samo da ga omeđuje
+        padajuća eksponencijala.
+\end{itemize}
+
+% =====================================================================
+\section{Ljapunovljev uvjet za LTI sustave}
+\label{sec:ljapunov}
+\str{5--6}
+
+\begin{teorem}[Stabilnost LTI sustava]
+Linearno vremenski invarijantan sustav
+\[
+\dot x(t) = Ax(t)
+\]
+je \textbf{eksponencijalno stabilan ako i samo ako} postoji $P$ tako da vrijedi
+\begin{equation}
+\label{eq:ljapunov}
+P \succ 0 \qquad\text{i}\qquad A\T P + PA \prec 0.
+\end{equation}
+\end{teorem}
+
+\textbf{Ekvivalentan zapis gornje dvije nejednakosti} \str{6}:
+\[
+\begin{pmatrix} -P & 0 \\ 0 & A\T P + PA \end{pmatrix} \prec 0.
+\]
+
+\textbf{Ovo je linearna matrična nejednadžba (LMI) u $P$!}
+
+\begin{napomena}[zašto je ovo velika stvar]
+Pitanje „je li sustav stabilan?” obično se rješava računanjem svojstvenih
+vrijednosti od $A$ i provjerom da su sve u lijevoj poluravnini. Ljapunovljev
+uvjet daje \emph{alternativu}: traži se matrica $P$.
+
+Na prvi pogled to je teže --- umjesto računanja svojstvenih vrijednosti tražimo
+$n(n+1)/2$ nepoznanica. Ali dobitak je golem:
+\begin{itemize}
+  \item uvjet je \textbf{LMI}, dakle konveksan --- može se \emph{kombinirati} s
+        drugim LMI-jevima (robusnost, performanse, sinteza) u jedan SDP;
+  \item svojstvene vrijednosti \emph{ne} bi se dale tako kombinirati --- one su
+        nelinearna i nekonveksna funkcija elemenata od $A$.
+\end{itemize}
+Cijelo ostatak poglavlja iskorištava upravo tu činjenicu. Uočite i da smo istu
+LMN već sreli u odjeljku~\ref{sec:lmi} \str{6:22} kao primjer matrične
+varijable.
+\end{napomena}
+
+\subsection{Dokaz 1: „putem trajektorija”}
+\str{7--10}
+
+Ovo je dokaz \emph{dovoljnosti} LMI uvjeta za stabilnost.
+
+\textbf{Korak 1.} Zbog striktne nejednakosti $A\T P + PA \prec 0$ postoji realan
+broj $\epsilon > 0$ takav da vrijedi $A\T P + PA \prec -\epsilon P$. Neka je
+$x(\cdot)$ proizvoljna trajektorija stanja sustava. Tada vrijedi
+\[
+x(t)\T(A\T P + PA)x(t) \le -\epsilon\,x(t)\T Px(t) \qquad\text{za sve } t \in \R
+\]
+
+\emph{Zašto takav $\epsilon$ postoji:} lijeva strana je strogo negativno
+definitna, a $P$ je pozitivno definitna; za dovoljno mali $\epsilon$ „mali dio”
+od $P$ ne može poništiti stroga negativnost.
+
+\textbf{Korak 2.} Uz $\dot x(t) = Ax(t)$ imamo
+\[
+\frac{\dd}{\dd t}\big(x(t)\T Px(t)\big) \le -\epsilon\,x(t)\T Px(t)
+\qquad\text{za sve } t \in \R
+\]
+
+\emph{Raspis derivacije (na slajdu nije prikazan):}
+\begin{align}
+\frac{\dd}{\dd t}\big(x\T Px\big)
+&= \dot x\T Px + x\T P\dot x
+&& \text{(pravilo umnoška)} \\
+&= (Ax)\T Px + x\T P(Ax)
+&& \text{(uvrstimo } \dot x = Ax) \\
+&= x\T A\T Px + x\T PAx
+= x\T(A\T P + PA)x
+\end{align}
+\checkmark \; Zatim se primijeni korak 1.
+
+\textbf{Korak 3.} Uz definiciju $V(t) = V(x(t)) = x(t)\T Px(t)$ imamo
+$\dot V(t) \le -\epsilon V(t)$, pa slijedi $V(t) \le V(t_0)e^{-\epsilon(t-t_0)}$
+za sve $t \ge t_0$, odnosno imamo
+\begin{equation}
+\label{eq:V-pada}
+x(t)\T Px(t) \le x(t_0)\T Px(t_0)\,e^{-\epsilon(t-t_0)}
+\qquad\text{za sve } t \ge t_0
+\tag{$\spadesuit$}
+\end{equation}
+
+\emph{Zašto iz $\dot V \le -\epsilon V$ slijedi eksponencijalno opadanje:} to je
+\textbf{Grönwallova} nejednakost. Intuitivno: da je jednakost, rješenje bi bilo
+točno $V(t_0)e^{-\epsilon(t-t_0)}$; nejednakost „$\le$” može dati samo brže
+opadanje.
+
+\textbf{Korak 4.} Uz poznate nejednakosti
+$\lambda_{\min}(P)\|x\|^2 \le x\T Px \le \lambda_{\max}(P)\|x\|^2$, nejednakost
+\eqref{eq:V-pada} implicira
+$\lambda_{\min}\|x(t)\|^2 \le \lambda_{\max}\|x(t_0)\|^2e^{-\epsilon(t-t_0)}$,
+odnosno
+\[
+\|x(t)\| \le \|x(t_0)\|\sqrt{\frac{\lambda_{\max}(P)}{\lambda_{\min}(P)}}\,
+e^{-\frac{\epsilon}{2}(t-t_0)}
+\]
+
+\begin{napomena}[usporedba s definicijom eksponencijalne stabilnosti]
+Dobili smo točno traženi oblik, uz
+$K = \sqrt{\lambda_{\max}(P)/\lambda_{\min}(P)}$ i brzinu opadanja
+$a = \epsilon/2$.
+
+\emph{Napomena o eksponentu:} na slajdu 10 stoji $e^{-\epsilon(t-t_0)}$ u
+zadnjem retku. Budući da se korjenuje nejednakost s $\|x\|^2$, ispravno je
+$e^{-\frac{\epsilon}{2}(t-t_0)}$ --- korijen eksponencijale prepolovi eksponent.
+Zaključak (eksponencijalna stabilnost) se time ne mijenja.
+\end{napomena}
+
+\subsection{Geometrijsko čitanje: nivo skupovi su invarijantni}
+\str{11--13}
+
+Slajd 11 daje lanac ekvivalencija:
+\[
+A\T P + PA \prec 0
+\quad\underset{\text{množenje s } x\T,\, x}{\Updownarrow}\quad
+\dot x\T Px + (Px)\T\dot x < 0
+\quad\Updownarrow\quad
+\dot x\T\nabla V(x) < 0
+\]
+uz $V(x) = x\T Px$, $\nabla V(x) = Px$.
+
+\begin{teorem}[Invarijantnost nivo skupa]
+Nivo skup Ljapunovljeve funkcije $\{\, x \mid V(x) \le c \,\}$ je
+\textbf{invarijantan skup} trajektorija sustava (jednom kad trajektorija uđe u
+taj skup, stalno ostaje u njemu).
+\end{teorem}
+
+\textbf{Kako to čitati.} $\nabla V(x)$ je okomit na nivo krivulju i pokazuje
+prema \emph{van} (odjeljak~\ref{sec:gradijent}). Uvjet
+$\dot x\T\nabla V(x) < 0$ znači da vektor brzine $\dot x$ zatvara \emph{tup} kut
+s vanjskom normalom --- dakle trajektorija u svakoj točki pokazuje prema
+\textbf{unutra}. Zato ne može izaći iz nivo skupa.
+
+\begin{napomena}[oznaka gradijenta]
+Slajd piše $\nabla V(x) = Px$. Točan gradijent kvadratne forme $x\T Px$ (uz
+simetričan $P$) je $2Px$; faktor 2 ne mijenja \emph{smjer}, pa ni zaključak o
+predznaku skalarnog produkta.
+\end{napomena}
+
+\textbf{Brojčani primjer} \str{12}\textbf{.} Dinamički sustav:
+\[
+\begin{pmatrix}\dot x_1\\ \dot x_2\end{pmatrix}
+= \begin{pmatrix}-1 & 2\\ -3 & -4\end{pmatrix}
+\begin{pmatrix}x_1\\ x_2\end{pmatrix}
+\]
+
+Izračunata matrica $P$:
+\[
+P = \begin{pmatrix}0{,}6777 & 0{,}0584\\ 0{,}0584 & 0{,}3223\end{pmatrix}
+\]
+
+Ljapunovljeva funkcija:
+\[
+V(x) = \begin{pmatrix}x_1\\x_2\end{pmatrix}\T
+\begin{pmatrix}0{,}6777 & 0{,}0584\\ 0{,}0584 & 0{,}3223\end{pmatrix}
+\begin{pmatrix}x_1\\x_2\end{pmatrix}
+\]
+
+\emph{Provjera (napravljena skriptom \texttt{scripts/fig\_07\_dinamicki.py}):}
+svojstvene vrijednosti matrice $A\T P + PA$ iznose $-2{,}359$ i $-1{,}692$,
+dakle obje su negativne $\Rightarrow$ $A\T P + PA \prec 0$. \checkmark
+Uz to su svojstvene vrijednosti od $P$ pozitivne, pa je $P \succ 0$.
+
+Slajd 13 sadrži MATLAB kod kojim je slika generirana (samo kao slika, bez
+tekstualnog sloja).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.68\textwidth]{07-ljapunov.png}
+\caption{Nivo skupovi $V(x)=x\T Px$ (plavo, elipse) i trajektorije sustava
+(crveno) uz vektorsko polje. Trajektorije svugdje presijecaju elipse prema
+\emph{unutra} --- to je geometrijski sadržaj uvjeta $A\T P + PA \prec 0$.}
+\end{figure}
+
+\subsection{Dokaz 2: algebarski}
+\str{14--22}
+
+\subsubsection*{Dovoljnost}
+\str{14--16}
+
+\textbf{Tvrdnja:} $\dot x = Ax$ stabilno (tj.\ $\operatorname{Re}(\lambda_i(A))
+< 0$, odnosno $\lambda_i(A) \in \mathbb{C}^-$ za sve svojstvene vrijednosti
+$\lambda_i$) $\;\Leftarrow\;$ postoji $P$: $P \succ 0$, $A\T P + PA \prec 0$.
+
+\textbf{Korak 1.} Neka je $\lambda$ svojstvena vrijednost od $A$, a $x \ne 0$
+pripadajući svojstveni vektor ($Ax = \lambda x$), koji može biti kompleksan
+vektor (imati elemente iz $\mathbb{C}$).
+
+\textbf{Korak 2.} Nejednakost $P \succ 0$ implicira $x^{*}Px > 0$, gdje je
+$x^{*}$ transponiran i konjugiran vektor $x$.
+
+\textbf{Korak 3.} Nejednakost $A\T P + PA \prec 0$ implicira
+\[
+0 > x^{*}(A\T P + PA)x = \bar\lambda\,x^{*}Px + x^{*}Px\,\lambda
+= 2\operatorname{Re}(\lambda)\,x^{*}Px
+\]
+
+\emph{Raspis:} $x^{*}A\T Px = (Ax)^{*}Px = (\lambda x)^{*}Px
+= \bar\lambda x^{*}Px$; slično $x^{*}PAx = x^{*}P\lambda x = \lambda x^{*}Px$.
+Zbroj je $(\bar\lambda + \lambda)x^{*}Px = 2\operatorname{Re}(\lambda)x^{*}Px$
+--- jer je zbroj kompleksnog broja i njegova konjugata dvostruki realni dio.
+\checkmark
+
+\textbf{Korak 4.} Budući da je $x^{*}Px > 0$, nužno vrijedi
+$\operatorname{Re}(\lambda) < 0$.
+
+\textbf{Zaključak:} sve svojstvene vrijednosti od $A$ su u lijevoj kompleksnoj
+poluravnini $\mathbb{C}^-$. $\blacksquare$
+
+\subsubsection*{Nužnost, slučaj 1: $A$ se može dijagonalizirati}
+\str{17--19}
+
+Pretpostavimo da je sustav stabilan, tj.\ da su sve svojstvene vrijednosti
+$\lambda_i$, $i = 1,\dots,n$ u $\mathbb{C}^-$. Ako se $A$ može
+dijagonalizirati, postoji kompleksna nesingularna matrica $T$ tako da je
+\[
+TAT^{-1} = \Lambda = \diag(\lambda_1,\dots,\lambda_n).
+\]
+
+Budući da je $\operatorname{Re}(\lambda_i) < 0$ za sve $i = 1,\dots,n$, imamo
+\[
+\Lambda^{*} + \Lambda \prec 0
+\qquad\text{i stoga}\qquad
+(T^{*})^{-1}A\T T^{*} + TAT^{-1} \prec 0.
+\]
+
+\emph{Zašto je $\Lambda^{*} + \Lambda \prec 0$:} to je dijagonalna matrica s
+elementima $\bar\lambda_i + \lambda_i = 2\operatorname{Re}(\lambda_i) < 0$.
+\checkmark
+
+Ako gornju nejednadžbu pomnožimo s lijeva s $T^{*}$ i s desna s $T$
+(\textbf{transformacija kongruencije}, odjeljak~\ref{sec:kongruencija})
+dobivamo
+\[
+A\T(T^{*}T) + (T^{*}T)A \prec 0.
+\]
+
+\textbf{Matrica $P = T^{*}T \succ 0$ stoga zadovoljava $A\T P + PA \prec 0$.}
+$\blacksquare$
+
+\subsubsection*{Nužnost, slučaj 2: $A$ se ne može dijagonalizirati}
+\str{20--22}
+
+U ovom slučaju postoji regularna matrica $T$ takva da je $TAT^{-1}$ u
+\textbf{Jordanovoj formi}: $TAT^{-1} = \Lambda + J$, gdje je $\Lambda$
+dijagonalna matrica sa svojstvenim vrijednostima na dijagonali, a $J$ ima ili
+nule ili jedinice na prvoj dijagonali iznad glavne dijagonale
+(\emph{objašnjenje na ploči}).
+
+Za proizvoljan $\epsilon > 0$ može se pronaći takav $T_\epsilon$ da je
+$T_\epsilon AT_\epsilon^{-1} = \Lambda + \epsilon J$.
+
+Budući da je sustav stabilan, vrijedi $\Lambda^{*} + \Lambda \prec 0$. Tada
+uvijek možemo uzeti dovoljno malen $\epsilon > 0$ tako da vrijedi
+\[
+0 \succ \Lambda^{*} + \Lambda + \epsilon(J\T + J)
+= (\Lambda + \epsilon J)^{*} + (\Lambda + \epsilon J)
+= (T_\epsilon^{*})^{-1}A\T T_\epsilon^{*} + T_\epsilon AT_\epsilon^{-1}
+\]
+
+Sad, analogno kao u slučaju 1, možemo zaključiti da matrica
+$P = T_\epsilon^{*}T_\epsilon \succ 0$ zadovoljava $A\T P + PA \prec 0$.
+$\blacksquare$
+
+\begin{napomena}[ideja $\epsilon$-trika]
+Jordanova forma ima jedinice iznad dijagonale koje „kvare” negativnu
+definitnost. Skaliranjem baze (matrica $T_\epsilon$) te se jedinice mogu
+proizvoljno smanjiti na $\epsilon$, a dijagonala ostaje ista. Budući da je
+dijagonalni dio \emph{strogo} negativan, dovoljno mali $\epsilon$ ne može ga
+poništiti.
+\end{napomena}
+
+\subsection{Diskretno vrijeme}
+\str{23}
+
+\begin{teorem}[Stabilnost vremenski diskretnih linearnih sustava]
+Linearno vremenski invarijantan dinamički sustav u diskretnom vremenu
+\[
+x(t+1) = Ax(t), \qquad t = 0,1,2,\dots
+\]
+je eksponencijalno stabilan \textbf{ako i samo ako} postoji simetrična matrica
+$P$ takva da vrijedi
+\begin{equation}
+\label{eq:ljapunov-diskretno}
+P \succ 0 \qquad\text{i}\qquad A\T PA - P \prec 0.
+\end{equation}
+\end{teorem}
+
+\textbf{Objašnjenje sa slajda.} Množenje s lijeva s $x(t)\T$ i s desna s $x(t)$
+nejednakost $A\T PA - P \prec 0$ implicira
+\[
+x(t+1)\T Px(t+1) < x(t)\T Px(t)
+\]
+tj.\ \textbf{pad vrijednosti Ljapunovljeve funkcije} $V(t) = x(t)\T Px(t)$ pri
+prijelazu s vremenskog trenutka $t$ u sljedeći trenutak $t+1$.
+
+\emph{Raspis:} $x(t)\T A\T PAx(t) = (Ax(t))\T P(Ax(t)) = x(t+1)\T Px(t+1)$.
+\checkmark
+
+\textbf{Prisjetimo se} (sa slajda), analogna nejednakost za kontinuirano
+vrijeme je $A\T P + PA \prec 0$ koja implicira $\frac{\dd}{\dd t}V(x(t)) < 0$,
+gdje je $V(x) = x\T Px$ Ljapunovljeva funkcija.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+& \textbf{kontinuirano} & \textbf{diskretno} \\
+\midrule
+dinamika & $\dot x = Ax$ & $x(t+1) = Ax(t)$ \\
+Ljapunovljev uvjet & $A\T P + PA \prec 0$ & $A\T PA - P \prec 0$ \\
+značenje & $\dot V < 0$ & $V(t+1) < V(t)$ \\
+stabilnost $\Leftrightarrow$ & $\operatorname{Re}\lambda_i < 0$
+  & $|\lambda_i| < 1$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% =====================================================================
+\section{Robusna stabilnost}
+\label{sec:robusna-stabilnost}
+\str{25--26}
+
+\subsection{Kvadratna stabilnost}
+\str{25}
+
+\begin{definicija}[Kvadratna stabilnost]
+Za zadani kompaktan (zatvoren i ograničen) skup
+$\mathcal{A} \subset \R^{n\times n}$, promotrimo skup dinamičkih sustava
+\[
+\dot x(t) = Ax(t), \qquad A \in \mathcal{A}.
+\]
+Kažemo da je skup sustava zadan s $\mathcal{A}$ \textbf{kvadratno stabilan},
+ako postoji simetrična matrica $P$ takva da vrijedi
+\begin{equation}
+\label{eq:kvadratna-stabilnost}
+P \succ 0, \qquad A\T P + PA \prec 0 \quad\text{za sve } A \in \mathcal{A}
+\end{equation}
+\end{definicija}
+
+\textbf{Tvrdnje sa slajda:}
+
+\begin{itemize}
+  \item Funkcija $V(x) = x\T Px$ je \textbf{kvadratna Ljapunovljeva funkcija}
+        za sustave $\mathcal{A}$ (stoga naziv „kvadratna stabilnost”).
+  \item Implicira da su sve matrice $A \in \mathcal{A}$ stabilne
+        (\textbf{Hurwitzove} matrice $=$ sve svojstvene vrijednosti u
+        $\mathbb{C}^-$).
+  \item Implicira da za sve po dijelovima kontinuirane vremenski promjenjive
+        $A(t) \in \mathcal{A}$, vremenski promjenjiv sustav
+        $\dot x(t) = A(t)x(t)$ je \textbf{eksponencijalno stabilan}.
+\end{itemize}
+
+\begin{napomena}[ključna riječ: \emph{ista} matrica $P$]
+Uvjet ne traži samo da je svaki pojedini sustav $A \in \mathcal{A}$ stabilan,
+nego da svi dijele \textbf{jednu te istu} Ljapunovljevu funkciju. To je
+\emph{strože} --- ali baš zato pokriva i slučaj kad se $A$ mijenja \emph{u
+vremenu}: energija $V$ pada bez obzira koji je $A$ trenutno na snazi.
+
+Zbog te strogosti kvadratna stabilnost može biti \emph{konzervativna}: postoje
+skupovi u kojima je svaka matrica stabilna, a zajednički $P$ ne postoji.
+\end{napomena}
+
+\subsection{Redukcija na konačno mnogo LMI-jeva}
+\str{26}
+
+\textbf{Problem sa slajda:} ako skup $\mathcal{A}$ ima beskonačno puno
+elemenata, provjera kvadratne stabilnosti zahtijevala bi provjeru beskonačno
+puno LMI-jeva.
+
+\textbf{Ključno pitanje analize robusnosti:} \emph{kako reducirati problem na
+standardan LMI problem?}
+
+\textbf{Pretpostavka.} Neka je $\mathcal{A}$ konveksna ljuska konačnog skupa
+matrica $\{A_1,\dots,A_N\}$: za svaku $A \in \mathcal{A}$ postoje koeficijenti
+$\alpha_1 \ge 0,\dots,\alpha_N \ge 0$, gdje je $\alpha_1 + \dots + \alpha_N = 1$,
+takvi da je
+\[
+A = \alpha_1A_1 + \dots + \alpha_NA_N.
+\]
+
+\begin{teorem}[Kvadratna stabilnost za konveksnu ljusku]
+Neka je $\mathcal{A}$ konveksna ljuska konačnog skupa matrica
+$\{A_1,\dots,A_N\}$. Tada je skup $\mathcal{A}$ kvadratno stabilan
+\textbf{ako i samo ako} postoji simetrična matrica $P$ takva da vrijedi
+\begin{equation}
+\label{eq:vrhovi}
+P \succ 0 \qquad\text{i}\qquad
+A_i\T P + PA_i \prec 0 \quad\text{za sve } i = 1,\dots,N.
+\end{equation}
+\end{teorem}
+
+\textbf{Zašto to vrijedi} (dokaz nije na slajdu, ali slijedi u dva retka iz
+linearnosti):
+\begin{align}
+A\T P + PA
+&= \Big(\sum_i\alpha_iA_i\Big)\T P + P\Big(\sum_i\alpha_iA_i\Big) \\
+&= \sum_i \alpha_i\big(A_i\T P + PA_i\big) \prec 0
+\end{align}
+--- konveksna kombinacija (nenegativne težine koje se zbrajaju u 1) negativno
+definitnih matrica je opet negativno definitna. Obrat je trivijalan: vrhovi su
+i sami elementi skupa $\mathcal{A}$. $\blacksquare$
+
+\begin{napomena}[praktična vrijednost --- ovo je srce robusne analize]
+Beskonačno mnogo uvjeta svelo se na \textbf{$N$ LMI-jeva} --- po jedan za svaki
+vrh. To je sada obični SDP, koji rješavač riješi u trenutku.
+
+Uvjet za primjenu: skup nesigurnosti mora biti \textbf{politop} (konveksna
+ljuska konačno mnogo vrhova). To je vrlo često ispunjeno: ako parametar $b$
+ulazi u $A$ \emph{afino} i leži u intervalu
+$[b_{\min}, b_{\max}]$, onda je $A(b)$ upravo dužina između $A(b_{\min})$ i
+$A(b_{\max})$ --- dakle konveksna ljuska \emph{dvaju} vrhova. Točno to koristimo
+u Zadatku~\ref{zad:pendulum}.
+\end{napomena}
+
+% =====================================================================
+\section{Sinteza: „konveksifikacija”}
+\label{sec:sinteza}
+\str{28--33}
+
+Dosad smo \emph{analizirali} zadani sustav. Sada ga \emph{projektiramo}.
+
+\textbf{Primjer --- statička povratna sprega varijabli stanja} \str{28}:
+
+\begin{itemize}
+  \item \textbf{Sustav:} $\dot x = Ax + Bu$
+  \item \textbf{Regulator:} $u = Kx$
+  \item \textbf{Cilj:} odrediti matricu $K$ takvu da je zatvoreni krug stabilan.
+  \item \textbf{Zatvoreni krug:} $\dot x = (A + BK)x$
+\end{itemize}
+
+\emph{Objašnjenje:} $u$ je upravljački ulaz (npr.\ sila). „Statička povratna
+sprega varijabli stanja” znači da upravljanje računamo izravno iz trenutnog
+stanja, množenjem konstantnom matricom $K$. Uvrštavanjem $u = Kx$ u
+$\dot x = Ax + Bu$ dobiva se $\dot x = Ax + BKx = (A+BK)x$. \checkmark
+
+\subsection{Problem: uvjet nije LMI}
+\str{29--30}
+
+Uvjet stabilnosti zatvorenog kruga (Ljapunov \eqref{eq:ljapunov} primijenjen na
+$A + BK$):
+\[
+P \succ 0, \qquad (A + BK)\T P + P(A + BK) \prec 0
+\]
+odnosno
+\[
+P \succ 0, \qquad A\T P + K\T B\T P + PA + PBK \prec 0
+\]
+
+\textbf{$\to$ Nije LMI zbog umnoška varijabli $K$ i $P$!}
+
+\begin{napomena}[zašto je umnožak varijabli fatalan]
+LMI traži da uvjet bude \textbf{afin} u nepoznanicama. Članovi $K\T B\T P$ i
+$PBK$ su \textbf{bilinearni} --- umnožak dviju nepoznanica. Skup rješenja takve
+nejednakosti općenito \emph{nije konveksan}, pa je problem izvan svega što smo
+naučili rješavati. (Takvi se uvjeti zovu BMI, \emph{bilinear matrix
+inequality}, i općenito su NP-teški.)
+\end{napomena}
+
+\subsection{Rješenje: kongruencija i supstitucija}
+\str{31--32}
+
+\textbf{Korak 1 --- transformacija kongruencije s $P^{-1}$} \str{31}
+(množenje s lijeva s $(P^{-1})\T$ i s desna s $P^{-1}$; uočite
+$(P^{-1})\T = P^{-1}$):
+\[
+P^{-1} \succ 0, \qquad
+P^{-1}A\T + P^{-1}K\T B\T + AP^{-1} + BKP^{-1} \prec 0
+\]
+
+\emph{Zašto smijemo:} $P \succ 0$ je regularna, pa je i $P^{-1}$ regularna ---
+kongruencija čuva definitnost (odjeljak~\ref{sec:kongruencija}).
+
+\emph{Zašto je $(P^{-1})\T = P^{-1}$:} $P$ je simetrična, a inverz simetrične
+matrice je simetričan.
+
+\emph{Raspis jednog člana:} $P^{-1}(A\T P)P^{-1} = P^{-1}A\T$, jer se
+$PP^{-1} = I$ pokrati. Analogno za ostale.
+
+\textbf{Korak 2 --- supstitucija} \str{32}\textbf{.} Uz
+\[
+Q = P^{-1}, \qquad Y = KP^{-1}
+\]
+imamo
+\begin{equation}
+\label{eq:sinteza-lmi}
+Q \succ 0, \qquad QA\T + Y\T B\T + AQ + BY \prec 0
+\qquad \textbf{LMI!}
+\end{equation}
+
+\emph{Zašto je sada LMI:} nepoznanice su $Q$ i $Y$, i obje ulaze
+\textbf{linearno}. Bilinearni član $BKP^{-1}$ postao je $BY$ --- jedan
+\emph{jedini} simbol umjesto umnoška dviju nepoznanica.
+
+\subsection{Recept}
+\str{33}
+
+\begin{teorem}[Sinteza statičkog regulatora]
+\textbf{Rješenje:} riješi nejednakosti
+\[
+Q \succ 0, \qquad QA\T + Y\T B\T + AQ + BY \prec 0
+\]
+Iz dobivenih $Q$ i $Y$ izračunaj $K$:
+\[
+P = Q^{-1}, \qquad K = YP
+\]
+\end{teorem}
+
+\textbf{Napomena sa slajda:} $Q^{-1}$ nužno postoji jer je $Q \succ 0$.
+
+\emph{Provjera povratne supstitucije:} iz $Y = KP^{-1} = KQ$ slijedi
+$K = YQ^{-1} = YP$. \checkmark
+
+\begin{teorem}[Opća poruka poglavlja \str{33}]
+Čest pristup za sintezu: postave se uvjeti na zatvoreni krug (stabilnost,
+učinkovitost u određenom smislu, robusnost, \dots). Tipično ovi uvjeti
+\textbf{nisu} u obliku konveksnog opt.\ problema (nisu LMI-jevi), ali se često
+nizom transformacija (\textbf{kongruencije, supstitucije, Schurov komplement,
+S-lema}, \dots) mogu \textbf{„konveksificirati”} i tako svesti na rješiv oblik.
+\end{teorem}
+
+Slajd 34 najavljuje primjer robusne stabilizacije (samo naslov, bez sadržaja)
+--- to je upravo Zadatak 2 s Vježbi 5, koji slijedi.
+
+% =====================================================================
+\section{Vježbe 5, Zadatak 2: robusna stabilizacija}
+\label{sec:vj5-robusna}
+\str{V5:5--7}
+
+\begin{zadatak}[Vježbe 5, Zadatak 2: robusna stabilizacija obrnutog njihala]
+\label{zad:pendulum}
+\str{V5:5--7}
+
+\textbf{Parametri} \str{V5:5}:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Oznaka} & \textbf{Vrijednost} & \textbf{Značenje} \\
+\midrule
+$M$ & $0{,}5$ kg & masa vozička \\
+$m$ & $0{,}2$ kg & masa njihala \\
+$b$ & $\in[0{,}05;\ 0{,}5]$ N/m/s & koeficijent trenja vozička \\
+$l$ & $0{,}3$ m & duljina do centra mase njihala \\
+$I$ & $0{,}006$ kgm\textsuperscript{2} & moment inercije njihala \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Koeficijent trenja vozička je nesiguran i vremenski promjenjiv. Jedino
+što znamo je da se nalazi u gore naznačenom intervalu.}
+
+\textbf{Model dinamike} \str{V5:6}:
+\[
+\begin{pmatrix}\dot x\\ \ddot x\\ \dot\varphi\\ \ddot\varphi\end{pmatrix}
+=
+\begin{pmatrix}
+0 & 1 & 0 & 0 \\
+0 & -(I+ml^2)bc & m^2gl^2c & 0 \\
+0 & 0 & 0 & 1 \\
+0 & -mlbc & mgl(M+m)c & 0
+\end{pmatrix}
+\begin{pmatrix}x\\ \dot x\\ \varphi\\ \dot\varphi\end{pmatrix}
++
+\begin{pmatrix}0\\ (I+ml^2)c\\ 0\\ mlc\end{pmatrix} F
+\]
+gdje je $\varphi = \theta - \pi$ kut otklona njihala od uspravnog položaja
+$\theta = \pi$, a koeficijent $c$ iznosi
+\[
+c = \frac{1}{I(M+m) + Mml^2}
+\]
+
+\emph{Izvor modela (naveden na slajdu):}
+\texttt{https://ctms.engin.umich.edu/CTMS/index.php?example=}
+\texttt{InvertedPendulum\&section=SystemModeling}
+
+\textbf{Zadatak} \str{V5:7}\textbf{.} Potrebno je odrediti matricu $K$
+statičkog regulatora oblika
+\[
+F = \underbrace{\begin{pmatrix}k_1 & k_2 & k_3 & k_4\end{pmatrix}}_{K}
+\begin{pmatrix}x\\ \dot x\\ \varphi\\ \dot\varphi\end{pmatrix}
+\]
+takvu da je linearizirani sustav u zatvorenom krugu \textbf{stabilan za sve
+očekivane vrijednosti koeficijenta $b$}.
+
+\begin{napomena}[stanje izvornika]
+\texttt{Vjezbe\_5.pdf} sadrži \textbf{samo tekst zadatka} --- nema rješenja.
+Rješenje niže izvedeno je aparatom ovog poglavlja: kvadratna stabilnost na
+vrhovima \eqref{eq:vrhovi} plus sinteza supstitucijom \eqref{eq:sinteza-lmi}.
+Brojevi su dobiveni skriptom
+\texttt{skripta/scripts/solve\_vj5\_robusna.py}, koja je dio ovog
+repozitorija. Za ubrzanje sile teže uzeto je $g = 9{,}81$
+m/s\textsuperscript{2} (slajd ga ne navodi brojčano).
+\end{napomena}
+
+\subsection*{Korak 1 --- brojčane vrijednosti}
+
+\[
+c = \frac{1}{I(M+m) + Mml^2}
+= \frac{1}{0{,}006\cdot0{,}7 + 0{,}5\cdot0{,}2\cdot0{,}09}
+= \frac{1}{0{,}0042 + 0{,}009}
+= \frac{1}{0{,}0132} = 75{,}7576
+\]
+
+Pomoćne veličine:
+\[
+I + ml^2 = 0{,}006 + 0{,}2\cdot0{,}09 = 0{,}024, \qquad
+ml = 0{,}06
+\]
+\[
+m^2gl^2 = 0{,}04\cdot9{,}81\cdot0{,}09 = 0{,}035316, \qquad
+mgl(M+m) = 0{,}2\cdot9{,}81\cdot0{,}3\cdot0{,}7 = 0{,}41202
+\]
+
+Uvrštavanjem:
+\[
+A(b) = \begin{pmatrix}
+0 & 1 & 0 & 0 \\
+0 & -1{,}8182\,b & 2{,}6755 & 0 \\
+0 & 0 & 0 & 1 \\
+0 & -4{,}5455\,b & 31{,}2136 & 0
+\end{pmatrix},
+\qquad
+B = \begin{pmatrix}0\\ 1{,}8182\\ 0\\ 4{,}5455\end{pmatrix}
+\]
+
+\subsection*{Korak 2 --- politopski opis nesigurnosti}
+
+\textbf{Ključno zapažanje:} $b$ ulazi u $A(b)$ \textbf{afino} (samo množi neke
+elemente). Zato je, za $b \in [0{,}05;\ 0{,}5]$,
+\[
+A(b) \in \mathcal{A} = \operatorname{conv}\{\, A_1, A_2 \,\},
+\qquad A_1 := A(0{,}05), \quad A_2 := A(0{,}5)
+\]
+
+\emph{Provjera:} za $b = \alpha\cdot0{,}05 + (1-\alpha)\cdot0{,}5$ vrijedi
+$A(b) = \alpha A_1 + (1-\alpha)A_2$, jer je preslikavanje $b \mapsto A(b)$
+afino. \checkmark
+
+Time je beskonačan skup sveden na \textbf{dva vrha} --- točno situacija iz
+teorema \eqref{eq:vrhovi}.
+
+\textbf{Zašto je sustav uopće problem} (svojstvene vrijednosti vrhova):
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+$A(0{,}05)$ & $-5{,}5968$, \; $-0{,}0714$, \; $0$, \; $\mathbf{+5{,}5773}$ \\
+$A(0{,}5)$ & $-5{,}6994$, \; $-0{,}7111$, \; $0$, \; $\mathbf{+5{,}5014}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Svaki vrh ima \textbf{jednu strogo pozitivnu} svojstvenu vrijednost (njihalo
+pada) i \textbf{jednu nulu} (položaj vozička je integrator). Sustav je
+\textbf{nestabilan} i \emph{mora} se stabilizirati povratnom spregom.
+
+\subsection*{Korak 3 --- LMI problem sinteze}
+
+Spajanjem \eqref{eq:vrhovi} i \eqref{eq:sinteza-lmi}: tražimo $Q$ i $Y$ takve
+da vrijedi
+\begin{equation}
+\label{eq:pendulum-lmi}
+Q \succ 0, \qquad
+QA_i\T + Y\T B\T + A_iQ + BY \prec 0, \quad i = 1,2
+\end{equation}
+i zatim $K = YQ^{-1}$.
+
+\textbf{Zašto je dovoljno provjeriti samo vrhove.} Za $A(b) = \alpha A_1 +
+(1-\alpha)A_2$, izraz $QA(b)\T + Y\T B\T + A(b)Q + BY$ je konveksna
+kombinacija izraza za $A_1$ i $A_2$ (jer je afin u $A$), pa je i on negativno
+definitan. \checkmark
+
+\subsection*{Korak 4 --- rezultat}
+
+Rješavanjem \eqref{eq:pendulum-lmi} dobiva se (uz normalizaciju
+$\tr Q = 4$):
+\[
+Q = \begin{pmatrix}
+0{,}8102 & -0{,}0485 & 0{,}1007 & -0{,}0004 \\
+-0{,}0485 & 1{,}5660 & -0{,}0066 & 1{,}4176 \\
+0{,}1007 & -0{,}0066 & 0{,}0815 & -0{,}0314 \\
+-0{,}0004 & 1{,}4176 & -0{,}0314 & 1{,}5423
+\end{pmatrix},
+\quad
+Y = \begin{pmatrix}-1{,}0975 & -1{,}2355 & -0{,}9049 & -3{,}5510\end{pmatrix}
+\]
+
+pa je $P = Q^{-1}$ i
+\[
+\boxed{\;
+K = YQ^{-1} = \begin{pmatrix}
+1{,}2049 & 9{,}3029 & -16{,}1561 & -11{,}1823
+\end{pmatrix}
+\;}
+\]
+
+odnosno upravljački zakon
+\[
+F = 1{,}2049\,x + 9{,}3029\,\dot x - 16{,}1561\,\varphi - 11{,}1823\,\dot\varphi
+\]
+
+\subsection*{Korak 5 --- provjera}
+
+\textbf{a) Svojstvene vrijednosti zatvorenog kruga $A(b) + BK$}, za deset
+vrijednosti $b$ iz intervala:
+
+\begin{center}
+\begin{tabular}{lccccc}
+\toprule
+$b$ & $0{,}05$ & $0{,}15$ & $0{,}25$ & $0{,}35$ & $0{,}50$ \\
+$\max\operatorname{Re}\lambda$ & $-0{,}1317$ & $-0{,}1332$ & $-0{,}1347$
+  & $-0{,}1362$ & $-0{,}1386$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Sve su strogo negativne $\Rightarrow$ zatvoreni krug je stabilan na cijelom
+intervalu. \checkmark
+
+\textbf{b) Ljapunovljeva nejednakost} $A_{cl}(b)\T P + PA_{cl}(b) \prec 0$ za
+$A_{cl}(b) = A(b) + BK$:
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+$b$ & $0{,}05$ & $0{,}275$ & $0{,}5$ \\
+najveća svojstvena vrijednost & $-0{,}0445$ & $-0{,}0702$ & $-0{,}0608$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Sve su negativne, dakle \textbf{ista} matrica $P$ služi kao Ljapunovljeva
+funkcija za sve $b$ --- upravo definicija kvadratne stabilnosti
+\eqref{eq:kvadratna-stabilnost}. \checkmark
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.90\textwidth]{07-pendulum.png}
+\caption{Odziv zatvorenog kruga na početni otklon $\varphi(0) = 0{,}2$ rad, za
+pet vrijednosti $b$ iz intervala nesigurnosti. Svi odzivi trnu; krivulje se
+gotovo poklapaju jer trenje slabo utječe na dinamiku.}
+\end{figure}
+
+\begin{napomena}[interpretacija dobivenog regulatora]
+\begin{itemize}
+  \item $k_3 = -16{,}16$ uz $\varphi$: kad njihalo padne udesno (pozitivan
+        $\varphi$), sila gura vozičak \emph{ulijevo}\,---\,ispod njihala, da ga
+        „uhvati”. To je fizikalno očekivano.
+  \item $k_4 = -11{,}18$ uz $\dot\varphi$: prigušenje --- reagira na
+        \emph{brzinu} pada, ne samo na otklon.
+  \item $k_1 = 1{,}20$, $k_2 = 9{,}30$ uz $x$ i $\dot x$: vraćaju vozičak prema
+        ishodištu; bez njih bi njihalo ostalo uspravno, ali bi vozičak
+        odlutao.
+  \item Zatvoreni krug je stabilan, ali \textbf{spor}
+        ($\max\operatorname{Re}\lambda \approx -0{,}13$, dakle vremenska
+        konstanta oko $7{,}5$ s). To je zato što smo tražili \emph{samo}
+        stabilnost. Brži odziv dobio bi se dodavanjem uvjeta na brzinu
+        opadanja: $A_i\T P + PA_i \prec -2\alpha P$ za zadani $\alpha > 0$ ---
+        također LMI, pa se dodaje „besplatno”.
+\end{itemize}
+\end{napomena}
+\end{zadatak}
+
+% =====================================================================
+\section{Disipativnost}
+\label{sec:disipativnost}
+\str{36--43}
+
+Stabilnost odgovara na pitanje „vraća li se sustav u ravnotežu?”.
+\textbf{Disipativnost} odgovara na šire pitanje: \emph{kako sustav gospodari
+energijom?} --- i time obuhvaća stabilnost, pasivnost, pojačanje, i još mnogo
+toga, sve u istom okviru.
+
+\subsection{Osnovna definicija}
+\str{36}
+
+\textbf{Postavka sa slajda.} Sustav $G$ s ulazom $u(t)$ i izlazom $y(t)$:
+\[
+\dot x = f(x,u), \qquad y = g(x,u), \qquad
+x(t) \in X,\; u(t) \in U,\; y(t) \in Y
+\]
+
+Slajd prikazuje blok $G$ sa strelicom $u(t)$ na ulazu i $y(t)$ na izlazu, uz
+tri oznake: \textbf{dobava energije} $\int_{t_1}^{t_2}s(u(t),y(t))\dd t$,
+\textbf{početna energija} $V(x(t_1))$ i \textbf{konačna energija} $V(x(t_2))$.
+
+\begin{definicija}[Disipativnost]
+Sustav $\dot x = f(x,u)$, $y = g(x,u)$ je \textbf{disipativan} s obzirom na
+\textbf{funkciju dobave} $s : U \times Y \to \R$ (\emph{supply function}) ako
+postoji \textbf{funkcija pohrane} $V : X \to \R$ (\emph{storage function})
+takva da \textbf{disipacijska nejednakost}
+\begin{equation}
+\label{eq:disipacijska}
+V(x(t_2)) \le V(x(t_1)) + \int_{t_1}^{t_2} s(u(t), y(t))\,\dd t
+\end{equation}
+vrijedi za sve trajektorije sustava i sve $t_1 < t_2$.
+\end{definicija}
+
+\subsection{Intuitivan koncept}
+\str{37}
+
+\begin{itemize}
+  \item \textbf{Funkcija dobave snage $s(u,y)$:}
+        \begin{itemize}
+          \item pozitivno $\to$ snaga se \emph{dostavlja} sustavu;
+          \item negativno $\to$ snaga se \emph{ekstrahira} iz sustava.
+        \end{itemize}
+  \item \textbf{Funkcija pohrane $V(x)$:} energija pohranjena u sustavu u
+        varijablama stanja $x$; energija je funkcija stanja sustava.
+  \item \textbf{Disipativnost:} konačna energija u sustavu (vrijeme $t_2$) je
+        manja ili jednaka od početne energije sustava (vrijeme $t_1$) plus
+        energija koja je dostavljena sustavu u intervalu $[t_1,t_2]$.
+  \item Sustav je \textbf{konzervativan} ako u gornjoj nejednakosti $\le$
+        zamijenimo s $=$.
+\end{itemize}
+
+\begin{napomena}[jednom rečenicom]
+\textbf{Sustav ne može proizvesti energiju --- može je samo pohraniti ili
+potrošiti.} Nejednakost \eqref{eq:disipacijska} je zakon očuvanja energije s
+„propuštanjem”: razlika između dovedene i pohranjene energije je
+\emph{disipirana} (pretvorena u toplinu, trenjem, otporom).
+\end{napomena}
+
+\subsection{Fizikalni primjeri}
+\str{38--41}
+
+\textbf{Opći primjeri} \str{38}:
+\begin{itemize}
+  \item \textbf{Električna mreža} s naponima kao ulazima $u(t)$ i jakostima
+        struje kao izlazima $y(t)$; funkcija dobave snage $s(u,y) = u\T y$.
+  \item \textbf{Mehanički sustavi} sa silama kao ulazima $u(t)$ i brzinama kao
+        izlazima $y(t)$; funkcija dobave snage $s(u,y) = u\T y$.
+\end{itemize}
+
+\emph{Zašto baš $u\T y$:} u oba slučaja umnožak ulaza i izlaza je
+\textbf{snaga} --- napon puta struja $[\mathrm{V}\cdot\mathrm{A} =
+\mathrm{W}]$, sila puta brzina $[\mathrm{N}\cdot\mathrm{m/s} = \mathrm{W}]$.
+Integral snage po vremenu je energija.
+
+\textbf{Mehanički sustavi} \str{39}:
+\begin{itemize}
+  \item Ulazi su sile $F_i(t)$, izlazi brzine $v_i(t) = \dot x_i(t)$.
+  \item Funkcija dobave snage $s(u,y) = \sum F_iv_i$.
+  \item Vektor varijabli stanja je vektor \textbf{pozicija i brzina}.
+  \item Sustav je disipativan s funkcijom pohrane energije
+        \[
+        V(x) = \sum \tfrac12 m_iv_i^2 + \sum \tfrac12 k_ix_i^2
+        \]
+\end{itemize}
+
+\emph{Prepoznajete izraz:} to je zbroj \textbf{kinetičke} ($\tfrac12mv^2$) i
+\textbf{potencijalne} ($\tfrac12kx^2$) energije --- isti oblik kao u primjeru s
+oprugama iz poglavlja~\ref{ch:uvod} \str{1:40}.
+
+\textbf{Električne mreže} \str{40}:
+\begin{itemize}
+  \item Ulazi su naponi $U_i(t)$, izlazi jakosti struje $I_i(t)$.
+  \item Funkcija dobave snage $s(u,y) = \sum V_iI_i$.
+  \item Vektor varijabli stanja je vektor napona na kondenzatorima $V_{C_i}$ i
+        jakosti struje na zavojnicama $I_{L_i}$.
+  \item Sustav je disipativan s funkcijom pohrane energije
+        $V(x) = \sum C_iV_{C_i}^2 + \sum L_jI_{L_j}^2$.
+\end{itemize}
+
+\begin{napomena}[faktor $\tfrac12$]
+Standardne formule za energiju su $\tfrac12CV^2$ i $\tfrac12LI^2$; slajd piše
+bez faktora $\tfrac12$. To ne mijenja ništa suštinski --- funkcija pohrane je
+određena do pozitivne konstante, a ista se konstanta pojavljuje na obje strane
+nejednakosti ako se i funkcija dobave skalira jednako.
+\end{napomena}
+
+\textbf{Termodinamika} \str{41}\textbf{.} Varijable: $T$ temperatura, $Q$ tok
+topline, $W$ mehanička snaga (tok mehaničkog rada).
+
+\textbf{Prvi zakon termodinamike:}
+\[
+E(x(t_0)) + \int_{t_0}^{t_1}\big(W(t) + Q(t)\big)\dd t = E(x(t_1))
+\]
+
+\textbf{Drugi zakon termodinamike:}
+\[
+S(x(t_0)) + \int_{t_0}^{t_1}\frac{Q(t)}{T(t)}\dd t \ge S(x(t_1))
+\]
+
+\begin{napomena}[oba zakona su disipacijske nejednakosti]
+Prvi zakon je \emph{konzervativnost} (jednakost) uz $V = E$ (unutarnja
+energija) i $s = W + Q$. Drugi zakon je \emph{disipativnost} uz $V = S$
+(entropija) i $s = Q/T$. Ista matematička struktura opisuje oba --- zato je
+disipativnost tako moćan okvir.
+\end{napomena}
+
+\textbf{Često korištene funkcije dobave} (sa slajda 41):
+\[
+s(u,y) = y\T u, \qquad
+s(u,y) = \|u\|^2 + \|y\|^2, \qquad
+s(u,y) = \|y\|^2 + \|u\|^2
+\]
+
+\begin{napomena}[o zadnja dva izraza]
+Kako su napisani na slajdu, druga i treća funkcija su \emph{identične}. U
+literaturi su standardni izbori $s = \gamma^2\|u\|^2 - \|y\|^2$ (daje ograničenje
+na pojačanje sustava, tzv.\ $\mathcal{L}_2$-gain $\le \gamma$) i
+$s = u\T y$ (pasivnost). Vjerojatno je riječ o tipfeleru u predznaku; suština je
+da se \emph{različitim izborom} $s$ dobivaju različita svojstva sustava.
+\end{napomena}
+
+\subsection{Diferencijalna forma}
+\str{42}
+
+\begin{teorem}[Disipativnost u diferencijalnoj formi]
+Ako je $V(\cdot)$ diferencijabilna funkcija, disipativnost se ekvivalentno može
+formulirati kao \textbf{diferencijalna nejednakost disipativnosti}:
+\begin{equation}
+\label{eq:disipacijska-dif}
+\big(\nabla_xV(x)\big)\T f(x,u) \le s\big(u, g(x,u)\big)
+\qquad\text{za sve } x \text{ i sve } u
+\end{equation}
+\end{teorem}
+
+\textbf{Dokaz (sa slajda, u oba smjera).}
+
+\emph{Smjer $\Rightarrow$.} Disipacijska nejednakost implicira da za $t_2 > t$
+vrijedi
+\[
+\frac{V(x(t_2)) - V(x(t))}{t_2 - t}
+\le \frac{1}{t_2-t}\int_t^{t_2} s(u(\tau), y(\tau))\,\dd\tau.
+\]
+Uzimajući limes $t_2 \to t$, lijeva strana nejednakosti postaje
+\[
+\frac{\dd}{\dd t}V(x(t)) = D_xV(x(t))\,\dot x(t)
+= \big(\nabla_xV(x(t))\big)\T f(x(t), u(t))
+\]
+dok je desna strana jednaka
+$s(u(t), y(t)) = s(u(t), g(x(t), u(t)))$.
+
+\emph{Smjer $\Leftarrow$.} S druge strane, \textbf{integriranjem} diferencijalne
+nejednakosti disipativnosti na intervalu $[t_1,t_2]$ dobiva se disipacijska
+nejednakost.
+
+\begin{napomena}[zašto je diferencijalna forma korisnija]
+Integralna forma \eqref{eq:disipacijska} traži provjeru po \emph{svim
+trajektorijama} --- beskonačno mnogo funkcija. Diferencijalna forma
+\eqref{eq:disipacijska-dif} traži provjeru u \emph{svakoj točki} $(x,u)$ ---
+algebarski uvjet, koji se (za linearne sustave i kvadratne funkcije) svodi na
+\textbf{LMI}. Upravo to radi odjeljak~\ref{sec:lmi-disipativnost}.
+
+Uočite i vezu s Ljapunovom: uz $s \equiv 0$ i $V(x) = x\T Px$,
+\eqref{eq:disipacijska-dif} postaje $\dot V \le 0$ --- Ljapunovljev uvjet.
+Disipativnost je dakle poopćenje stabilnosti.
+\end{napomena}
+
+\subsection{Striktna disipativnost}
+\str{43}
+
+\begin{definicija}[Striktna disipativnost]
+Sustav $\dot x = f(x,u)$, $y = g(x,u)$ je \textbf{striktno disipativan} s
+obzirom na funkciju dobave $s(u,y)$ ako postoji funkcija pohrane $V(x)$ i
+realan broj $\epsilon > 0$, takvi da disipacijska nejednakost
+\[
+V(x(t_2)) \le V(x(t_1)) + \int_{t_1}^{t_2}s(u(t),y(t))\,\dd t
+- \epsilon^2\int_{t_1}^{t_2}\|u(t)\|^2\,\dd t
+\]
+vrijedi za sve trajektorije sustava i sve $t_1 < t_2$.
+\end{definicija}
+
+\textbf{Napomena sa slajda:} striktna disipativnost implicira da disipativnost
+vrijedi sa striktnom nejednakosti $<$ (ali obratno općenito ne vrijedi!).
+
+% =====================================================================
+\section{LMI karakterizacija disipativnosti}
+\label{sec:lmi-disipativnost}
+\str{44--51}
+
+Ovo je vrhunac poglavlja: apstraktni pojam disipativnosti postaje LMI.
+
+\subsection{Postavka}
+\str{44--45}
+
+\textbf{Sustav (LTI sustav) $G$:}
+\[
+\dot x = Ax + Bu, \qquad y = Cx + Du
+\]
+gdje je $A \in \R^{n\times n}$, $B \in \R^{n\times p}$,
+$C \in \R^{q\times n}$.
+
+\textbf{Kvadratna funkcija dobave}, za simetričnu matricu
+$\Pi \in \R^{(p+q)\times(p+q)}$:
+\[
+s(u,y) = \begin{pmatrix}u\\y\end{pmatrix}\T \Pi
+\begin{pmatrix}u\\y\end{pmatrix}
+\]
+
+\begin{teorem}[Dovoljno je tražiti kvadratnu funkciju pohrane \str{44}]
+Ako je $(A,B)$ \textbf{upravljiv} par (sustav $G$ je upravljiv), onda je za
+provjeru disipativnosti s obzirom na kvadratnu funkciju dobave dovoljno tražiti
+kvadratnu funkciju pohrane oblika $V(x) = x\T Px$.
+
+Drugim riječima, ako je sustav disipativan onda postoji kvadratna funkcija
+pohrane koja to dokazuje.
+\end{teorem}
+
+\begin{napomena}[upravljivost]
+Par $(A,B)$ je \textbf{upravljiv} ako se sustav ulazom $u$ može dovesti iz bilo
+kojeg stanja u bilo koje drugo. Tehnički: matrica
+$\begin{pmatrix}B & AB & \dots & A^{n-1}B\end{pmatrix}$ ima puni rang $n$.
+
+Zašto je pretpostavka potrebna: ako neka stanja nisu dosežna ulazom, funkcija
+pohrane na njima nije određena disipacijskom nejednakošću, pa se ne može
+jamčiti da je kvadratna.
+\end{napomena}
+
+\subsection{Izvod LMI-ja}
+\str{46--50}
+
+Ovo je jedan od najljepših izvoda u kolegiju --- vrijedi ga proći redak po
+redak.
+
+\textbf{Korak 1 \str{46}.} Uvjet disipativnosti u diferencijalnoj formi
+$\frac{\dd}{\dd t}V(x(t)) \le s(u(t),y(t))$ daje
+\[
+\frac{\dd}{\dd t}\big(x\T Px\big) = \dot x\T Px + x\T P\dot x
+\;\le\; \begin{pmatrix}u\\y\end{pmatrix}\T\Pi\begin{pmatrix}u\\y\end{pmatrix}
+\qquad\text{za sve } x, u, y
+\]
+odnosno, uvrštavanjem $\dot x = Ax + Bu$ i $y = Cx + Du$:
+\begin{equation}
+\label{eq:disip-1}
+(Ax+Bu)\T Px + x\T P(Ax+Bu)
+\le \begin{pmatrix}u\\ Cx+Du\end{pmatrix}\T\Pi
+\begin{pmatrix}u\\ Cx+Du\end{pmatrix}
+\qquad\text{za sve } x, u
+\end{equation}
+
+\emph{Uočite:} nakon uvrštavanja nestaje $y$ --- ostaju samo $x$ i $u$ kao
+slobodne varijable.
+
+\textbf{Korak 2 \str{48}.} Lijeva strana zapisuje se kao kvadratna forma
+proširenog vektora, i sve se prebaci na jednu stranu:
+\[
+\begin{pmatrix}x\\ Ax+Bu\end{pmatrix}\T
+\begin{pmatrix}0 & P\\ P & 0\end{pmatrix}
+\begin{pmatrix}x\\ Ax+Bu\end{pmatrix}
+- \begin{pmatrix}u\\ Cx+Du\end{pmatrix}\T\Pi
+\begin{pmatrix}u\\ Cx+Du\end{pmatrix} \le 0
+\qquad\text{za sve } x, u
+\]
+
+\emph{Provjera prvog člana:} raspisom,
+$\begin{pmatrix}a\\b\end{pmatrix}\T\begin{psmallmatrix}0 & P\\ P & 0
+\end{psmallmatrix}\begin{pmatrix}a\\b\end{pmatrix} = a\T Pb + b\T Pa$. Uz
+$a = x$ i $b = Ax+Bu$ to je točno $x\T P(Ax+Bu) + (Ax+Bu)\T Px$ --- lijeva
+strana od \eqref{eq:disip-1}. \checkmark
+
+\textbf{Korak 3 \str{49}.} Oba proširena vektora izražavaju se preko
+$\begin{pmatrix}x\\u\end{pmatrix}$:
+\[
+\begin{pmatrix}x\\ Ax+Bu\end{pmatrix}
+= \begin{pmatrix}I & 0\\ A & B\end{pmatrix}
+  \begin{pmatrix}x\\u\end{pmatrix},
+\qquad
+\begin{pmatrix}u\\ Cx+Du\end{pmatrix}
+= \begin{pmatrix}0 & I\\ C & D\end{pmatrix}
+  \begin{pmatrix}x\\u\end{pmatrix}
+\]
+pa uvjet postaje
+\[
+\begin{pmatrix}x\\u\end{pmatrix}\T
+\left\{
+\begin{pmatrix}I & 0\\ A & B\end{pmatrix}\T
+\begin{pmatrix}0 & P\\ P & 0\end{pmatrix}
+\begin{pmatrix}I & 0\\ A & B\end{pmatrix}
+- \begin{pmatrix}0 & I\\ C & D\end{pmatrix}\T\Pi
+\begin{pmatrix}0 & I\\ C & D\end{pmatrix}
+\right\}
+\begin{pmatrix}x\\u\end{pmatrix} \le 0
+\]
+za sve $x, u$.
+
+\emph{Provjera druge zamjene:} prvi redak daje
+$0\cdot x + I\cdot u = u$ \checkmark; drugi daje $Cx + Du$ \checkmark.
+
+\textbf{Korak 4 \str{50}.} Budući da nejednakost mora vrijediti za
+\emph{sve} $(x,u)$, po definiciji negativne semidefinitnosti
+(odjeljak~\ref{sec:definitnost}) ekvivalentna je uvjetu na samu matricu:
+\begin{equation}
+\label{eq:disip-lmi}
+\begin{pmatrix}I & 0\\ A & B\end{pmatrix}\T
+\begin{pmatrix}0 & P\\ P & 0\end{pmatrix}
+\begin{pmatrix}I & 0\\ A & B\end{pmatrix}
+- \begin{pmatrix}0 & I\\ C & D\end{pmatrix}\T\Pi
+\begin{pmatrix}0 & I\\ C & D\end{pmatrix} \preceq 0
+\end{equation}
+
+\textbf{$\to$ LMI u varijablama $P$!}
+
+\emph{Zašto je to LMI:} $A, B, C, D, \Pi$ su \emph{zadani}; jedina nepoznanica
+je $P$, a ona ulazi \textbf{linearno} (kroz blok-matricu
+$\begin{psmallmatrix}0&P\\P&0\end{psmallmatrix}$). Cijeli izraz je dakle afina
+funkcija od $P$. \checkmark
+
+\subsection{Teorem}
+\str{51}
+
+\begin{teorem}[LMI karakterizacija disipativnosti]
+Sustav $G$: $\dot x = Ax + Bu$, $y = Cx + Du$; funkcija dobave
+\[
+s(u,y) = \begin{pmatrix}u\\y\end{pmatrix}\T
+\underbrace{\begin{pmatrix}Q & S\\ S\T & R\end{pmatrix}}_{\Pi}
+\begin{pmatrix}u\\y\end{pmatrix}
+\]
+
+Neka je $(A,B)$ upravljiv par. Sljedeće tvrdnje su \textbf{ekvivalentne}:
+\begin{enumerate}[label=\roman*)]
+  \item Sustav $G$ je disipativan s obzirom na funkciju dobave $s$.
+  \item Sustav $G$ je disipativan s obzirom na funkciju dobave $s$ s
+        \textbf{kvadratnom} funkcijom pohrane energije $V(x) = x\T Px$.
+  \item Postoji simetrična matrica $P$ takva da vrijedi
+        \[
+        \underbrace{
+        \begin{pmatrix}I & 0\\ A & B\end{pmatrix}\T
+        \begin{pmatrix}0 & P\\ P & 0\end{pmatrix}
+        \begin{pmatrix}I & 0\\ A & B\end{pmatrix}
+        - \begin{pmatrix}0 & I\\ C & D\end{pmatrix}\T
+        \begin{pmatrix}Q & S\\ S\T & R\end{pmatrix}
+        \begin{pmatrix}0 & I\\ C & D\end{pmatrix}
+        }_{F(P)} \preceq 0.
+        \]
+\end{enumerate}
+Nadalje, $V(x) = x\T Px$ je kvadratna funkcija pohrane energije \textbf{ako i
+samo ako} vrijedi $F(P) \preceq 0$.
+\end{teorem}
+
+% =====================================================================
+\section{Frekvencijska domena i KYP lema}
+\str{52--55}
+
+\subsection{Disipativnost kao nejednakost u frekvencijskoj domeni}
+\str{52}
+
+Sustav $\dot x = Ax + Bu$, $y = Cx + Du$ ima \textbf{prijenosnu funkciju}
+\[
+G(s) = C(sI - A)^{-1}B + D
+\]
+
+Za harmonijski ulazno-izlazni par
+\[
+u(t) = e^{i\omega t}u_0 \quad\to\quad y(t) = G(i\omega)e^{i\omega t}y_0
+\]
+imamo funkciju dobave
+\[
+s(u(t),y(t)) = u_0^{*}
+\begin{pmatrix}I\\ G(i\omega)\end{pmatrix}^{*}
+\begin{pmatrix}Q & S\\ S\T & R\end{pmatrix}
+\begin{pmatrix}I\\ G(i\omega)\end{pmatrix} u_0
+\]
+koja je \textbf{konstantna za sve $t$}. Integracijom funkcije dobave preko
+perioda oscilacija, $\int_{t_1}^{t_1+k2\pi/\omega}s(u(t),y(t))\dd t$, dobivamo
+\begin{equation}
+\label{eq:frekvencijska}
+\begin{pmatrix}I\\ G(i\omega)\end{pmatrix}^{*}
+\begin{pmatrix}Q & S\\ S\T & R\end{pmatrix}
+\begin{pmatrix}I\\ G(i\omega)\end{pmatrix} \succeq 0
+\qquad\text{za sve } \omega
+\end{equation}
+
+\begin{napomena}[fizikalno čitanje]
+Za \emph{periodičan} ulaz sustav se nakon prijelazne pojave vraća u isto stanje
+svakog perioda, pa je $V(x(t_1)) = V(x(t_2))$. Disipacijska nejednakost
+\eqref{eq:disipacijska} tada kaže da integral dobave mora biti $\ge 0$ ---
+sustav u prosjeku \emph{prima} energiju, ne proizvodi je.
+
+Time se vremenski uvjet (LMI u $P$) prevodi u \textbf{frekvencijski} uvjet na
+prijenosnu funkciju --- provjeru koju inženjer može napraviti i mjerenjem, bez
+poznavanja modela u prostoru stanja.
+\end{napomena}
+
+\subsection{Kalman-Yakubovich-Popov (KYP) lema}
+\str{53}
+
+\begin{teorem}[(Nestriktna) KYP lema]
+Sustav u prostoru stanja $\dot x = Ax + Bu$, $y = Cx + Du$; prijenosna funkcija
+sustava $G(s) = C(sI-A)^{-1}B + D$.
+
+Neka je par $(A,B)$ upravljiv. Tada \textbf{postoji} simetrična matrica $P$
+tako da vrijedi
+\[
+\begin{pmatrix}I & 0\\ A & B\end{pmatrix}\T
+\begin{pmatrix}0 & P\\ P & 0\end{pmatrix}
+\begin{pmatrix}I & 0\\ A & B\end{pmatrix}
+- \begin{pmatrix}0 & I\\ C & D\end{pmatrix}\T
+\begin{pmatrix}Q & S\\ S\T & R\end{pmatrix}
+\begin{pmatrix}0 & I\\ C & D\end{pmatrix} \preceq 0
+\]
+\textbf{ako i samo ako} prijenosna funkcija zadovoljava sljedeću nejednakost u
+frekvencijskoj domeni
+\[
+\begin{pmatrix}I\\ G(i\omega)\end{pmatrix}^{*}
+\begin{pmatrix}Q & S\\ S\T & R\end{pmatrix}
+\begin{pmatrix}I\\ G(i\omega)\end{pmatrix} \succeq 0
+\qquad\text{za sve } \omega \in \R \cup \infty,\; i\omega \notin \lambda(A)
+\]
+\end{teorem}
+
+\begin{napomena}[zašto je KYP lema važna]
+Ona povezuje \textbf{dva potpuno različita svijeta}:
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{vremenska domena} & \textbf{frekvencijska domena} \\
+\midrule
+konačno-dimenzionalan LMI u $P$
+  & beskonačno mnogo uvjeta (za svaki $\omega$) \\
+rješiv SDP-om
+  & provjerljiv mjerenjem / Bodeovim dijagramom \\
+\bottomrule
+\end{tabular}
+\end{center}
+Praktično: uvjet koji vrijedi „za svaku frekvenciju” zamjenjuje se
+\emph{jednom} matričnom nejednakošću. To je isti tip redukcije kao kod robusne
+stabilnosti \str{26} (beskonačno mnogo $A$ $\to$ konačno mnogo vrhova) --- i
+razlog zašto se LMI-jevi u teoriji upravljanja pojavljuju svugdje.
+\end{napomena}
+
+\subsection{Sažetak osnovnih rezultata}
+\str{54--55}
+
+\begin{teorem}[Disipativnost --- osnovni rezultat \str{54}]
+Neka je $(A,B)$ upravljiv par. Sljedeće tvrdnje su ekvivalentne:
+\begin{enumerate}[label=\roman*)]
+  \item Sustav $G$ je disipativan s obzirom na funkciju dobave $s$.
+  \item Sustav $G$ je disipativan s obzirom na funkciju dobave $s$ s
+        kvadratnom funkcijom pohrane energije.
+  \item Postoji simetrična matrica $P$ takva da vrijedi $F(P) \preceq 0$.
+  \item Za sve $\omega \in \R \cup \infty$, $i\omega \notin \lambda(A)$ vrijedi
+        frekvencijski uvjet \eqref{eq:frekvencijska}.
+\end{enumerate}
+Nadalje, $V(x) = x\T Px$ je funkcija pohrane ako i samo ako $F(P) \preceq 0$.
+\end{teorem}
+
+\begin{teorem}[Striktna disipativnost --- osnovni rezultat \str{55}]
+Pretpostavimo da $A$ \textbf{nema svojstvene vrijednosti na imaginarnoj osi}.
+Sljedeće tvrdnje su ekvivalentne:
+\begin{enumerate}[label=\roman*)]
+  \item Sustav $G$ je \textbf{striktno} disipativan s obzirom na funkciju
+        dobave $s$.
+  \item Sustav $G$ je striktno disipativan s obzirom na $s$ s kvadratnom
+        funkcijom pohrane energije.
+  \item Postoji simetrična matrica $P$ takva da vrijedi $F(P) \prec 0$.
+  \item Za sve $\omega \in \R \cup \infty$ vrijedi
+        \[
+        \begin{pmatrix}I\\ G(i\omega)\end{pmatrix}^{*}
+        \begin{pmatrix}Q & S\\ S\T & R\end{pmatrix}
+        \begin{pmatrix}I\\ G(i\omega)\end{pmatrix} \succ 0
+        \]
+\end{enumerate}
+Nadalje, $V(x) = x\T Px$ je funkcija pohrane ako i samo ako $F(P) \prec 0$.
+\end{teorem}
+
+\begin{napomena}[razlika između dvaju teorema]
+Sve što se mijenja je \textbf{strogost} nejednakosti ($\preceq \to \prec$,
+$\succeq \to \succ$) i pretpostavka: umjesto upravljivosti traži se da $A$ nema
+svojstvenih vrijednosti na imaginarnoj osi. U strogoj verziji uvjet u
+frekvencijskoj domeni vrijedi za \emph{sve} $\omega$, bez izuzimanja
+$i\omega \in \lambda(A)$ --- jer takvih točaka po pretpostavci nema.
+\end{napomena}
+
+% =====================================================================
+\section{Sažetak poglavlja}
+
+\textbf{Glavni rezultati u jednoj tablici:}
+
+\begin{center}
+\begin{tabular}{p{4.4cm}p{8.6cm}}
+\toprule
+\textbf{Pitanje} & \textbf{LMI odgovor} \\
+\midrule
+Je li $\dot x = Ax$ stabilan?
+  & $\exists P \succ 0$: $A\T P + PA \prec 0$ \\
+Je li $x(t{+}1) = Ax(t)$ stabilan?
+  & $\exists P \succ 0$: $A\T PA - P \prec 0$ \\
+Je li \emph{cijela obitelj} $A \in \operatorname{conv}\{A_1,\dots,A_N\}$
+  stabilna?
+  & $\exists P \succ 0$: $A_i\T P + PA_i \prec 0$, $i = 1,\dots,N$ \\
+Kako naći $K$ da $A+BK$ bude stabilan?
+  & $\exists Q \succ 0, Y$: $QA\T + Y\T B\T + AQ + BY \prec 0$;\newline
+    zatim $K = YQ^{-1}$ \\
+Je li sustav disipativan uz dobavu $s$?
+  & $\exists P$: $F(P) \preceq 0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Tri tehnike „konveksifikacije” koje treba znati:}
+
+\begin{enumerate}
+  \item \textbf{Vrhovi politopa} --- beskonačno mnogo uvjeta $\to$ konačno
+        mnogo, kad nesigurnost ulazi afino.
+  \item \textbf{Kongruencija s $P^{-1}$ i supstitucija} $Q = P^{-1}$,
+        $Y = KP^{-1}$ --- bilinearni uvjet $\to$ LMI. Ovo je najvažniji trik
+        sinteze.
+  \item \textbf{Schurov komplement} (poglavlje~\ref{ch:qcpsdp}) --- inverzi i
+        umnošci $\to$ afini blokovi.
+\end{enumerate}
+
+\textbf{Lanac pojmova:}
+\[
+\text{stabilnost} \;\subset\; \text{disipativnost}
+\qquad\text{(uz } s \equiv 0 \text{ disipativnost daje } \dot V \le 0)
+\]
+
+\textbf{Zašto je cijeli kolegij vodio ovamo.} Pitanja teorije upravljanja
+prirodno se zapisuju kao matrične nejednakosti. Te nejednakosti su
+\textbf{konveksne} (poglavlje~\ref{ch:definicije}), pripadaju klasi
+\textbf{SDP} (poglavlje~\ref{ch:qcpsdp}), za njih vrijede \textbf{KKT uvjeti} i
+\textbf{jaka dualnost} (poglavlja~\ref{ch:uvjeti}~i~\ref{ch:dualnost}), i
+rješavaju se \textbf{pouzdano i brzo}. Bez konveksnosti ništa od toga ne bi
+vrijedilo.
+
+\textbf{Terminologija (hrvatski $\leftrightarrow$ engleski):}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Hrvatski} & \textbf{Engleski} \\
+\midrule
+prostor stanja & state space \\
+eksponencijalna stabilnost & exponential stability \\
+Ljapunovljeva funkcija & Lyapunov function \\
+invarijantan skup & invariant set \\
+Hurwitzova matrica & Hurwitz matrix \\
+kvadratna stabilnost & quadratic stability \\
+robusna stabilnost & robust stability \\
+statička povratna sprega stanja & static state feedback \\
+zatvoreni krug & closed loop \\
+disipativnost & dissipativity \\
+funkcija dobave & supply function \\
+funkcija pohrane & storage function \\
+upravljiv par & controllable pair \\
+prijenosna funkcija & transfer function \\
+KYP lema & Kalman-Yakubovich-Popov lemma \\
+\bottomrule
+\end{tabular}
+\end{center}

@@ -90,7 +90,7 @@ Legenda: ✅ obrađeno i zapisano · 🔄 u tijeku · ⬜ nije počelo
 | `04_Lagrangeova_dualnost.pdf` | 1–34 | ✅ | cijelo predavanje, poglavlje 4 |
 | `05_LP_QP.pdf` | 1–40 | ✅ | cijelo predavanje, poglavlje 5 |
 | `06_QCP_SDP.pdf` | 1–31 | ✅ | cijelo predavanje, poglavlje 6 |
-| `07_Dinamicki_sustavi_Ljapunov_disipativnost.pdf` | 1–55 | ⬜ | |
+| `07_Dinamicki_sustavi_Ljapunov_disipativnost.pdf` | 1–55 | ✅ | cijelo predavanje, poglavlje 7 |
 | `08_Robusno_optimiranje.pdf` | 1–21 | ⬜ | |
 
 ### Vježbe
@@ -101,7 +101,7 @@ Legenda: ✅ obrađeno i zapisano · 🔄 u tijeku · ⬜ nije počelo
 | `Vjezbe_2.pdf` | 1–11 | ✅ | ugrađeno inline u poglavlje 2 (Primjer 1 + norme) |
 | `Vjezbe_3.pdf` | 1–42 | ✅ | ugrađeno inline u poglavlje 4 (Primjer 1 + Primjer 2 a–f) |
 | `Vjezbe_4.pdf` | 1–41 | ✅ | str. 1–30 u poglavlju 5; str. 31–41 (geometrijski) u poglavlju 6 |
-| `Vjezbe_5.pdf` | 1–7 | 🔄 | Zad. 1 (str. 2–4) u poglavlju 5; Zad. 2 (str. 5–7) ide u 7 |
+| `Vjezbe_5.pdf` | 1–7 | ✅ | Zad. 1 (str. 2–4) u poglavlju 5; Zad. 2 (str. 5–7) u poglavlju 7 |
 
 ### Detaljna evidencija — poglavlje 1
 
@@ -295,6 +295,35 @@ Vježbe 4 (str. 31–41):
 | 33–38 | robusna klasifikacija: margina izvedena dualnošću | 6.10.2–6.10.3 |
 | 39 | konačna QP formulacija (maksimizacija margine) | 6.10.4 |
 | 40–41 | aproksimativna klasifikacija (support vector classifier) | 6.10.5 |
+
+### Detaljna evidencija — poglavlje 7
+
+Predavanje 07:
+
+| Str. izvora | Tema | Odjeljak skripte |
+|---|---|---|
+| 4 | eksponencijalna stabilnost, prostor stanja | 7.1 |
+| 5–6 | Ljapunovljev LMI uvjet za LTI sustave | 7.2 |
+| 7–10 | dokaz 1 („putem trajektorija”) | 7.2.1 |
+| 11–13 | invarijantnost nivo skupova + brojčani primjer | 7.2.2 |
+| 14–22 | dokaz 2 (algebarski, oba smjera, Jordanova forma) | 7.2.3 |
+| 23 | diskretno vrijeme | 7.2.4 |
+| 25–26 | kvadratna stabilnost, redukcija na vrhove politopa | 7.3 |
+| 28–33 | sinteza regulatora: konveksifikacija (Q, Y supstitucija) | 7.4 |
+| 36–43 | disipativnost, funkcije dobave i pohrane, fizikalni primjeri | 7.6 |
+| 44–51 | LMI karakterizacija disipativnosti (puni izvod) | 7.7 |
+| 52–55 | frekvencijska domena, KYP lema, sažeti teoremi | 7.8 |
+
+Vježbe 5 (Zadatak 2):
+
+| Str. izvora | Tema | Odjeljak skripte |
+|---|---|---|
+| 5–7 | **Zadatak 2** — robusna stabilizacija obrnutog njihala | 7.5 |
+
+> `Vjezbe_5.pdf` daje samo tekst Zadatka 2. U skripti je riješen politopskim
+> opisom nesigurnosti (dva vrha) i LMI sintezom iz predavanja 07; brojevi su
+> dobiveni skriptom `scripts/solve_vj5_robusna.py`, uz g = 9,81 m/s²
+> (slajd ne navodi brojčanu vrijednost).
 
 ## Izvan opsega
 
