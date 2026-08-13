@@ -85,7 +85,7 @@ Legenda: ✅ obrađeno i zapisano · 🔄 u tijeku · ⬜ nije počelo
 | Izvor | Str. | Status | Bilješka |
 |---|---|---|---|
 | `01_Uvod.pdf` | 1–79 | ✅ | cijelo predavanje, poglavlje 1 |
-| `02_Definicije_klasifikacija_konveksnost.pdf` | 1–72 | 🔄 | izvornik pročitan, pisanje u tijeku |
+| `02_Definicije_klasifikacija_konveksnost.pdf` | 1–72 | ✅ | cijelo predavanje, poglavlje 2 |
 | `03_Uvjeti_optimalnosti.pdf` | 1–68 | ⬜ | |
 | `04_Lagrangeova_dualnost.pdf` | 1–34 | ⬜ | |
 | `05_LP_QP.pdf` | 1–40 | ⬜ | |
@@ -97,8 +97,8 @@ Legenda: ✅ obrađeno i zapisano · 🔄 u tijeku · ⬜ nije počelo
 
 | Izvor | Str. | Status | Bilješka |
 |---|---|---|---|
-| `Vjezbe_1.pdf` | 1–34 | 🔄 | izvornik pročitan |
-| `Vjezbe_2.pdf` | 1–11 | 🔄 | izvornik pročitan |
+| `Vjezbe_1.pdf` | 1–34 | ✅ | ugrađeno inline u poglavlje 2 (zadaci 1–4) |
+| `Vjezbe_2.pdf` | 1–11 | ✅ | ugrađeno inline u poglavlje 2 (Primjer 1 + norme) |
 | `Vjezbe_3.pdf` | 1–42 | ⬜ | |
 | `Vjezbe_4.pdf` | 1–41 | ⬜ | |
 | `Vjezbe_5.pdf` | 1–7 | ⬜ | |
@@ -120,6 +120,60 @@ Legenda: ✅ obrađeno i zapisano · 🔄 u tijeku · ⬜ nije počelo
 | 59–77 | projektiranje kao proces, projektni parametri | 1.11 |
 | 78 | dozvoljeni skup | 1.2.5 |
 | 79 | korisni „trikovi” | 1.12 |
+
+### Detaljna evidencija — poglavlje 2
+
+Predavanje 02:
+
+| Str. izvora | Tema | Odjeljak skripte |
+|---|---|---|
+| 3–5 | podsjetnik: standardna forma, trikovi | 2.1 |
+| 6–11 | klasifikacije opt. problema; stara i moderna podjela | 2.5 |
+| 12–21 | primjeri I–IV (diskretan, kontinuiran, cjelobrojni, MILP) | 2.6 |
+| 22–27 | lokalni/globalni minimizator, infimum i supremum | 2.7 |
+| 29–32 | Jakobijan, linearizacija, primjer | 2.8 |
+| 33–40 | gradijent, smjer pada, okomitost na nivo krivulju | 2.9 |
+| 41–42 | Hessian, Taylorovi teoremi | 2.10 |
+| 43–45 | uvjeti optimalnosti bez ograničenja | 2.11 |
+| 46–50 | definitnost matrica, primjeri, kriterij determinanti | 2.12 |
+| 51–60 | afin skup, konveksan skup, konveksna ljuska | 2.13 |
+| 61–64 | konveksne i konkavne funkcije | 2.16 |
+| 65–66 | hiperravnine i poluprostori | 2.14 |
+| 67–70 | svojstva konv. funkcija, kvazikonveksnost, uvjeti 1./2. reda | 2.18 |
+| 71–72 | konveksan optimizacijski problem | 2.19 |
+
+Vježbe 1:
+
+| Str. izvora | Tema | Odjeljak skripte |
+|---|---|---|
+| 2–3 | vektori, matrice, transponiranje | 2.2.1 |
+| 4–6 | funkcije (skalarne i vektorske) | 2.2.2 |
+| 7–9 | linearnost, prepoznavanje linearnih funkcija | 2.2.3 |
+| 10–17 | matrični zapis $Ax$ / $a^\top x$ | 2.2.4 |
+| 18–19 | afine funkcije, slika linearno vs. afino | 2.2.5 |
+| 20 | **Zadatak 1** — superpozicija (progib) | 2.2.5 |
+| 21 | nivo krivulje | 2.3 |
+| 22, 27 | **Zadatak 2** — nivo krivulje linearne funkcije | 2.3 |
+| 23–25 | skalarni produkt, okomitost, predznak | 2.4 |
+| 26, 28 | hiperravnine i poluprostori | 2.14 |
+| 29 | **Zadatak 3** — poluprostor | 2.14 |
+| 30 | poliedar i politop | 2.15 |
+| 31 | **Zadatak 4** — politop | 2.15 |
+| 32–34 | vektorske norme, jedinične kugle | 2.17 |
+
+Vježbe 2:
+
+| Str. izvora | Tema | Odjeljak skripte |
+|---|---|---|
+| 2–3 | konveksan optimizacijski problem | 2.19 |
+| 4–5 | **Primjer 1** — prepoznavanje konveksnih problema | 2.19 |
+| 6–8 | norme kao konveksne funkcije (plohe i nivo krivulje) | 2.20.1 |
+| 9–11 | reformulacije minimizacije norme (1-, 2-, ∞-norma) | 2.20.2 |
+
+> Zadaci 1–4 iz Vježbi 1 u izvorniku nemaju zapisano rješenje („na ploči”);
+> u skripti su riješeni isključivo pomoću definicija s istih vježbi, uz
+> izričitu oznaku. Zadaci 3 i 4 u izvorniku nemaju ni sliku na koju se
+> pozivaju, pa je uzet konkretan primjer istog tipa.
 
 ## Izvan opsega
 

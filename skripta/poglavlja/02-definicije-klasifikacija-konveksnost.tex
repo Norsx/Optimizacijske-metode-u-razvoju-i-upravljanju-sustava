@@ -1,4 +1,3012 @@
 \chapter{Definicije, klasifikacija, konveksnost}
 \label{ch:definicije}
 
-\emph{Poglavlje je u izradi.}
+\begin{izvor}
+\textbf{Izvori:} \texttt{02\_Definicije\_klasifikacija\_konveksnost.pdf}
+(str.\ 1--72), \texttt{Vjezbe\_1.pdf} (str.\ 1--34) i \texttt{Vjezbe\_2.pdf}
+(str.\ 1--11) --- sve obrađeno u cijelosti.
+
+Zadaci iz Vježbi 1 i 2 umetnuti su \textbf{odmah iza teorije koju koriste}, a
+ne na kraju poglavlja. Oznaka \str{V1:20} znači „Vježbe 1, stranica 20”.
+\end{izvor}
+
+\begin{napomena}[zadaci rješavani na ploči]
+Kod Zadataka 1--4 iz Vježbi 1 na slajdu piše samo „\emph{Rješenje na ploči
+(Bilježiti!)}” --- \textbf{u izvorniku nema zapisanog rješenja}, jer je ono
+izvedeno na ploči. U ovoj skripti ti su zadaci riješeni korištenjem
+\textbf{isključivo definicija i tvrdnji s istih tih vježbi}, i to je na svakom
+mjestu izričito označeno. Kod Zadataka 3 i 4 izvornik uz to nema ni sliku na
+koju se poziva, pa je ovdje uzet konkretan primjer istog tipa.
+\end{napomena}
+
+% =====================================================================
+\section{Podsjetnik: standardna forma i „trikovi”}
+\str{3--5}
+
+Predavanje 2 počinje ponavljanjem standardne forme iz
+odjeljka~\ref{sec:standardna-forma}:
+
+\begin{equation}
+\begin{aligned}
+\minim & f(x) \\
+\uzogr & h(x) = 0, \quad g(x) \le 0
+\end{aligned}
+\qquad
+\Feas = \{\, x \mid h(x) = 0,\; g(x) \le 0 \,\}
+\end{equation}
+
+te oba „trika” iz odjeljka~\ref{sec:trikovi}: pretvorbu
+$\max f \Leftrightarrow \min(-f)$ i problem dopustivosti
+\eqref{eq:dopustivost}. Ako vam ta dva mjesta nisu potpuno jasna, vratite se na
+njih prije nastavka --- koristit ćemo ih stalno.
+
+% =====================================================================
+\section{Osnovni matematički alat}
+\label{sec:alat}
+
+Ovaj odjeljak pokriva Vježbe 1, str.\ 2--19. To je jezik kojim je pisano sve
+ostalo u kolegiju.
+
+\subsection{Vektori i matrice}
+\str{V1:2--3}
+
+\begin{definicija}[Vektor i matrica]
+\[
+x = \begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{pmatrix} \in \R^n,
+\qquad
+A = \begin{pmatrix}
+a_{11} & a_{12} & \dots & a_{1m} \\
+a_{21} & a_{22} & \dots & a_{2m} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{n1} & a_{n2} & \dots & a_{nm}
+\end{pmatrix} \in \R^{n \times m}
+\]
+\end{definicija}
+
+Čitanje oznaka od nule:
+
+\begin{itemize}
+  \item $x \in \R^n$: $x$ je \textbf{stupčani vektor} s $n$ redaka. Broj
+        $x_i$ je $i$-ta \textbf{komponenta}.
+  \item $A \in \R^{n \times m}$: matrica s $n$ \textbf{redaka} i $m$
+        \textbf{stupaca}. Element $a_{ij}$ nalazi se u $i$-tom retku i $j$-tom
+        stupcu. \emph{Prvi indeks je uvijek redak, drugi stupac} --- to je
+        konvencija koju treba zapamtiti odmah.
+\end{itemize}
+
+\textbf{Primjeri sa slajda:}
+\[
+x = \begin{pmatrix} x_1 \\ x_2 \\ x_3 \end{pmatrix} \in \R^3,
+\qquad
+M = \begin{pmatrix} m_{11} & m_{12} & m_{13} \\
+                    m_{21} & m_{22} & m_{23} \end{pmatrix} \in \R^{2\times 3}
+\]
+
+\textbf{Transponiranje (primjeri sa slajda):}
+\[
+x\T = \begin{pmatrix} x_1 & x_2 & x_3 \end{pmatrix} \in \R^{1\times 3},
+\qquad
+M\T = \begin{pmatrix} m_{11} & m_{21} \\ m_{12} & m_{22} \\
+                      m_{13} & m_{23} \end{pmatrix} \in \R^{3\times 2}
+\]
+
+\textbf{Što transponiranje radi:} zamjenjuje retke i stupce. Element koji je
+bio na mjestu $(i,j)$ prelazi na mjesto $(j,i)$. Stupčani vektor postaje
+retčani. Dimenzije se obrnu: $n \times m$ postaje $m \times n$.
+
+\begin{napomena}[zašto nam treba transponiranje]
+Množenje matrica traži da se dimenzije „poklope”: $A\,B$ ima smisla samo ako
+$A$ ima onoliko stupaca koliko $B$ ima redaka. Ako su $x, y \in \R^n$ oba
+stupčani, $x\,y$ nema smisla ($n\times 1$ puta $n \times 1$), ali $x\T y$ ima
+($1 \times n$ puta $n \times 1$ $=$ $1\times 1$, dakle broj). Zato ćemo
+skalarni produkt uvijek pisati kao $x\T y$.
+\end{napomena}
+
+\subsection{Funkcije}
+\str{V1:4--6}
+
+\begin{definicija}[Skalarna funkcija više varijabli]
+Notacija $f : \R^n \to \R$ označava $f$ kao funkciju koja mapira vektor iz
+$\R^n$ u \textbf{realan broj (skalar)}.
+\end{definicija}
+
+\textbf{Primjeri sa slajda} \str{V1:4}:
+\begin{itemize}
+  \item $f : \R^4 \to \R$ definirana s $f(x) = x_1 - x_3^2 + x_1x_4$
+  \item $f : \R \to \R$ definirana s $f(x) = \sin(x) + \cos(x)$
+  \item $f : \R^4 \to \R$ definirana s $f(x) = 5x_1 + 2x_2 - 7x_3 + 10x_4 + 6$
+  \item $f : \R^4 \to \R$ definirana s $f(x) = x_1 - 2x_2 + 5x_3 - x_4$
+\end{itemize}
+
+\begin{definicija}[Vektorska funkcija]
+Funkcija $f : \R^n \to \R^m$ mapira vektore iz $\R^n$ u vektore iz $\R^m$:
+\[
+f(x) = \begin{pmatrix} f_1(x) \\ f_2(x) \\ \vdots \\ f_m(x) \end{pmatrix}
+\]
+gdje su $f_i(x)$ \textbf{skalarne} funkcije ($f_i : \R^n \to \R$).
+\end{definicija}
+
+Dakle: vektorska funkcija je samo „hrpa” skalarnih funkcija složenih jedna
+ispod druge. Svaka od njih uzima \emph{isti} ulazni vektor $x$.
+
+\textbf{Primjeri sa slajda} \str{V1:6}:
+\[
+f : \R^4 \to \R^2, \quad
+f(x) = \begin{pmatrix} x_1 - x_3^2 + x_1x_4 \\ x_2 \end{pmatrix};
+\qquad
+f : \R \to \R^2, \quad
+f(x) = \begin{pmatrix} \sin(x) + \cos(x) \\ x^2 - 5 \end{pmatrix}
+\]
+
+\subsection{Linearne funkcije}
+\str{V1:7--9}
+
+\begin{definicija}[Linearnost]
+Neka su $U$, $V$ linearni prostori. Preslikavanje $f : U \to V$ je
+\textbf{linearno} ako ima sljedeća svojstva:
+\begin{itemize}
+  \item \textbf{Aditivnost:} $f(x + y) = f(x) + f(y)$, za sve $x, y \in U$
+  \item \textbf{Homogenost:} $f(\alpha x) = \alpha f(x)$, za sve skalare
+        $\alpha$ i za sve $x \in U$
+\end{itemize}
+\end{definicija}
+
+\textbf{Što ta dva svojstva praktično znače.} Ako znate odgovor za dva ulaza,
+znate ga i za njihov zbroj; ako znate odgovor za jedan ulaz, znate ga i za bilo
+koje njegovo skaliranje. Zajedno se to zove \textbf{princip superpozicije} ---
+i on je razlog zašto su linearni modeli u inženjerstvu toliko moćni.
+
+\textbf{Pitanje sa slajda} \str{V1:8}\textbf{: koje od navedenih funkcija su
+linearne?}
+
+\begin{center}
+\begin{tabular}{p{8.6cm}p{4.4cm}}
+\toprule
+\textbf{Funkcija} & \textbf{Linearna?} \\
+\midrule
+$f(x) = x_1 - x_3^2 + x_1x_4$ & \textbf{ne} --- ima kvadrat i umnožak
+  varijabli \\
+$f(x) = \sin(x) + \cos(x)$ & \textbf{ne} --- npr.\ $\cos(0)=1 \ne 0$ \\
+$f(x) = 5x_1 + 2x_2 - 7x_3 + 10x_4 + 6$ & \textbf{ne} --- slobodni član $6$;
+  ovo je \emph{afina} \\
+$f(x) = x_1 - 2x_2 + 5x_3 - x_4$ & \textbf{da} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\emph{Kako se to brzo provjeri:} linearna funkcija nužno mora dati
+$f(0) = 0$ (jer iz homogenosti $f(0) = f(0\cdot 0) = 0\cdot f(0) = 0$). Ako
+uvrštavanje nule ne da nulu, funkcija sigurno \emph{nije} linearna --- to
+odmah izbacuje treću funkciju (daje 6) i drugu (daje 1). Prva funkcija daje
+nulu u nuli, ali pada na aditivnosti: npr.\ za članove $x_3^2$ vrijedi
+$(a+b)^2 \ne a^2 + b^2$.
+
+\textbf{Drugi popis sa slajda} \str{V1:9}:
+\[
+f : \R^4 \to \R^2, \; f(x) = \begin{pmatrix} x_1 - x_3 + x_1x_4 \\ x_2 \end{pmatrix};
+\quad
+f : \R \to \R^2, \; f(x) = \begin{pmatrix} 3x \\ x - 5 \end{pmatrix};
+\]
+\[
+f : \R^3 \to \R^3, \; f(x) = \begin{pmatrix}
+-x_1 + x_2 \\ 3x_2 + 4x_3 \\ x_1 - 3x_2 + 2x_3 \end{pmatrix}
+\]
+
+\begin{center}
+\begin{tabular}{p{8.6cm}p{4.4cm}}
+\toprule
+\textbf{Funkcija} & \textbf{Linearna?} \\
+\midrule
+prva & \textbf{ne} --- član $x_1x_4$ \\
+druga & \textbf{ne} --- druga komponenta ima $-5$; \emph{afina} \\
+treća & \textbf{da} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Matrični zapis linearne funkcije}
+\str{V1:10--17}
+
+\begin{teorem}[Matrični prikaz]
+Ako je $f : \R^n \to \R^m$ \textbf{linearna} funkcija onda postoji matrica
+$A \in \R^{m \times n}$ takva da je
+\[
+f(x) = A x
+\]
+Ako je $f : \R^n \to \R$ \textbf{skalarna linearna} funkcija onda postoji
+vektor $a \in \R^n$ takav da je
+\[
+f(x) = a\T x
+\]
+\end{teorem}
+
+Ovo je vrlo jaka tvrdnja: \emph{svaka} linearna funkcija je množenje matricom,
+i obrnuto. Zato u optimizaciji linearne funkcije nikad ne pišemo raspisano,
+nego uvijek kao $Ax$ ili $a\T x$.
+
+\textbf{Zadatak sa slajda} \str{V1:11}\textbf{:} zapišite linearne funkcije s
+prethodnih slajdova u ovom obliku. Slajdovi 12--17 daju rješenje.
+
+\textbf{Skalarni slučaj} \str{V1:14}:
+\[
+f(x) = x_1 - 2x_2 + 5x_3 - x_4
+= \begin{pmatrix} 1 & -2 & 5 & -1 \end{pmatrix}
+  \begin{pmatrix} x_1 \\ x_2 \\ x_3 \\ x_4 \end{pmatrix}
+= a\T x
+\]
+
+\emph{Kako se čita:} koeficijent uz $x_i$ postaje $i$-ta komponenta vektora
+$a$. Ovdje $a = (1, -2, 5, -1)\T$.
+
+\textbf{Vektorski slučaj} \str{V1:16}:
+\[
+f(x) = \begin{pmatrix} -x_1 + x_2 \\ 3x_2 + 4x_3 \\ x_1 - 3x_2 + 2x_3 \end{pmatrix}
+= \begin{pmatrix}
+-1 & 1 & 0 \\
+ 0 & 3 & 4 \\
+ 1 & -3 & 2 \end{pmatrix}
+\begin{pmatrix} x_1 \\ x_2 \\ x_3 \end{pmatrix} = Ax
+\]
+
+\emph{Kako se čita:} $i$-ti \textbf{redak} matrice $A$ su koeficijenti $i$-te
+komponente funkcije. Prvi redak $(-1, 1, 0)$ jer je
+$f_1 = -x_1 + 1\cdot x_2 + 0\cdot x_3$. Uočite da se koeficijent $0$ mora
+napisati --- prazno mjesto ne postoji.
+
+\subsection{Afine funkcije}
+\str{V1:17--19}
+
+\begin{definicija}[Afina funkcija]
+Funkcija $f : \R^n \to \R^m$ je \textbf{afina} ako se može prikazati u obliku
+\[
+f(x) = Ax + b
+\]
+(afina funkcija $=$ linearna funkcija $+$ konstanta).
+
+Kod afinih funkcija općenito \textbf{ne} vrijedi svojstvo aditivnosti i
+homogenosti (afino $\ne$ linearno).
+\end{definicija}
+
+\textbf{Primjeri sa slajda} \str{V1:17}:
+\[
+f(x) = 5x_1 + 2x_2 - 7x_3 + 10x_4 + 6
+= \begin{pmatrix} 5 & 2 & -7 & 10 \end{pmatrix}
+  \begin{pmatrix} x_1 \\ x_2 \\ x_3 \\ x_4 \end{pmatrix} + 6
+= a\T x + b
+\]
+\[
+f(x) = \begin{pmatrix} 3x \\ x - 5 \end{pmatrix}
+= \begin{pmatrix} 3 \\ 1 \end{pmatrix} x + \begin{pmatrix} 0 \\ -5 \end{pmatrix}
+= Ax + b
+\]
+
+\textbf{Slika sa slajda} \str{V1:19}. Slajd prikazuje četiri pravca u ravnini
+$(x, f(x))$:
+
+\begin{itemize}
+  \item $f_1(x) = a_1x + b_1$ i $f_2(x) = a_2x + b_2$ --- \textbf{afine}
+        funkcije; njihovi pravci \emph{ne} prolaze kroz ishodište (jedan raste,
+        drugi pada);
+  \item $f_3(x) = a_3x$ i $f_4(x) = a_4x$ --- \textbf{linearne} funkcije;
+        njihovi pravci \emph{prolaze kroz ishodište}.
+\end{itemize}
+
+\begin{napomena}[najčešća zabuna u cijelom kolegiju]
+U srednjoj školi se „linearna funkcija” obično zove $y = kx + l$. \textbf{To je
+afina funkcija.} U ovom kolegiju \emph{linearno} strogo znači $f(0)=0$, tj.\
+pravac kroz ishodište. Razlika je bitna: kod konveksnih problema ograničenja
+jednakosti smiju biti \emph{afina} ($a\T x = b$), a ne samo linearna.
+\end{napomena}
+
+\begin{zadatak}[Vježbe 1, Zadatak 1: linearne funkcije („superpozicija”)]
+\str{V1:20}
+
+\textbf{Postavka.} Sile: $w_1, w_2, w_3$; progib: $s(w_1, w_2, w_3)$. Ako
+znamo da je
+\[
+s(1, 0, 0) = 0{,}12, \qquad s(0, 1, 0) = 0{,}31, \qquad s(0, 0, 1) = 0{,}26,
+\]
+i da je $s$ \textbf{linearna} funkcija, koliko je $s(0{,}5;\; 1{,}1;\; 0{,}3)$?
+
+\medskip
+\textbf{Rješenje.} \emph{(Izvornik upućuje na ploču; niže je izvod koji koristi
+isključivo definiciju linearnosti i matrični prikaz sa str.\ V1:7 i V1:10.)}
+
+\textbf{Korak 1 --- što nam je zapravo dano.} Vektori
+$e_1 = (1,0,0)\T$, $e_2 = (0,1,0)\T$, $e_3 = (0,0,1)\T$ zovu se
+\textbf{jedinični vektori} baze. Dano nam je koliko iznosi progib kad djeluje
+\emph{samo} jedna jedinična sila, jedna po jedna.
+
+\textbf{Korak 2 --- rastav ulaza.} Bilo koji vektor sila rastavlja se na
+zbroj:
+\[
+w = \begin{pmatrix} w_1 \\ w_2 \\ w_3 \end{pmatrix}
+= w_1\begin{pmatrix}1\\0\\0\end{pmatrix}
++ w_2\begin{pmatrix}0\\1\\0\end{pmatrix}
++ w_3\begin{pmatrix}0\\0\\1\end{pmatrix}
+= w_1 e_1 + w_2 e_2 + w_3 e_3
+\]
+
+\textbf{Korak 3 --- primjena aditivnosti} ($s(x+y) = s(x)+s(y)$, primijenjeno
+dvaput):
+\[
+s(w) = s(w_1 e_1 + w_2 e_2 + w_3 e_3)
+     = s(w_1 e_1) + s(w_2 e_2) + s(w_3 e_3)
+\]
+
+\textbf{Korak 4 --- primjena homogenosti} ($s(\alpha x) = \alpha s(x)$, na
+svaki član):
+\[
+s(w) = w_1\,s(e_1) + w_2\,s(e_2) + w_3\,s(e_3)
+\]
+
+To je upravo princip superpozicije: \emph{ukupan progib je zbroj progiba od
+pojedinih sila}.
+
+\textbf{Korak 5 --- uvrštavanje poznatih vrijednosti.}
+\[
+s(w) = 0{,}12\,w_1 + 0{,}31\,w_2 + 0{,}26\,w_3
+     = \begin{pmatrix} 0{,}12 & 0{,}31 & 0{,}26 \end{pmatrix} w
+     = a\T w
+\]
+uz $a = (0{,}12;\; 0{,}31;\; 0{,}26)\T$. Time smo, usput, funkciju $s$ zapisali
+u matričnom obliku sa str.\ V1:10.
+
+\textbf{Korak 6 --- traženi broj.} Za $w = (0{,}5;\; 1{,}1;\; 0{,}3)\T$:
+\begin{align}
+s(0{,}5;\, 1{,}1;\, 0{,}3)
+&= 0{,}12 \cdot 0{,}5 + 0{,}31 \cdot 1{,}1 + 0{,}26 \cdot 0{,}3 \\
+&= 0{,}060 + 0{,}341 + 0{,}078 \\
+&= \boxed{0{,}479}
+\end{align}
+
+\emph{Kontrola pojedinih umnožaka:}
+$0{,}12 \cdot 0{,}5 = 0{,}06$;
+$0{,}31 \cdot 1{,}1 = 0{,}31 + 0{,}031 = 0{,}341$;
+$0{,}26 \cdot 0{,}3 = 0{,}078$. Zbroj:
+$0{,}06 + 0{,}341 = 0{,}401$, pa $0{,}401 + 0{,}078 = 0{,}479$. \checkmark
+
+\textbf{Poanta zadatka.} Za linearan sustav dovoljno je izmjeriti odziv na
+$n$ jediničnih pobuda i onda znamo odziv na \emph{bilo koju} kombinaciju ---
+bez ijednog dodatnog mjerenja. To je temelj cijele linearne teorije
+konstrukcija i upravljanja.
+\end{zadatak}
+
+% =====================================================================
+\section{Nivo krivulje}
+\label{sec:nivo}
+\str{V1:21}
+
+\begin{definicija}[Nivo krivulja]
+Nivo krivulja funkcije $f : \R^n \to \R$ je skup
+\[
+\mathcal{S}_c := \{\, x \mid f(x) = c \,\},
+\]
+gdje konstanta $c$ definira \textbf{nivo} (razinu).
+\end{definicija}
+
+\textbf{Kako to zamisliti.} Zamislite $f$ kao visinu terena iznad točke $x$.
+Nivo krivulja je onda \textbf{izohipsa} na zemljovidu --- linija koja spaja sve
+točke iste nadmorske visine. Hodanjem po nivo krivulji vrijednost funkcije se
+\emph{ne mijenja}.
+
+\textbf{Primjer sa slajda} \str{V1:21}: nivo krivulje funkcije
+$f(x_1, x_2) = x_1x_2e^{-x_1^2-x_2^2}$. Slajd uz to daje MATLAB kod kojim je
+slika napravljena:
+
+\begin{verbatim}
+[X,Y] = meshgrid(-2:0.1:2, -2:0.1:2);
+Z = X.*Y.*exp(-X.^2-Y.^2);
+[C,h] = contour(X,Y,Z);
+set(h,'ShowText','on','TextStep',get(h,'LevelStep')*2)
+\end{verbatim}
+
+\begin{zadatak}[Vježbe 1, Zadatak 2: nivo krivulje linearnih funkcija]
+\label{zad:nivo-linearna}
+\str{V1:22 i V1:27}
+
+\textbf{Postavka.} Za vektor $a = \begin{pmatrix} 2 & 1 \end{pmatrix}\T$,
+skicirajte nivo krivulje funkcije $f(x) = a\T x$.
+
+\medskip
+\textbf{Rješenje.} \emph{(Izvornik upućuje na ploču; izvod niže koristi samo
+definiciju nivo krivulje sa str.\ V1:21 i matrični prikaz sa str.\ V1:10.)}
+
+\textbf{Korak 1 --- raspis funkcije.} Za $a = (2,1)\T$ i $x = (x_1, x_2)\T$:
+\[
+f(x) = a\T x
+= \begin{pmatrix} 2 & 1 \end{pmatrix}\begin{pmatrix} x_1 \\ x_2 \end{pmatrix}
+= 2x_1 + 1\cdot x_2 = 2x_1 + x_2
+\]
+
+\textbf{Korak 2 --- jednadžba nivo krivulje.} Po definiciji,
+$\mathcal{S}_c = \{x \mid f(x) = c\}$, dakle
+\[
+2x_1 + x_2 = c
+\]
+
+\textbf{Korak 3 --- prepoznavanje oblika.} Riješimo po $x_2$:
+\[
+x_2 = c - 2x_1
+\]
+To je \textbf{pravac} s nagibom $-2$ i odsječkom $c$ na osi $x_2$.
+
+\textbf{Zaključak:} nivo krivulje linearne funkcije su \textbf{paralelni
+pravci}. Nagib $-2$ ne ovisi o $c$ --- mijenja se samo odsječak, pa različiti
+nivoi daju samo pomaknute kopije istog pravca.
+
+\textbf{Korak 4 --- konkretni pravci.} Uvrstimo nekoliko vrijednosti $c$:
+
+\begin{center}
+\begin{tabular}{lccccc}
+\toprule
+$c$ & $-4$ & $-2$ & $0$ & $2$ & $4$ \\
+\midrule
+jednadžba & $x_2 = -4-2x_1$ & $x_2 = -2-2x_1$ & $x_2 = -2x_1$
+          & $x_2 = 2-2x_1$ & $x_2 = 4-2x_1$ \\
+sjecište s osi $x_2$ & $-4$ & $-2$ & $0$ & $2$ & $4$ \\
+sjecište s osi $x_1$ & $-2$ & $-1$ & $0$ & $1$ & $2$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\emph{Provjera jednog retka:} za $c = 2$, sjecište s osi $x_1$ dobiva se za
+$x_2 = 0$: $2x_1 = 2 \Rightarrow x_1 = 1$. \checkmark
+
+\textbf{Korak 5 --- gdje je tu vektor $a$?} Uzmimo dvije točke istog nivoa,
+npr.\ na pravcu $c = 0$: $P = (0,0)$ i $Q = (1,-2)$. Vektor smjera tog pravca
+je $d = Q - P = (1,-2)\T$. Sada izračunajmo:
+\[
+a\T d = \begin{pmatrix} 2 & 1\end{pmatrix}\begin{pmatrix}1 \\ -2\end{pmatrix}
+= 2\cdot 1 + 1\cdot(-2) = 2 - 2 = 0
+\]
+Skalarni produkt je nula, dakle (vidi odjeljak~\ref{sec:skalarni})
+\textbf{vektor $a$ je okomit na nivo krivulje}. To vrijedi za svaku linearnu
+funkciju i sve njene nivo krivulje.
+
+\textbf{Korak 6 --- u kojem smjeru $f$ raste?} Pomaknimo se iz $(0,0)$ u smjeru
+$a$, za mali korak $\alpha > 0$: točka $x = \alpha a = (2\alpha, \alpha)$. Tada
+\[
+f(\alpha a) = 2(2\alpha) + \alpha = 5\alpha > 0 = f(0,0)
+\]
+Dakle pomak u smjeru $a$ \textbf{povećava} $f$: vektor $a$ pokazuje u smjeru
+rasta. (U odjeljku~\ref{sec:gradijent} vidjet ćemo da je $a$ upravo gradijent
+funkcije $f$.)
+
+\begin{crtanje}[nivo krivulje linearne funkcije]
+\textbf{Korak 1.} Nacrtajte osi $x_1$ (vodoravno) i $x_2$ (okomito), obje od
+$-3$ do $4$, s \textbf{jednakim mjerilom}.
+
+\textbf{Korak 2.} Nacrtajte prvi pravac, onaj za $c = 0$: prolazi kroz
+ishodište i kroz točku $(1, -2)$. Označite ga s „$c=0$”.
+
+\textbf{Korak 3.} Dodajte pravac za $c = 2$: isti nagib, ali podignut --- siječe
+os $x_2$ u $2$ i os $x_1$ u $1$. Uočite da je \textbf{paralelan} prethodnome;
+to je ključno zapažanje ovog zadatka.
+
+\textbf{Korak 4.} Dodajte još pravce za $c = -4, -2, 4, 6, 8$ na isti način.
+Dobit ćete „ljestve” jednako razmaknutih paralelnih pravaca. Razmak je jednak
+jer su i razlike nivoa jednake (po 2).
+
+\textbf{Korak 5.} Iz ishodišta nacrtajte vektor $a = (2,1)$: dvije jedinice
+desno, jednu gore. Označite pravi kut između $a$ i pravca $c = 0$ --- upravo
+smo u koraku 5 računom pokazali da su okomiti.
+
+\textbf{Korak 6.} Uz strelicu $a$ napišite „smjer rasta $f$”. Nivoi rastu kako
+se pomičemo u smjeru strelice: $c=0 \to c=2 \to c=4 \to \dots$
+
+\textbf{Što graf znači.} Da minimiziramo $f(x) = a\T x$ na nekom dozvoljenom
+skupu, pomicali bismo se \emph{suprotno} od $a$ dokle god možemo. Zato kod
+linearnog programiranja (poglavlje~\ref{ch:lpqp}) optimum uvijek završi na
+\textbf{rubu} dozvoljenog skupa --- linearna funkcija nema unutarnji minimum.
+\end{crtanje}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{02-nivo-krivulje-linearne.png}
+\caption{Nivo krivulje funkcije $f(x)=a\T x$ za $a=(2,1)\T$: paralelni pravci
+$2x_1+x_2=c$. Vektor $a$ okomit je na njih i pokazuje u smjeru rasta.}
+\end{figure}
+\end{zadatak}
+
+% =====================================================================
+\section{Skalarni produkt vektora}
+\label{sec:skalarni}
+\str{35--36 \textnormal{i} V1:23--25}
+
+\begin{definicija}[Skalarni produkt]
+Za dva vektora iste dimenzije $x, y \in \R^n$, \textbf{skalarni produkt}
+(unutarnji produkt, engl.\ \emph{inner product}) definiran je:
+\[
+\langle x, y\rangle := x\T y = x_1y_1 + x_2y_2 + \dots + x_ny_n
+\]
+Alternativno:
+\[
+\langle x, y\rangle = \|x\| \cdot \|y\| \cos(\varphi),
+\]
+gdje je $\|x\| = \sqrt{x_1^2 + \dots + x_n^2}$, a kut $\varphi$ je kut između
+vektora.
+\end{definicija}
+
+Dvije formule, isti broj --- i baš u tome je njihova vrijednost:
+
+\begin{itemize}
+  \item \textbf{prva} je \emph{računska}: daje broj iz komponenata, bez ikakve
+        geometrije;
+  \item \textbf{druga} je \emph{geometrijska}: kaže da taj broj mjeri koliko su
+        vektori „poravnati”. Duljine $\|x\|, \|y\|$ su uvijek pozitivne, pa
+        \textbf{predznak skalarnog produkta ovisi samo o $\cos\varphi$}.
+\end{itemize}
+
+\textbf{Ključna posljedica} \str{V1:24}\textbf{:}
+
+\begin{teorem}[Okomitost]
+Dva vektora $x$ i $y$ iz istog prostora su \textbf{okomita} ako i samo ako je
+njihov skalarni produkt jednak nuli:
+\[
+x\T y = y\T x = 0
+\]
+\end{teorem}
+
+\emph{Zašto:} $x\T y = \|x\|\|y\|\cos\varphi$, a to je nula (uz $x, y \ne 0$)
+točno kad je $\cos\varphi = 0$, tj.\ kad je $\varphi = 90^\circ$.
+
+\textbf{Predznak skalarnog produkta --- slika sa slajda} \str{36 \textnormal{i}
+V1:25}\textbf{.} Slajd prikazuje tri situacije, u 2D i analogno u 3D. Fiksiramo
+$y$ i gledamo gdje smije biti $x$:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Uvjet} & \textbf{Kut} $\varphi$ & \textbf{Gdje leži $x$} \\
+\midrule
+$x\T y > 0$ & $\varphi < 90^\circ$ & u poluprostoru \emph{na strani} vektora $y$ \\
+$x\T y = 0$ & $\varphi = 90^\circ$ & na hiperravnini okomitoj na $y$ \\
+$x\T y < 0$ & $\varphi > 90^\circ$ & u poluprostoru \emph{nasuprot} vektoru $y$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+U 3D je „granica” ravnina, u $n$ dimenzija hiperravnina --- ali slika je uvijek
+ista. To je geometrijski temelj cijelog odjeljka~\ref{sec:hiperravnine}.
+
+\textbf{Važno zapažanje sa slajda} \str{V1:23}\textbf{:} za \emph{fiksan} $x$,
+skalarni produkt $x\T y$ je \textbf{skalarna linearna funkcija} od $y$. Time se
+zatvara krug: linearne funkcije $=$ skalarni produkti s nekim fiksnim vektorom.
+
+% =====================================================================
+\section{Klasifikacije optimizacijskih problema}
+\str{6--11}
+
+Polazimo od problema: \emph{minimiziraj $f(x)$ uz ograničenja
+$x \in \Feas$}. Slajdovi ga dijele po tri kriterija.
+
+\subsection{Prema postojanju ograničenja}
+\str{7}
+
+\begin{itemize}
+  \item \textbf{Problem sa ograničenjima:} ako je $\Feas$ definiran
+        ograničenjima tipa $g(x) \le 0$, $h(x) = 0$.
+  \item \textbf{Problem bez ograničenja:} npr.\ ako je $\Feas = \R^n$.
+\end{itemize}
+
+\subsection{Prema karakteru projektnih varijabli / dozvoljenom skupu}
+\str{8}
+
+\begin{itemize}
+  \item \textbf{diskretan problem:} ako je $\Feas$ konačan skup;
+  \item \textbf{kontinuiran problem:} ako $\Feas$ nije diskretan;
+  \item \textbf{problem cjelobrojnog optimiranja} (\emph{integer
+        optimization}): ako su projektne varijable cijeli brojevi;
+  \item \textbf{mješovit problem} s cjelobrojnim i kontinuiranim varijablama
+        („\emph{mixed integer problem}”), npr.:
+        \begin{itemize}
+          \item „mixed integer linear programming (MILP)”,
+          \item „mixed integer quadratic programming (MIQP)”.
+        \end{itemize}
+\end{itemize}
+
+\subsection{Prema karakteristikama funkcije cilja i ograničenja}
+\str{9--10}
+
+\begin{itemize}
+  \item Linearno programiranje nasuprot nelinearnom programiranju
+  \item Konveksno optimiranje nasuprot nekonveksnom optimiranju
+\end{itemize}
+
+\textbf{„Stara podjela svijeta optimiranja”} \str{9}\textbf{.} Slajd prikazuje
+shemu: veliki pravokutnik podijeljen na uski dio \textbf{LP} (linearno
+programiranje) i veliki dio \textbf{nelinearno programiranje (ne-LP)}. Preko
+granice je isprekidanom linijom nacrtan oblak označen \emph{konveksno
+optimiranje} --- koji obuhvaća LP i \emph{dio} nelinearnog. Poruka: nekad se
+mislilo da je bitna granica ona između linearnog i nelinearnog.
+
+\textbf{„Moderna podjela svijeta optimiranja”} \str{10 \textnormal{i} 53}\textbf{.}
+Druga shema: sve je podijeljeno na \textbf{konveksno optimiranje} i
+\textbf{nekonveksno optimiranje}. Unutar konveksnog dijela ugniježđeni su, jedan
+u drugome:
+\[
+\text{LP} \;\subset\; \text{CQP} \;\subset\; \text{SDP} \;\subset\;
+\text{konveksno optimiranje}
+\]
+gdje je (legenda sa slajda):
+\begin{itemize}
+  \item \textbf{LP} $=$ linearno programiranje (poglavlje~\ref{ch:lpqp}),
+  \item \textbf{CQP} $=$ konično kvadratno programiranje
+        (poglavlje~\ref{ch:qcpsdp}),
+  \item \textbf{SDP} $=$ semidefinitno programiranje
+        (poglavlje~\ref{ch:qcpsdp}).
+\end{itemize}
+
+\begin{teorem}[Poruka predavanja \str{52}]
+\textbf{Velika razlika nije u tome je li problem linearan ili nelinearan, već
+je li konveksan ili nekonveksan!}
+\end{teorem}
+
+To je jedna od najvažnijih rečenica u cijelom kolegiju. Razlog ćemo vidjeti u
+odjeljku~\ref{sec:konveksno}: kod konveksnih problema \emph{svaki lokalni
+minimum je ujedno globalni}, pa ih znamo pouzdano i brzo riješiti bez obzira na
+to jesu li linearni.
+
+\subsection{Još karakterizacija}
+\str{11}
+
+\begin{itemize}
+  \item \textbf{Stohastički problem:} ako je $\Feas$ stohastički
+        karakteriziran (opisan vjerojatnostima).
+  \item \textbf{Robusno optimiranje:} ako su $f$ i $\Feas$ okarakterizirani
+        \textbf{nepoznatim (ali ograničenim)} parametrima. To je tema
+        poglavlja~\ref{ch:robusno}.
+\end{itemize}
+
+\emph{Razlika između to dvoje:} stohastički pristup zna \emph{razdiobu}
+nesigurnosti i optimira očekivanje; robusni pristup zna samo \emph{granice}
+unutar kojih parametar leži i štiti se od \emph{najgoreg} slučaja.
+
+% =====================================================================
+\section{Primjeri klasa problema}
+\str{12--21}
+
+Slajd 13 najavljuje četiri primjera: I) diskretan, II) kontinuiran,
+III) cjelobrojni, IV) mješoviti.
+
+\subsection{Primjer I --- diskretan optimizacijski problem}
+\str{14}
+
+Slajd prikazuje \textbf{rešetkastu konstrukciju} (nosač od 7 štapova,
+oslonjen na dva mjesta, s vertikalnom silom $F$ u čvoru $A$).
+
+\textbf{Oznake sa slajda:}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+$L_i$ & duljina $i$-tog štapa \\
+$D_i$ & presjek $i$-tog štapa \\
+$w$ & progib točke $A$ uslijed zadane sile $F$ \\
+$\sigma_i$ & naprezanje u $i$-tom štapu \\
+$\mathcal{D}$ & skup \textbf{standardnih} presjeka štapova \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Optimizacijski problem:}
+\begin{equation}
+\begin{aligned}
+\min_{D_1,\dots,D_5} \quad & \sum_{i=1}^{7} L_i D_i
+  && \text{(min masa konstrukcije)} \\
+\uzogr & w \le w_{\max} \\
+& \sigma_{i,\min} \le \sigma_i \le \sigma_{i,\max}, && i = 1,\dots,7 \\
+& D_i \in \mathcal{D}, && i = 1,\dots,7
+\end{aligned}
+\end{equation}
+
+\textbf{Objašnjenje:}
+\begin{itemize}
+  \item Funkcija cilja $\sum L_i D_i$ je \textbf{volumen} materijala (duljina
+        puta presjek, zbrojeno po štapovima); pomnožena gustoćom to je masa. Zato
+        piše „min masa konstrukcije”.
+  \item $w \le w_{\max}$: konstrukcija ne smije biti previše mekana.
+  \item $\sigma_{i,\min} \le \sigma_i \le \sigma_{i,\max}$: nijedan štap ne
+        smije biti prenapregnut (ni na vlak ni na tlak).
+  \item $D_i \in \mathcal{D}$: \textbf{ovo je ono što problem čini diskretnim.}
+        Presjeci se ne biraju iz kontinuuma, nego iz \emph{kataloga} standardnih
+        profila. Skup $\mathcal{D}$ je konačan.
+\end{itemize}
+
+\begin{napomena}
+Na slajdu piše $\min_{D_1,\dots,D_5}$ iako suma i ograničenja idu do $7$
+(očita omaška u prezentaciji; varijabli je sedam).
+\end{napomena}
+
+\subsection{Primjer II --- kontinuiran optimizacijski problem}
+\str{15}
+
+Isti nosač, iste oznake (bez skupa $\mathcal{D}$), ali zadnje ograničenje se
+mijenja:
+
+\begin{equation}
+\begin{aligned}
+\min_{D_1,\dots,D_5} \quad & \sum_{i=1}^{7} L_i D_i
+  && \text{(min masa konstrukcije)} \\
+\uzogr & w \le w_{\max} \\
+& \sigma_{i,\min} \le \sigma_i \le \sigma_{i,\max}, && i = 1,\dots,7 \\
+& D_{i,\min} \le D_i \le D_{i,\max}, && i = 1,\dots,7
+\end{aligned}
+\end{equation}
+
+\textbf{Jedina razlika} je zadnji redak: umjesto „$D_i$ iz kataloga” sada je
+„$D_i$ bilo gdje između donje i gornje granice”. Time dozvoljeni skup postaje
+\textbf{kontinuiran}.
+
+\begin{napomena}[zašto je ta razlika tako velika]
+Kontinuirani problem se rješava derivacijama i gradijentima --- alatima cijelog
+ovog kolegija. Diskretni se \emph{ne može} tako riješiti (nema derivacije po
+varijabli koja skače iz jedne vrijednosti u drugu) i općenito je \emph{mnogo}
+teži: u najgorem slučaju treba probati sve kombinacije iz kataloga. U praksi se
+često prvo riješi kontinuirani problem, pa se rezultat „zaokruži” na najbliži
+standardni profil.
+\end{napomena}
+
+\subsection{Primjer III --- cjelobrojno optimiranje: broj stabilnosti grafa}
+\str{16--17}
+
+\textbf{Pojmovi od nule.} \textbf{Graf} $\Gamma = (V, E)$ sastoji se od:
+\begin{itemize}
+  \item $V$ --- skup \textbf{vrhova} (čvorova),
+  \item $E$ --- skup \textbf{bridova} (veza), $E = V \times V$.
+\end{itemize}
+
+\begin{definicija}[Broj stabilnosti grafa (engl.\ \emph{stability number})]
+Maksimalan broj elemenata u podskupu $S$ čvorova grafa, gdje \textbf{nijedan par
+čvorova iz $S$ nije povezan bridom} grafa.
+\end{definicija}
+
+Dakle tražimo najveću skupinu međusobno „nepovezanih” čvorova.
+
+\textbf{Formulacija (verzija sa slajda 16):}
+\begin{equation}
+\begin{aligned}
+\max \quad & \sum_{i=1}^{n} x_i \\
+\uzogr & x_ix_j = 0 && \text{za sve } (x_i, x_j) \in E \\
+& x_i \in \{0, 1\}, && i = 1,\dots,n
+\end{aligned}
+\end{equation}
+
+\textbf{Kako to funkcionira:}
+\begin{itemize}
+  \item Svakom čvoru $i$ pridružimo varijablu $x_i$ koja je $1$ ako je čvor
+        \emph{u skupu} $S$, a $0$ ako nije. Takve varijable zovu se
+        \textbf{binarne} ili \emph{indikatorske}.
+  \item $\sum_i x_i$ je onda \textbf{broj odabranih čvorova} --- to
+        maksimiziramo.
+  \item $x_ix_j = 0$ za svaki brid: umnožak dvaju brojeva iz $\{0,1\}$ je $1$
+        samo ako su \emph{oba} jedinice. Traženjem da umnožak bude nula
+        zabranjujemo da oba kraja istog brida budu odabrana --- točno ono što
+        definicija traži.
+\end{itemize}
+
+\textbf{Verzija sa slajda 17} zamjenjuje uvjet $x_i \in \{0,1\}$ jednadžbom:
+\begin{equation}
+\begin{aligned}
+\max \quad & \sum_{i=1}^{n} x_i \\
+\uzogr & x_ix_j = 0 && \text{za sve } (x_i, x_j) \in E \\
+& x_i^2 - x_i = 0, && i = 1,\dots,n
+\end{aligned}
+\end{equation}
+
+\emph{Zašto je to isto:} $x_i^2 - x_i = 0 \Leftrightarrow x_i(x_i - 1) = 0
+\Leftrightarrow x_i = 0$ \emph{ili} $x_i = 1$. Dakle jedna kvadratna jednadžba
+zamjenjuje pripadnost diskretnom skupu. Time je problem zapisan
+\textbf{isključivo jednadžbama} --- ali po cijenu da ta jednadžba više nije
+afina, pa problem (kao što ćemo vidjeti u odjeljku~\ref{sec:konveksni-problem})
+\textbf{nije konveksan}.
+
+\textbf{Primjer primjene sa slajda:} izbor (pod)alfabeta za robusnu komunikaciju
+u problemu komunikacijskog kanala.
+
+\subsection{Primjer IV --- „mixed integer programming”}
+\str{18--21}
+
+\textbf{Problem:} upravljanje plinskom i parnom turbinom u kogeneracijskom
+postrojenju.
+
+\textbf{Varijable} \str{18}:
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\multicolumn{2}{l}{\textbf{Kontinuirane varijable}} \\
+$u_1$ & referentna vrijednost za radnu točku parne turbine \\
+$u_2$ & tok pare u mlin za papir (dio postrojenja) \\
+\midrule
+\multicolumn{2}{l}{\textbf{Diskretne varijable}} \\
+$u_{l1}$ & „on/off” varijabla ($\{1,0\}$) za \textbf{plinsku} turbinu \\
+$u_{l2}$ & „on/off” varijabla ($\{1,0\}$) za \textbf{parnu} turbinu \\
+\midrule
+\multicolumn{2}{l}{\textbf{Izlazi iz sustava}} \\
+$y_1$ & potrošnja goriva u plinskoj turbini \\
+$y_2$ & električna snaga iz parne turbine \\
+$y_3$ & električna snaga iz plinske turbine \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Logički zahtjev sa slajda 18:} $u_{l1}$ i $u_{l2}$ moraju zadovoljavati
+logičku relaciju
+\[
+u_{l2} = 1 \;\Longrightarrow\; u_{l1} = 1
+\]
+(parna turbina može raditi samo ako radi i plinska --- jer para dolazi od
+ispušnih plinova plinske turbine).
+
+\textbf{Ostali logički zahtjevi} \str{19}:
+\[
+\begin{aligned}
+u_{l1} = 0 &\;\Longrightarrow\; u_1 = 0 \\
+u_{l1} = 1 &\;\Longrightarrow\; u_{1,\min} \le u_1 \le u_{1,\max} \\
+u_{l2} = 0 &\;\Longrightarrow\; u_2 = 0 \\
+u_{l2} = 1 &\;\Longrightarrow\; u_{2,\min} \le u_2 \le u_{2,\max}
+\end{aligned}
+\qquad
+\begin{aligned}
+&u_{l1} \in \{0,1\} \\
+&u_{l2} \in \{0,1\} \\
+&u_1 \in \R \\
+&u_2 \in \R
+\end{aligned}
+\]
+
+„Ako je turbina isključena, njezina upravljačka veličina mora biti nula; ako je
+uključena, mora biti unutar radnog raspona.”
+
+\textbf{Pretvorba logike u nejednadžbe} \str{19}\textbf{.} Sve gornje relacije
+mogu se formulirati u obliku ograničenja:
+\[
+\begin{aligned}
+u_{l2} = 1 \Rightarrow u_{l1} = 1 \quad&\Longleftrightarrow\quad
+u_{l2} - u_{l1} \le 0 \\
+&\Longleftrightarrow\quad u_{l1}u_{1,\min} \le u_1 \le u_{l1}u_{1,\max} \\
+&\Longleftrightarrow\quad u_{l2}u_{2,\min} \le u_2 \le u_{l2}u_{2,\max}
+\end{aligned}
+\]
+
+\emph{Zašto to radi:}
+\begin{itemize}
+  \item $u_{l2} - u_{l1} \le 0$: jedina zabranjena kombinacija je
+        $u_{l2}=1, u_{l1}=0$, koja bi dala $1 - 0 = 1 > 0$. Sve ostale
+        ($0{-}0$, $0{-}1$, $1{-}1$) daju $\le 0$. \checkmark
+  \item $u_{l1}u_{1,\min} \le u_1 \le u_{l1}u_{1,\max}$: ako je $u_{l1} = 0$,
+        obje granice postaju $0$, pa je prisilno $u_1 = 0$. Ako je
+        $u_{l1} = 1$, granice su $u_{1,\min}$ i $u_{1,\max}$. Jedna nejednadžba
+        pokriva oba slučaja. \checkmark
+\end{itemize}
+
+\textbf{Matrični zapis} \str{20}\textbf{.} Sve se skupa piše kao $Mu \le 0$:
+\begin{equation}
+\begin{pmatrix}
+-1 & 0 & u_{1,\min} & 0 \\
+ 1 & 0 & -u_{1,\max} & 0 \\
+ 0 & -1 & 0 & u_{2,\min} \\
+ 0 & 1 & 0 & -u_{2,\max} \\
+ 0 & 0 & -1 & 1
+\end{pmatrix}
+\begin{pmatrix} u_1 \\ u_2 \\ u_{l1} \\ u_{l2} \end{pmatrix}
+\le
+\begin{pmatrix} 0 \\ 0 \\ 0 \\ 0 \\ 0 \end{pmatrix}
+\end{equation}
+
+\emph{Čitanje redak po redak} (uz $u = (u_1, u_2, u_{l1}, u_{l2})\T$):
+\begin{itemize}
+  \item redak 1: $-u_1 + u_{1,\min}u_{l1} \le 0$, tj.\
+        $u_{l1}u_{1,\min} \le u_1$;
+  \item redak 2: $u_1 - u_{1,\max}u_{l1} \le 0$, tj.\
+        $u_1 \le u_{l1}u_{1,\max}$;
+  \item redci 3 i 4: isto za $u_2$ i $u_{l2}$;
+  \item redak 5: $-u_{l1} + u_{l2} \le 0$, tj.\ $u_{l2} - u_{l1} \le 0$.
+        \checkmark
+\end{itemize}
+
+\textbf{Intermezzo: logičke relacije kao mješovita cjelobrojna ograničenja}
+\str{21}\textbf{.} Slajd donosi tablicu („TABLE I: Basic conversion of logic
+relations into mixed integer inequalities”) koja isti postupak daje za sve
+osnovne logičke veze. Prenosim je u cijelosti; $\delta$ su binarne varijable,
+$S$ logičke tvrdnje, $M$ i $m$ gornja odn.\ donja granica veličine $a\T x$, a
+$\varepsilon$ mali pozitivni broj:
+
+\begin{center}
+\small
+\begin{tabular}{llll}
+\toprule
+ & \textbf{relacija} & \textbf{logika} & \textbf{mješovite cjelobrojne nejednadžbe} \\
+\midrule
+P1 & AND ($\wedge$) & $S_1 \wedge S_2$
+   & $\delta_1 = 1$;\; $\delta_2 = 1$ \\
+P2 & & $S_3 \Leftrightarrow (S_1 \wedge S_2)$
+   & $-\delta_1 + \delta_3 \le 0$;\; $-\delta_2 + \delta_3 \le 0$; \\
+   & & & $\delta_1 + \delta_2 - \delta_3 \le 1$ \\
+P3 & OR ($\vee$) & $S_1 \vee S_2$ & $\delta_1 + \delta_2 \ge 1$ \\
+P4 & NOT ($\sim$) & $\sim\! S_1$ & $\delta_1 = 0$ \\
+P5 & IMPLY ($\Rightarrow$) & $S_1 \Rightarrow S_2$
+   & $\delta_1 - \delta_2 \le 0$ \\
+P6 & IFF ($\Leftrightarrow$) & $S_1 \Leftrightarrow S_2$
+   & $\delta_1 - \delta_2 = 0$ \\
+P7 & & $[a\T x \le 0] \Rightarrow [\delta = 1]$
+   & $a\T x \ge \varepsilon + (m - \varepsilon)\delta$ \\
+P8 & & $[\delta = 1] \Rightarrow [a\T x \le 0]$
+   & $a\T x \le M - M\delta$ \\
+P9 & & $[a\T x \le 0] \Leftrightarrow [\delta = 1]$
+   & $a\T x \le M - M\delta$; \\
+   & & & $a\T x \ge \varepsilon + (m - \varepsilon)\delta$ \\
+P10 & Mixed product & $z = \delta \cdot a\T x$
+   & $z \le M\delta$;\; $z \ge m\delta$; \\
+   & & & $z \le a\T x - m(1-\delta)$; \\
+   & & & $z \ge a\T x - M(1-\delta)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Poanta cijelog primjera IV:} \emph{proizvoljna logika pogona} („ako
+ovo, onda ono”) može se prevesti u \textbf{linearne nejednadžbe} uz uvođenje
+binarnih varijabli. Time inženjerski „if--then” opis postaje MILP koji rješavač
+može riješiti.
+
+% =====================================================================
+\section{Rješenje optimizacijskog problema}
+\str{22--27}
+
+\subsection{Lokalni i globalni minimizator}
+\str{23}
+
+\begin{definicija}[Terminologija]
+\begin{itemize}
+  \item $x^{*} \in \Feas$ je \textbf{globalni minimizator} ako
+        \[
+        f(x^{*}) \le f(x) \quad\text{za sve } x \in \Feas \text{ i } x \ne x^{*}
+        \]
+  \item Točka $x^{*} \in \Feas$ je \textbf{lokalni minimizator} ako postoji
+        \textbf{otvorena okolina} $N \subset \Feas$ oko $x^{*}$ tako da vrijedi
+        \[
+        f(x^{*}) \le f(x) \quad\text{za sve } x \in N \text{ i } x \ne x^{*}
+        \]
+  \item $x^{*}$ je \textbf{striktni} globalni minimizator ili \textbf{striktni}
+        lokalni minimizator ako u gornjim definicijama zamijenimo $\le$ sa $<$.
+\end{itemize}
+\end{definicija}
+
+\textbf{Primjer otvorene okoline} oko $x^{*}$ je skup
+\[
+N = \{\, x \in \Feas \mid \|x - x^{*}\| < \epsilon \,\}
+\]
+za neki (obično mali) $\epsilon \in \R$.
+
+\textbf{Kako to čitati.} $\|x - x^{*}\|$ je udaljenost od $x$ do $x^{*}$, pa je
+$N$ zapravo mala \textbf{kugla} polumjera $\epsilon$ oko $x^{*}$. Riječ
+\emph{otvorena} znači da rub kugle nije uključen (piše $<$, ne $\le$).
+
+\textbf{Razlika u jednoj rečenici:} globalni minimizator je najbolji
+\emph{od svih}; lokalni je najbolji \emph{samo u svom susjedstvu}. Lokalni
+minimizator može biti bitno lošiji od globalnog --- a numerički algoritmi
+tipično nalaze samo lokalne.
+
+\textbf{Slika sa slajda} \str{24}\textbf{: 1D primjer.} Prikazan je graf jako
+„valovite” funkcije na intervalu $x \in [0, 10]$, s vrijednostima otprilike u
+rasponu $[-8, 8]$, i s četiri označene točke:
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Oznaka na slajdu} & \textbf{Približan položaj} \\
+\midrule
+striktni lokalni minimum & $x \approx 4{,}3$, $f \approx -4$ \\
+striktni globalni minimum & $x \approx 7{,}4$, $f \approx -7$ \\
+striktni lokalni maksimum & $x \approx 2{,}1$, $f \approx 2$ \\
+striktni globalni maksimum & $x \approx 8{,}3$, $f \approx 7{,}8$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Poanta slike: funkcija ima \emph{mnogo} lokalnih ekstrema, a samo po jedan
+globalni minimum i maksimum. Globalni minimum je ujedno i lokalni --- obratno
+ne vrijedi.
+
+\textbf{Slika sa slajda} \str{25}\textbf{: 2D primjer.} Prikazana je 3D
+površina $f(x_1,x_2)$ s više „bregova” i „dolina” (vrijednosti otprilike
+$0{,}8$--$1{,}3$), a ispod nje su nacrtane pripadne nivo krivulje. Vidi se
+nekoliko odvojenih zatvorenih „bazena”, tj.\ nekoliko lokalnih minimuma. Ovakav
+problem je \textbf{nekonveksan}.
+
+\subsection{Infimum i supremum}
+\str{26--27}
+
+Ovi pojmovi rješavaju tehnički problem: što ako se „najbolja vrijednost” nikad
+ne postigne?
+
+\begin{definicija}[Infimum]
+Neka je $S \subseteq \R$. Broj $\gamma$ je \textbf{donja granica} od $S$ ako za
+svaki $x \in S$ vrijedi $\gamma \le x$.
+
+\textbf{Infimum} od $S$ je \textbf{najveća donja granica} od $S$ i označava se
+s $\inf S$.
+
+Kada je $\inf S \in S$ kaže se da je „\textbf{infimum postignut}” (engl.\
+\emph{infimum is attained/achieved}).
+\end{definicija}
+
+\begin{definicija}[Supremum]
+Neka je $S \subseteq \R$. Broj $\eta$ je \textbf{gornja granica} od $S$ ako za
+svaki $x \in S$ vrijedi $x \le \eta$.
+
+\textbf{Supremum} od $S$ je \textbf{najmanja gornja granica} od $S$ i označava
+se s $\sup S$.
+
+Kada je $\sup S \in S$ kaže se da je „\textbf{supremum postignut}”.
+\end{definicija}
+
+\textbf{Primjer 1 sa slajda} \str{27}:
+\[
+S = \{\, x \mid x > 0 \,\}, \qquad \inf S = 0, \qquad
+\text{\textbf{infimum nije postignut}}
+\]
+
+\emph{Razrada.} Skup je otvorena polupravica $(0, \infty)$. Svaki $\gamma \le 0$
+je donja granica. Najveća takva je $\gamma = 0$, dakle $\inf S = 0$. Ali
+$0 \notin S$ (jer $S$ traži strogo $x > 0$), pa infimum nije postignut ---
+\emph{ne postoji najmanji pozitivan broj}. Za svaki kandidat $x > 0$ postoji
+manji, npr.\ $x/2$.
+
+\textbf{Napomena o notaciji sa slajda:} često u literaturi, kad je infimum
+postignut, piše se $\min S$ (minimum je infimum kad je postignut).
+
+\textbf{Primjer 2 sa slajda} \str{27}:
+\[
+\inf \frac{1}{x} \quad \text{uz ograničenje} \quad 1 < x < 10,
+\qquad \text{\textbf{infimum nije postignut}}
+\]
+
+\emph{Razrada.} Funkcija $1/x$ na intervalu $(1, 10)$ pada od (ne uključivo)
+$1$ prema (ne uključivo) $0{,}1$. Skup vrijednosti je otvoreni interval
+$(0{,}1;\, 1)$. Najveća donja granica je $0{,}1$, dakle infimum je $0{,}1$. Ali
+$x = 10$ nije dopušten, pa se ta vrijednost nikad ne postiže.
+
+\begin{napomena}[zašto je to bitno]
+Zbog ovakvih slučajeva u optimizaciji se optimalna vrijednost formalno definira
+kao \textbf{infimum}, a ne minimum:
+$p\opt = \inf\{f(x) \mid x \in \Feas\}$. Ako je dozvoljeni skup zatvoren i
+ograničen, a $f$ neprekidna, infimum je uvijek postignut i tada bez straha
+pišemo $\min$. Oznaku $p\opt$ za optimalnu vrijednost intenzivno koristimo u
+poglavlju~\ref{ch:dualnost}.
+\end{napomena}
+
+% =====================================================================
+\section{Derivacija i Jakobijan}
+\str{29--32}
+
+\begin{definicija}[Jakobijan]
+Neka je $f : \R^n \to \R^m$ diferencijabilna funkcija u domeni svoje
+definicije. Tada je \textbf{Jakobijan} funkcije $f$ u točki $x_0 \in \R^n$
+definiran sljedećom $m \times n$ matricom:
+\[
+Df(x_0) =
+\begin{pmatrix}
+\dfrac{\partial f_1}{\partial x_1}(x_0) & \cdots &
+\dfrac{\partial f_1}{\partial x_n}(x_0) \\[10pt]
+\vdots & \ddots & \vdots \\[6pt]
+\dfrac{\partial f_m}{\partial x_1}(x_0) & \cdots &
+\dfrac{\partial f_m}{\partial x_n}(x_0)
+\end{pmatrix}
+\]
+\end{definicija}
+
+\textbf{Objašnjenje od nule.}
+
+\begin{itemize}
+  \item \textbf{Parcijalna derivacija} $\partial f_i/\partial x_j$ znači:
+        deriviraj $f_i$ po $x_j$, a \emph{sve ostale varijable tretiraj kao
+        konstante}. Simbol $\partial$ („del”) koristi se umjesto $\mathrm{d}$
+        upravo da naglasi da ima još varijabli.
+  \item \textbf{Struktura matrice:} $i$-ti \emph{redak} pripada $i$-toj
+        komponenti funkcije, $j$-ti \emph{stupac} pripada $j$-toj varijabli.
+        Otud dimenzija $m \times n$.
+\end{itemize}
+
+\textbf{Kada funkcija ima Jakobijan} \str{29}\textbf{:} funkcija je
+\textbf{diferencijabilna} u $x_0$ ako parcijalne derivacije iz definicije
+Jakobijana postoje u $x_0$. Kažemo da je funkcija diferencijabilna
+\emph{u svojoj domeni}, ako je ta domena otvoreni skup i funkcija je
+diferencijabilna u svim točkama domene.
+
+\subsection{Linearizacija (aproksimacija prvog reda)}
+\str{30}
+
+\begin{teorem}[Linearizacija funkcije]
+Afina funkcija $g : \R^n \to \R^m$, definirana na sljedeći način
+\[
+g(x) = f(x_0) + Df(x_0)(x - x_0)
+\]
+je \textbf{aproksimacija prvog reda} funkcije $f$ u točki $x_0$.
+\end{teorem}
+
+\textbf{Kako to čitati:} „ako se malo pomaknem od $x_0$, promjena funkcije je
+približno jednaka Jakobijanu puta pomak”. Prvi član $f(x_0)$ je vrijednost u
+polazištu, drugi član $Df(x_0)(x-x_0)$ je linearna korekcija. To je ista ideja
+kao tangenta na krivulju u 1D, samo u više dimenzija.
+
+\subsection{Primjer Jakobijana}
+\str{31}
+
+$f : \R^2 \to \R$ je zadana kako slijedi, uz
+$x = \begin{pmatrix} x_1 \\ x_2 \end{pmatrix}$:
+\[
+f(x) = x_2 e^{-x_1^2 - x_2^2}
+\]
+
+Tada imamo $Df(x) = \begin{pmatrix}
+\frac{\partial f(x)}{\partial x_1} & \frac{\partial f(x)}{\partial x_2}
+\end{pmatrix}$ gdje je
+\begin{align}
+\frac{\partial f(x)}{\partial x_1} &= -2x_1x_2e^{-x_1^2-x_2^2}, \\
+\frac{\partial f(x)}{\partial x_2} &= e^{-x_1^2-x_2^2}
+                                     - 2x_2^2 e^{-x_1^2-x_2^2}.
+\end{align}
+
+\emph{Raspis prve derivacije.} Po $x_1$ je faktor $x_2$ konstanta, pa
+deriviramo samo eksponencijalu; po pravilu ulančanog deriviranja
+$\left(e^{u}\right)' = e^{u}\cdot u'$, uz $u = -x_1^2-x_2^2$ i
+$\partial u/\partial x_1 = -2x_1$:
+\[
+\frac{\partial f}{\partial x_1}
+= x_2 \cdot e^{-x_1^2-x_2^2}\cdot(-2x_1) = -2x_1x_2e^{-x_1^2-x_2^2}
+\quad\checkmark
+\]
+
+\emph{Raspis druge derivacije.} Po $x_2$ imamo umnožak dviju funkcija koje
+\emph{obje} ovise o $x_2$, pa koristimo pravilo umnoška $(uv)' = u'v + uv'$ uz
+$u = x_2$ i $v = e^{-x_1^2-x_2^2}$:
+\[
+\frac{\partial f}{\partial x_2}
+= 1 \cdot e^{-x_1^2-x_2^2} + x_2 \cdot e^{-x_1^2-x_2^2}\cdot(-2x_2)
+= e^{-x_1^2-x_2^2} - 2x_2^2e^{-x_1^2-x_2^2}
+\quad\checkmark
+\]
+
+\begin{napomena}[tipfeler na slajdu 31]
+Na slajdu su \emph{obje} derivacije označene kao
+$\frac{\partial f(x)}{\partial x_1}$. Druga je zapravo
+$\frac{\partial f(x)}{\partial x_2}$ --- vidi se iz samog izraza (nema faktora
+$x_1$, a ima $x_2^2$) i iz rezultata koji slijedi.
+\end{napomena}
+
+\textbf{Jakobijan u točki} $x_0 = (x_1^0, x_2^0) = (1,1)$:
+\[
+Df(1,1) = \begin{pmatrix} -2e^{-2} & -e^{-2} \end{pmatrix}
+\]
+
+\emph{Uvrštavanje korak po korak.} Za $x_1 = x_2 = 1$ je
+$-x_1^2 - x_2^2 = -1 - 1 = -2$, pa je $e^{-x_1^2-x_2^2} = e^{-2}$. Dalje:
+\begin{align}
+\frac{\partial f}{\partial x_1}(1,1) &= -2\cdot 1 \cdot 1 \cdot e^{-2}
+  = -2e^{-2} \quad\checkmark \\
+\frac{\partial f}{\partial x_2}(1,1) &= e^{-2} - 2\cdot 1^2 \cdot e^{-2}
+  = e^{-2} - 2e^{-2} = -e^{-2} \quad\checkmark
+\end{align}
+Uz to je $f(1,1) = 1 \cdot e^{-2} = e^{-2}$.
+
+\textbf{Linearizacija funkcije $f$ u $x_0$:}
+\[
+g(x) = e^{-2} - 2e^{-2}(x_1 - x_1^0) - e^{-2}(x_2 - x_2^0)
+\]
+
+\emph{Odakle:} uvrstimo u $g(x) = f(x_0) + Df(x_0)(x-x_0)$:
+\[
+g(x) = e^{-2}
++ \begin{pmatrix} -2e^{-2} & -e^{-2}\end{pmatrix}
+  \begin{pmatrix} x_1 - 1 \\ x_2 - 1 \end{pmatrix}
+= e^{-2} - 2e^{-2}(x_1 - 1) - e^{-2}(x_2 - 1)
+\]
+
+\textbf{Slika sa slajda} \str{32}\textbf{.} Prikazane su dvije plohe nad
+ravninom $(x_1, x_2)$:
+\begin{itemize}
+  \item \textbf{plavo:} $f(x) = x_2e^{-x_1^2-x_2^2}$ --- zakrivljena ploha s
+        jednim „brijegom” i jednom „dolinom”;
+  \item \textbf{crveno:} $g(x) = e^{-2} - 2e^{-2}(x_1-1) - e^{-2}(x_2-1)$ ---
+        \textbf{ravnina}.
+\end{itemize}
+Ravnina dodiruje plohu točno u točki $x_0 = (1,1)$ i tamo joj je tangencijalna.
+Blizu te točke se dobro poklapaju, a što se dalje odmaknemo, to je odstupanje
+veće. To je slikoviti smisao „aproksimacije prvog reda”.
+
+% =====================================================================
+\section{Gradijent}
+\label{sec:gradijent}
+\str{33--40}
+
+\begin{definicija}[Gradijent]
+Neka je $f : \R^n \to \R$ diferencijabilna funkcija u domeni svoje definicije.
+\textbf{Gradijent} je definiran kao vektor
+\[
+\nabla f(x) := [Df(x)]\T :=
+\begin{pmatrix}
+\dfrac{\partial f(x)}{\partial x_1} \\[8pt]
+\vdots \\[4pt]
+\dfrac{\partial f(x)}{\partial x_n}
+\end{pmatrix}
+\]
+Gradijent dakle preslikava točku $x \in \R^n$ u vektor $\nabla f(x) \in \R^n$.
+\end{definicija}
+
+\textbf{Napomena sa slajda} \str{33}\textbf{:} uočite da je $f$ ovdje
+\textbf{skalarna} funkcija (vrijednost $f(x)$ je skalar, tj.\ $f(x) \in \R$).
+
+\begin{napomena}[Jakobijan vs.\ gradijent --- ne miješati]
+Za skalarnu funkciju $f : \R^n \to \R$ Jakobijan $Df(x)$ je \textbf{redak}
+($1 \times n$), a gradijent $\nabla f(x)$ je \textbf{stupac} ($n \times 1$).
+Razlikuju se samo transponiranjem, ali u formulama je bitno koji je koji ---
+zato u izrazima poput $\nabla f(x)\T d$ transponiranje mora biti na pravom
+mjestu.
+\end{napomena}
+
+\textbf{Linearizacija preko gradijenta} \str{34}\textbf{.} Afina funkcija
+$g : \R^n \to \R$
+\[
+g(x) = f(x_0) + \nabla f(x_0)\T (x - x_0)
+\]
+je aproksimacija prvog reda funkcije $f$ u točki $x_0$. (To je ista formula kao
+prije, samo zapisana gradijentom.)
+
+\subsection{Zašto gradijenti u optimizaciji?}
+\str{37}
+
+Neka $f(x)$ ima linearizaciju $g(x) = f(x_0) + [\nabla f(x_0)]\T(x - x_0)$ u
+točki $x_0$. Tada za $x = x_0 + d$, gdje je $\|d\|$ malena vrijednost, imamo
+\[
+f(x_0 + d) \approx g(x_0 + d) = f(x_0) + [\nabla f(x_0)]\T d
+\]
+
+\emph{Međukorak:} uvrstimo $x = x_0 + d$, pa je $x - x_0 = d$; drugi član
+postaje $[\nabla f(x_0)]\T d$.
+
+\textbf{Zaključak sa slajda:} za dovoljno malen „korak” $d$ od $x_0$, imamo
+\[
+f(x_0 + d) < f(x_0) \quad\text{ako je}\quad [\nabla f(x_0)]\T d < 0
+\]
+
+\begin{definicija}[Smjer pada funkcije]
+Vektor $d \in \R^n$ je \textbf{smjer pada} funkcije u točki $x$ ako vrijedi
+\[
+[\nabla f(x)]\T d \le 0
+\]
+\end{definicija}
+
+\textbf{Poruka sa slajda:} \emph{ako znamo gradijent, znamo u kom smjeru ići
+ako tražimo minimum.}
+
+\subsection{Važna svojstva gradijenta}
+\str{38}
+
+\begin{teorem}[Svojstva gradijenta]
+\begin{itemize}
+  \item Gradijent funkcije $f$ u točki $x$ daje nam \textbf{smjer najbržeg
+        rasta} funkcije.
+  \item Gradijent $\nabla f(x)$ je \textbf{ortogonalan (okomit) na tangentu}
+        nivo krivulje $\mathcal{S}_c$ u bilo kojoj točki $x$ za koju je
+        $f(x) = c$.
+\end{itemize}
+\end{teorem}
+
+Slajd 38 to ilustrira crtežom: u prostoru $(x_1, x_2, x_3)$ nacrtan je zakrivljen
+„komad plohe” označen kao \emph{nivo krivulja} $F(x) = c$, s jednom točkom na
+njoj, i strelica $\nabla F(x) = \operatorname{grad} F$ koja iz te točke strši
+\textbf{okomito} na plohu.
+
+\subsection{Dokaz okomitosti}
+\str{39}
+
+Slajd dokazuje drugu tvrdnju. Prenosim izvod u cijelosti, s objašnjenjem svakog
+koraka.
+
+\textbf{Postavka.} Neka je $g : \R \to \R^n$ funkcija koja parametrizira nivo
+krivulju $\mathcal{S}_c$, koja sadrži točke $x$ za koje je $f(x) = c$.
+
+\emph{(Sa slajda: možemo zamisliti da je $t$ vrijeme, a $g(t)$ funkcija koja
+opisuje „putanju” točke u vremenu, gdje točka putuje po krivulji
+$\mathcal{S}$.)}
+
+\textbf{Korak 1.} Definirajmo $h(t) := f(g(t))$. To je vrijednost funkcije $f$
+duž putanje.
+
+\textbf{Korak 2.} Budući da je $h(t) = f(g(t)) = c$ za sve $t$ (putanja \emph{ne
+napušta} nivo krivulju, pa je $f$ na njoj stalno jednak $c$), funkcija $h$ je
+\textbf{konstantna}, a derivacija konstante je nula:
+\[
+\frac{\dd h(t)}{\dd t} = 0
+\]
+
+\textbf{Korak 3.} Koristeći \textbf{pravilo ulančanog deriviranja}
+(deriviranje kompozicije: derivacija vanjske puta derivacija unutarnje):
+\[
+0 = \frac{\dd h(t)}{\dd t} = Df(g(t))\,Dg(t) = Df(x)\,d = \nabla f(x)\T d
+\]
+gdje je $d = Dg(t)$ \textbf{tangentni vektor} na krivulju $x = g(t)$ (ako je
+$g(t)$ putanja, onda je $d$ vektor \emph{brzine}).
+
+\textbf{Korak 4 --- zaključak.} Dobili smo $\nabla f(x)\T d = 0$, dakle
+$\nabla f(x)$ i $d$ su \textbf{međusobno okomiti vektori} (po teoremu o
+okomitosti iz odjeljka~\ref{sec:skalarni}). Budući da je $d$ tangenta na nivo
+krivulju, gradijent je okomit na nivo krivulju. $\blacksquare$
+
+\begin{napomena}[povratak na Zadatak 2]
+U Zadatku~\ref{zad:nivo-linearna} smo za $f(x) = a\T x$ izračunom pokazali da
+je $a$ okomit na nivo krivulje. Sada vidimo i \emph{zašto}: gradijent linearne
+funkcije je $\nabla f(x) = a$ (jer je $\partial(a\T x)/\partial x_i = a_i$), a
+gradijent je uvijek okomit na nivo krivulju.
+\end{napomena}
+
+\subsection{Što nam gradijent govori --- formalno}
+\str{40}
+
+\begin{teorem}[Smjerovi rasta i pada]
+Neka je funkcija cilja $f : \R^n \to \R$ kontinuirana funkcija i neka su $x$ i
+$d$ vektori u $\R^n$. Tada vrijedi:
+\begin{itemize}
+  \item ako je $d\T\nabla f(x) \ge 0$, tada je $f(x + \alpha d) \ge f(x)$ za
+        dovoljno malen $\alpha > 0$;
+  \item ako je $d\T\nabla f(x) \le 0$, tada je $f(x + \alpha d) \le f(x)$ za
+        dovoljno malen $\alpha > 0$.
+\end{itemize}
+\end{teorem}
+
+\textbf{Zaključci sa slajda:}
+\begin{itemize}
+  \item Gradijenti nam govore u kojem smjeru funkcija $f$ u točki $x$ opada
+        odnosno raste.
+  \item \textbf{Smjerovi smanjenja} funkcije su svi oni vektori $d$ za koje
+        vrijedi $d\T\nabla f(x) \le 0$ --- \textbf{ovo je „poluprostor”}
+        (engl.\ \emph{half-space}).
+\end{itemize}
+
+To je izravna primjena predznaka skalarnog produkta iz
+odjeljka~\ref{sec:skalarni}: skup svih $d$ koji zatvaraju tup kut s gradijentom
+je poluprostor. Formalnu definiciju poluprostora dajemo u
+odjeljku~\ref{sec:hiperravnine}.
+
+% =====================================================================
+\section{Hessian i Taylorov teorem}
+\str{41--42}
+
+\begin{definicija}[Hessian]
+Neka je $f : \R^n \to \R$ dvostruko diferencijabilna funkcija. \textbf{Hessian}
+u točki $x_0 = (x_1^0, \dots, x_n^0)$ je definiran kao $n \times n$ matrica:
+\[
+D^2f(x_0) = \nabla^2 f(x_0) :=
+\begin{pmatrix}
+\dfrac{\partial^2 f}{\partial x_1^2}(x_0) &
+\dfrac{\partial^2 f}{\partial x_1 \partial x_2}(x_0) & \dots &
+\dfrac{\partial^2 f}{\partial x_1 \partial x_n}(x_0) \\[10pt]
+\vdots & \vdots & \ddots & \vdots \\[6pt]
+\dfrac{\partial^2 f}{\partial x_n \partial x_1}(x_0) &
+\dfrac{\partial^2 f}{\partial x_n \partial x_2}(x_0) & \dots &
+\dfrac{\partial^2 f}{\partial x_n \partial x_n}(x_0)
+\end{pmatrix}
+\]
+\end{definicija}
+
+\textbf{Tvrdnja sa slajda:} Hessian funkcije $f$ u nekoj točki je
+\textbf{kvadratna i simetrična} matrica dimenzija $n \times n$.
+
+\textbf{Objašnjenje.}
+\begin{itemize}
+  \item Hessian je „derivacija gradijenta” --- druga derivacija skalarne
+        funkcije više varijabli.
+  \item $\partial^2 f/(\partial x_i \partial x_j)$ znači: deriviraj prvo po
+        $x_j$, pa rezultat po $x_i$.
+  \item \textbf{Simetričnost} znači $\partial^2 f/(\partial x_i\partial x_j)
+        = \partial^2 f/(\partial x_j\partial x_i)$: redoslijed deriviranja nije
+        važan (za dovoljno glatke funkcije). Zbog te simetrije Hessian ima samo
+        realne svojstvene vrijednosti --- što je ključno za
+        odjeljak~\ref{sec:definitnost}.
+\end{itemize}
+
+\begin{teorem}[Taylorov teorem 1 \str{42}]
+Neka funkcija $f : \R^n \to \R$ ima kontinuiranu prvu derivaciju i neka je
+$d \in \R^n$. Tada vrijedi
+\[
+f(x_0 + d) \approx f(x_0) + Df(x_0)d
+\]
+kad je $\|d\|$ malena vrijednost, i
+\[
+f(x_0 + d) = f(x_0) + Df(x_0 + td)\,d \qquad \text{za neki } t \in (0,1)
+\]
+\end{teorem}
+
+\begin{teorem}[Taylorov teorem 2 \str{42}]
+Neka funkcija $f : \R^n \to \R$ ima kontinuiranu drugu derivaciju i neka je
+$d \in \R^n$. Tada vrijedi
+\[
+f(x_0 + d) \approx f(x_0) + Df(x_0)d + \tfrac{1}{2}d\T D^2f(x_0)d
+\]
+kad je $\|d\|$ malena vrijednost, i
+\[
+f(x_0 + d) = f(x_0) + Df(x_0 + d)d + \tfrac{1}{2}d\T D^2f(x_0 + td)d
+\qquad \text{za neki } t \in (0,1)
+\]
+\end{teorem}
+
+\textbf{Kako to koristiti.} Prva formula u svakom teoremu je
+\emph{aproksimacija} (znak $\approx$) i vrijedi samo za male korake. Druga je
+\emph{točna jednakost} (znak $=$), ali po cijenu da se derivacija računa u
+nekoj nepoznatoj međutočki $x_0 + td$, $0 < t < 1$.
+
+\textbf{Zašto nam treba drugi red.} Aproksimacija prvog reda ne razlikuje
+minimum od maksimuma --- u obje je gradijent nula, pa linearni član nestaje.
+Tek član $\tfrac{1}{2}d\T D^2f(x_0)d$ kaže zakrivljuje li se funkcija prema gore
+(minimum) ili prema dolje (maksimum). To je izravno motivacija za
+odjeljak~\ref{sec:uvjeti-bez-ogr}.
+
+% =====================================================================
+\section{Optimiranje bez ograničenja: uvjeti optimalnosti}
+\label{sec:uvjeti-bez-ogr}
+\str{43--45}
+
+Pitanje na sva tri slajda glasi: \textbf{kako znati je li točka $x^{*}$ lokalni
+minimum?}
+
+\begin{teorem}[Nužni uvjeti prvog reda \str{43}]
+Ako je $x^{*}$ lokalni minimum i ako je $f$ kontinuirano diferencijabilna
+funkcija (ima prvu derivaciju koja je kontinuirana) u nekoj otvorenoj okolini
+točke $x^{*}$, tada \textbf{nužno} vrijedi
+\[
+\nabla f(x^{*}) = 0
+\]
+\end{teorem}
+
+\begin{napomena}[upozorenje sa slajda 43]
+\textbf{I u lokalnom maksimumu vrijedi $\nabla f(x^{*}) = 0$!} Uvjet
+$\nabla f = 0$ je samo \emph{nužan}, a ne dovoljan: zadovoljavaju ga minimumi,
+maksimumi i sedlaste točke. Točke u kojima je $\nabla f = 0$ zovu se
+\textbf{stacionarne točke}.
+\end{napomena}
+
+\begin{teorem}[Nužni uvjeti drugog reda \str{44}]
+Ako je $x^{*}$ lokalni minimum od $f$ i ako je $\nabla^2 f$ kontinuirana u nekoj
+otvorenoj okolini točke $x^{*}$, tada \textbf{nužno} vrijedi
+\[
+\nabla f(x^{*}) = 0 \qquad\text{i}\qquad \nabla^2 f(x^{*}) \succeq 0
+\]
+Ovdje $\nabla^2f(x^{*}) \succeq 0$ znači da je Hessian matrica \textbf{pozitivno
+semidefinitna}.
+\end{teorem}
+
+\begin{teorem}[Dovoljni uvjeti drugog reda \str{45}]
+Ako je $\nabla^2f$ kontinuirana u nekoj otvorenoj okolini točke $x^{*}$ i ako
+vrijedi
+\[
+\nabla f(x^{*}) = 0 \qquad\text{i}\qquad \nabla^2 f(x^{*}) \succ 0,
+\]
+tada je $x^{*}$ \textbf{striktni lokalni minimizator} funkcije $f$.
+\end{teorem}
+
+\textbf{Razlika između zadnja dva teorema u jednoj rečenici:} nužni uvjet ima
+$\succeq$ (dopušta i nulu) i ide „od minimuma prema uvjetu”; dovoljni ima
+$\succ$ (strogo) i ide „od uvjeta prema minimumu”. Simboli $\succeq$ i $\succ$
+objašnjeni su odmah u sljedećem odjeljku.
+
+\textbf{Veza s 1D slučajem.} U jednoj dimenziji $\nabla f = f'$ i
+$\nabla^2 f = f''$, pa se teoremi svode na poznati recept iz srednje škole:
+$f' = 0$ i $f'' > 0$ $\Rightarrow$ minimum. Ovo je njegovo poopćenje na $n$
+dimenzija, gdje ulogu predznaka drugog derivata preuzima
+\textbf{definitnost matrice}.
+
+% =====================================================================
+\section{Pozitivno i negativno definitne matrice}
+\label{sec:definitnost}
+\str{46--50}
+
+\textbf{Podsjetnik sa slajda 46:} realna matrica (matrica čiji su elementi
+realni brojevi) $H$ dimenzija $n \times n$ je \textbf{simetrična} ako vrijedi
+$H\T = H$.
+
+\begin{definicija}[Definitnost]
+\begin{itemize}
+  \item $H$ je \textbf{pozitivno semidefinitna} matrica, i pišemo
+        $H \succeq 0$, ako je $H$ simetrična matrica i ako vrijedi
+        \[
+        x\T H x \ge 0 \quad\text{za sve vektore } x \in \R^n;
+        \]
+  \item $H$ je \textbf{pozitivno definitna} matrica ($H \succ 0$) ako
+        $x\T Hx > 0$ za sve $x \in \R^n$, $x \ne 0$;
+  \item $H$ je \textbf{negativno semidefinitna} matrica ($H \preceq 0$) ako
+        $x\T Hx \le 0$ za sve $x \in \R^n$;
+  \item $H$ je \textbf{negativno definitna} matrica ($H \prec 0$) ako
+        $x\T Hx < 0$ za sve $x \in \R^n$, $x \ne 0$.
+\end{itemize}
+Kažemo da je matrica \textbf{indefinitna} ako nije ništa od gore navedenog.
+\end{definicija}
+
+\textbf{Kako to zamisliti.} Izraz $x\T Hx$ je broj (\textbf{kvadratna forma}) i
+poopćenje je izraza $a x^2$ iz jedne dimenzije. „Pozitivno definitna” znači
+„ponaša se kao $ax^2$ s $a > 0$” --- ploha se svugdje zakrivljuje prema gore,
+pa je ishodište minimum. Zato je u teoremu o dovoljnim uvjetima traženo
+$\nabla^2f \succ 0$.
+
+\textbf{Važna tvrdnja sa slajda 46:} simetrične matrice nužno imaju
+\textbf{samo realne svojstvene vrijednosti} (dakle, nema kompleksnih brojeva
+kao svojstvenih vrijednosti). To omogućuje sljedeću karakterizaciju.
+
+\begin{teorem}[Karakterizacija preko svojstvenih vrijednosti \str{47}]
+\begin{itemize}
+  \item $H \succeq 0$ ako i samo ako su sve svojstvene vrijednosti od $H$
+        \textbf{ne-negativne} (nula ili pozitivne);
+  \item $H \succ 0$ ako i samo ako su sve svojstvene vrijednosti od $H$
+        \textbf{pozitivne};
+  \item $H \preceq 0$ ako i samo ako su sve svojstvene vrijednosti od $H$
+        \textbf{ne-pozitivne} (nula ili negativne);
+  \item $H \prec 0$ ako i samo ako su sve svojstvene vrijednosti od $H$
+        \textbf{negativne}.
+\end{itemize}
+\end{teorem}
+
+\begin{napomena}[dvije zamke sa slajda 47]
+\begin{itemize}
+  \item Ako matrica \textbf{nije} pozitivno semidefinitna, \textbf{to ne znači
+        da je negativno definitna!} Može biti indefinitna (dio svojstvenih
+        vrijednosti pozitivan, dio negativan).
+  \item \textbf{Pozitivno definitne matrice mogu imati negativne elemente!}
+        Definitnost se \emph{ne} očitava iz predznaka pojedinih elemenata ---
+        primjer koji slijedi to izravno pokazuje.
+\end{itemize}
+\end{napomena}
+
+\subsection{Primjer: određivanje definitnosti}
+\str{48}
+
+\textbf{Zadatak.} Odredite definitnost matrice $A$, gdje je
+\[
+A = \begin{pmatrix} 1 & -1 \\ -1 & 3 \end{pmatrix}
+\]
+
+\textbf{Rješenje.} Svojstvene vrijednosti matrice $A$ su one $\lambda$ za koje
+je $\det(A - \lambda I) = 0$, gdje je $I$ \textbf{identična matrica} (jedinice
+na dijagonali, nule drugdje).
+
+\[
+\begin{vmatrix} 1-\lambda & -1 \\ -1 & 3-\lambda \end{vmatrix} = 0
+\quad\Longrightarrow\quad \lambda^2 - 4\lambda + 2 = 0
+\]
+
+\emph{Raspis determinante (na slajdu nije prikazan).} Determinanta matrice
+$2\times2$ je umnožak glavne dijagonale minus umnožak sporedne:
+\begin{align}
+(1-\lambda)(3-\lambda) - (-1)(-1)
+&= 3 - \lambda - 3\lambda + \lambda^2 - 1 \\
+&= \lambda^2 - 4\lambda + 2
+\end{align}
+
+\textbf{Svojstvene vrijednosti:}
+$\lambda_1 = 2 + \sqrt{2}$, $\lambda_2 = 2 - \sqrt{2}$.
+
+\emph{Raspis rješavanja kvadratne jednadžbe:}
+\[
+\lambda_{1,2} = \frac{4 \pm \sqrt{16 - 4\cdot 1 \cdot 2}}{2}
+= \frac{4 \pm \sqrt{8}}{2} = \frac{4 \pm 2\sqrt{2}}{2} = 2 \pm \sqrt{2}
+\]
+
+\emph{Brojčano:} $\sqrt{2} \approx 1{,}414$, pa je
+$\lambda_1 \approx 3{,}414 > 0$ i $\lambda_2 \approx 0{,}586 > 0$.
+
+\textbf{Zaključak: matrica je pozitivno definitna.} (Obje svojstvene
+vrijednosti su strogo pozitivne.) Uočite da matrica \emph{ima} negativne
+elemente ($-1$) --- upravo primjer iz napomene gore.
+
+\textbf{Računanje svojstvenih vrijednosti sa slajda:} u MATLAB-u
+\texttt{eig(A)}, u Mathematici \texttt{Eigenvalues[A]}.
+
+\subsection{Primjer: definitnost i minimum}
+\str{49}
+
+Matrica $A$ iz prethodnog primjera jednaka je Hessianu sljedeće funkcije:
+\[
+f(x_1, x_2) = \frac{1}{2}
+\begin{bmatrix} x_1 \\ x_2 \end{bmatrix}\T
+\begin{bmatrix} 1 & -1 \\ -1 & 3 \end{bmatrix}
+\begin{bmatrix} x_1 \\ x_2 \end{bmatrix},
+\qquad\text{tj.}\qquad
+f(x_1,x_2) = 0{,}5\,(x_1^2 - 2x_1x_2 + 3x_2^2)
+\]
+
+Slajd traži: \emph{provjerite ovu tvrdnju!} Evo provjere.
+
+\textbf{Provjera 1 --- raspis kvadratne forme.} Prvo pomnožimo matricu s
+desnim vektorom:
+\[
+\begin{bmatrix} 1 & -1 \\ -1 & 3\end{bmatrix}
+\begin{bmatrix} x_1 \\ x_2 \end{bmatrix}
+= \begin{bmatrix} x_1 - x_2 \\ -x_1 + 3x_2 \end{bmatrix}
+\]
+pa pomnožimo lijevim (retčanim) vektorom:
+\begin{align}
+\begin{bmatrix} x_1 & x_2\end{bmatrix}
+\begin{bmatrix} x_1 - x_2 \\ -x_1 + 3x_2\end{bmatrix}
+&= x_1(x_1 - x_2) + x_2(-x_1 + 3x_2) \\
+&= x_1^2 - x_1x_2 - x_1x_2 + 3x_2^2 \\
+&= x_1^2 - 2x_1x_2 + 3x_2^2
+\end{align}
+Uz faktor $\tfrac12$ dobivamo točno $f(x_1,x_2) = 0{,}5(x_1^2 - 2x_1x_2 +
+3x_2^2)$. \checkmark
+
+\textbf{Provjera 2 --- Hessian je doista $A$.} Iz
+$f = 0{,}5x_1^2 - x_1x_2 + 1{,}5x_2^2$:
+\begin{align}
+\frac{\partial f}{\partial x_1} &= x_1 - x_2, &
+\frac{\partial f}{\partial x_2} &= -x_1 + 3x_2 \\
+\frac{\partial^2 f}{\partial x_1^2} &= 1, &
+\frac{\partial^2 f}{\partial x_1\partial x_2} &= -1 \\
+\frac{\partial^2 f}{\partial x_2\partial x_1} &= -1, &
+\frac{\partial^2 f}{\partial x_2^2} &= 3
+\end{align}
+dakle $\nabla^2 f = \begin{pmatrix} 1 & -1 \\ -1 & 3\end{pmatrix} = A$
+\checkmark, i to \emph{u svakoj} točki (jer je $f$ kvadratna, druge derivacije
+su konstante).
+
+\textbf{Provjera 3 --- gradijent u ishodištu} (slajd traži i to):
+\[
+\nabla f(0,0) = \begin{pmatrix} x_1 - x_2 \\ -x_1 + 3x_2\end{pmatrix}
+\bigg|_{(0,0)}
+= \begin{pmatrix} 0 - 0 \\ -0 + 0\end{pmatrix}
+= \begin{pmatrix} 0 \\ 0\end{pmatrix} \quad\checkmark
+\]
+
+\textbf{Zaključak sa slajda.} Budući da je $\nabla f$ u točki $(0,0)$ jednak
+nul-vektoru, te budući da je Hessian funkcije $f$ svugdje pozitivno definitan
+(pa stoga i u točki $(0,0)$), možemo zaključiti da funkcija $f$ ima
+\textbf{striktni lokalni minimum} u $(0,0)$.
+
+To je izravna primjena teorema o dovoljnim uvjetima drugog reda \str{45}.
+Slajd uz to prikazuje 3D graf te funkcije --- glatku „zdjelu” s najnižom točkom
+u ishodištu.
+
+\subsection{Kriterij determinanti (Sylvesterov kriterij)}
+\str{50}
+
+\begin{teorem}[Kriterij vodećih glavnih minora]
+Matrica
+\[
+M = \begin{pmatrix}
+m_{11} & m_{12} & \dots & m_{1n} \\
+m_{21} & m_{22} & \dots & m_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+m_{n1} & m_{n2} & \dots & m_{nn}
+\end{pmatrix}
+\]
+je \textbf{pozitivno definitna} ako i samo ako su sve determinante u sljedećem
+nizu \textbf{pozitivne}:
+\[
+D_1 = m_{11}, \quad
+D_2 = \begin{vmatrix} m_{11} & m_{12} \\ m_{21} & m_{22}\end{vmatrix}, \quad
+D_3 = \begin{vmatrix}
+m_{11} & m_{12} & m_{13} \\
+m_{21} & m_{22} & m_{23} \\
+m_{31} & m_{32} & m_{33}\end{vmatrix}, \quad \dots \quad
+D_n = \det(M)
+\]
+
+$M$ je \textbf{negativno definitna} ako i samo ako
+$D_1 < 0,\; D_2 > 0,\; D_3 < 0,\; D_4 > 0,\; \dots$ (predznaci se izmjenjuju,
+počevši od minusa).
+\end{teorem}
+
+\textbf{Što su $D_k$.} To su determinante \textbf{gornjih lijevih}
+podmatrica dimenzija $1\times1$, $2\times2$, \dots, $n\times n$. Zovu se
+\emph{vodeći glavni minori}.
+
+\textbf{Provjera na primjeru sa str.\ 48.} Za
+$A = \begin{pmatrix} 1 & -1 \\ -1 & 3\end{pmatrix}$:
+\[
+D_1 = 1 > 0, \qquad
+D_2 = 1\cdot 3 - (-1)(-1) = 3 - 1 = 2 > 0
+\]
+Obje su pozitivne $\Rightarrow$ $A \succ 0$ --- isti zaključak kao preko
+svojstvenih vrijednosti, ali bez rješavanja kvadratne jednadžbe. \checkmark
+
+\begin{napomena}[koji kriterij koristiti]
+Za male matrice ($2\times2$, $3\times3$) kriterij determinanti je brži jer ne
+traži rješavanje karakteristične jednadžbe. Za veće matrice ili kad treba i
+\emph{semi}definitnost, koriste se svojstvene vrijednosti (\texttt{eig} u
+MATLAB-u). Pažnja: kriterij vodećih minora vrijedi za \emph{definitnost}; za
+semidefinitnost bi trebalo provjeriti \emph{sve} glavne minore, ne samo vodeće.
+\end{napomena}
+
+% =====================================================================
+\section{Konveksno optimiranje: skupovi}
+\label{sec:konveksno}
+\str{51--60}
+
+\subsection{Afin skup}
+\str{54--55}
+
+\begin{definicija}[Afin skup]
+\textbf{Afin skup} $S$ definiran je sljedećim svojstvom: \textbf{pravac} koji
+prolazi kroz bilo koje dvije različite točke iz $S$ se i sam u potpunosti
+nalazi u $S$.
+
+Pravac koji prolazi kroz dvije točke $x_1, x_2 \in \R^n$, $x_1 \ne x_2$, je
+skup $P$, gdje je
+\[
+P := \{\, x \mid x = \theta x_1 + (1-\theta)x_2 \,\}
+\]
+i gdje je $\theta \in \R$.
+\end{definicija}
+
+\textbf{Kako čitati parametrizaciju pravca.} Izraz
+$\theta x_1 + (1-\theta)x_2$ za razne $\theta$ „šeta” po pravcu kroz $x_1$ i
+$x_2$:
+\begin{itemize}
+  \item $\theta = 1$ daje $x_1$;
+  \item $\theta = 0$ daje $x_2$;
+  \item $\theta = 0{,}5$ daje polovište;
+  \item $\theta > 1$ ili $\theta < 0$ daju točke \emph{izvan} dužine, na
+        produžecima --- i baš to je ono što razlikuje pravac od dužine.
+\end{itemize}
+Uočite da koeficijenti $\theta$ i $1-\theta$ uvijek daju zbroj $1$.
+
+\textbf{Primjer sa slajda 54:} 2D ravnina u 3D prostoru je afin skup. Ako
+uzmemo bilo koje dvije točke iz ravnine i povučemo pravac kroz njih, taj pravac
+se nužno nalazi u toj istoj ravnini.
+
+\textbf{Primjer sa slajda 55:} sva rješenja sustava linearnih jednadžbi
+$\{\, x \mid Ax = b \,\}$ čine afin skup.
+
+\textbf{Dokaz (sa slajda, s međukoracima).} Neka su $x_1$ i $x_2$ rješenja
+sustava $Ax = b$, tj.\ $Ax_1 = b$, $Ax_2 = b$. Tada za bilo koji
+$\theta \in \R$ imamo:
+\[
+A(\theta x_1 + (1-\theta)x_2)
+\overset{(1)}{=} \theta Ax_1 + (1-\theta)Ax_2
+\overset{(2)}{=} \theta b + (1-\theta)b
+\overset{(3)}{=} b
+\]
+gdje je: (1) linearnost množenja matricom; (2) uvrštavanje
+$Ax_1 = Ax_2 = b$; (3) $\theta b + b - \theta b = b$. Dakle i točka
+$\theta x_1 + (1-\theta)x_2$ rješava sustav, pa cijeli pravac leži u skupu.
+$\blacksquare$
+
+\textbf{Obrat i posljedica (sa slajda 55).} Vrijedi i obrnuto: \emph{svaki afin
+skup može se prikazati kao skup rješenja nekog sustava linearnih jednadžbi.}
+
+Dakle, ako u optimizacijskom problemu imamo \textbf{linearna ograničenja
+jednakosti}, dozvoljeni skup $\Feas$ je afin skup. Linearna ograničenja
+jednakosti i pripadajući afini skupovi igraju važnu ulogu u optimiranju:
+\textbf{kod konveksnih optimizacijskih problema, jedina ograničenja jednakosti
+su linearna ograničenja jednakosti.}
+
+\subsection{Konveksan skup}
+\str{56--59}
+
+\begin{definicija}[Konveksan skup]
+\textbf{Konveksan skup} $S$ definiran je sljedećim svojstvom: \textbf{dužina}
+između bilo koje dvije različite točke iz $S$ se i sama u potpunosti nalazi u
+$S$.
+
+Dužina između dvije točke $x_1, x_2 \in \R^n$, $x_1 \ne x_2$, je skup $D$, gdje
+je
+\[
+D := \{\, x \mid x = \theta x_1 + (1-\theta)x_2 \,\}
+\]
+i gdje je $0 \le \theta \le 1$.
+
+Formalno: skup $S$ je konveksan skup ako
+\[
+x_1, x_2 \in S \;\Longrightarrow\; \theta x_1 + (1-\theta)x_2 \in S
+\quad\text{za sve } \theta \in [0,1]
+\]
+\end{definicija}
+
+\begin{napomena}[razlika afinog i konveksnog --- samo jedan uvjet]
+Formula je \emph{identična}; razlikuje se samo raspon parametra:
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+& \textbf{raspon} $\theta$ & \textbf{geometrijski objekt} \\
+\midrule
+afin skup & $\theta \in \R$ & cijeli \textbf{pravac} kroz dvije točke \\
+konveksan skup & $\theta \in [0,1]$ & samo \textbf{dužina} između njih \\
+\bottomrule
+\end{tabular}
+\end{center}
+Zato je \textbf{svaki afin skup ujedno konveksan}, ali ne obratno (npr.\ krug
+je konveksan, ali nije afin).
+\end{napomena}
+
+\textbf{Primjeri sa slajda} \str{57}\textbf{.} Slajd prikazuje pet oblika:
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Oblik na slajdu} & \textbf{Zaključak} \\
+\midrule
+dužina prekinuta u sredini (plave linije) & \textbf{nije konveksan} \\
+neprekinuta dužina & \textbf{konveksan} \\
+sedmerokut (ispunjen) & \textbf{konveksan} \\
+„bubrežasti” oblik s udubljenjem & \textbf{nije konveksan} \\
+kvadrat kojemu nedostaju uglovi & \textbf{nije konveksan} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Kod „bubrega” je na slici nacrtana spojnica dviju točaka koja \emph{izlazi} iz
+skupa preko udubljenja --- to je izravna povreda definicije. Kod kvadrata bez
+uglova problem su rubne točke koje ne pripadaju skupu.
+
+\textbf{Primjeri u 3D sa slajda} \str{58}\textbf{:} puna \textbf{kugla} je
+konveksna; \textbf{čvor} od isprepletenih torusa nije.
+
+\begin{teorem}[Presjek konveksnih skupova \str{59}]
+\textbf{Presjek konveksnih skupova je konveksan skup.}
+\end{teorem}
+
+\textbf{Posljedica za optimizaciju (sa slajda).} Gornje svojstvo je, uz ostalo,
+važno i zbog sljedeće posljedice za karakterizaciju dozvoljenog prostora
+$\Feas$: ako je $\Feas_i = \{x \mid g_i(x) \le 0\}$ ili
+$\Feas_i = \{x \mid h_i(x) = 0\}$, i ako su svi $\Feas_i$, $i = 1,\dots,m$
+konveksni, tada će i dozvoljeni skup
+\[
+\Feas = \Feas_1 \cap \Feas_2 \cap \dots \cap \Feas_m
+\]
+biti konveksan.
+
+\textbf{Zašto je to praktično najvažnija tvrdnja odjeljka.} Konveksnost
+dozvoljenog skupa ne moramo provjeravati „na cijelom skupu” --- dovoljno je
+provjeriti \textbf{svako ograničenje zasebno}. Ako je svako pojedino u redu,
+cjelina je automatski u redu.
+
+\subsection{Konveksna kombinacija i konveksna ljuska}
+\str{60}
+
+\begin{definicija}[Konveksna kombinacija]
+\textbf{Konveksna kombinacija} točaka (vektora) $x_1, x_2, \dots, x_n$ je
+točka (vektor) $x$ u formi
+\[
+x = \theta_1x_1 + \theta_2x_2 + \dots + \theta_nx_n
+\]
+gdje je
+\[
+\theta_1 + \theta_2 + \dots + \theta_n = 1 \quad\text{i}\quad
+\theta_i \ge 0,\; i = 1,\dots,n
+\]
+\end{definicija}
+
+To je poopćenje dužine na više od dvije točke: težine su nenegativne i zbrajaju
+se u jedan (kao postoci). Za $n = 2$ dobivamo točno $\theta x_1 +
+(1-\theta)x_2$ s $\theta \in [0,1]$.
+
+\begin{definicija}[Konveksna ljuska]
+\textbf{Konveksna ljuska} skupa $S$ je skup svih konveksnih kombinacija točaka
+iz $S$.
+\end{definicija}
+
+\textbf{Tvrdnje sa slajda:}
+\begin{itemize}
+  \item Konveksna ljuska skupa $S$ je \textbf{najmanji konveksni skup koji
+        sadrži $S$}.
+  \item Skup je konveksan \textbf{ako i samo ako} je jednak svojoj konveksnoj
+        ljusci.
+\end{itemize}
+
+\emph{Slikovito:} zamislite da su točke skupa čavlići zabodeni u dasku. Ako
+oko svih njih napnete gumicu, oblik koji gumica opiše je konveksna ljuska.
+
+% =====================================================================
+\section{Hiperravnine i poluprostori}
+\label{sec:hiperravnine}
+\str{65--66 \textnormal{i} V1:26, V1:28}
+
+\begin{definicija}[Hiperravnina]
+\textbf{Hiperravnina} je skup
+\[
+H := \{\, x \in \R^n \mid a\T x = b \,\}
+\]
+za zadani $a \in \R^n$, $a \ne 0$ i $b \in \R$.
+\end{definicija}
+
+\textbf{Što je to konkretno.} U $\R^2$ je hiperravnina \textbf{pravac}; u
+$\R^3$ je \textbf{ravnina}; u $\R^n$ je „ravna ploha” dimenzije $n-1$. Uvjet
+$a \ne 0$ je nužan --- inače bi jednadžba bila $0 = b$, što je ili cijeli
+prostor ili prazan skup.
+
+\textbf{Slika sa slajda} \str{65}\textbf{: geometrijsko značenje.} Slajd
+prikazuje dva crteža.
+
+\emph{Lijevi crtež.} Nacrtan je kosi pravac (hiperravnina), vektor $a$ iz
+ishodišta okomit na njega, i vektor $x_0$ do jedne točke na pravcu. Iz
+ishodišta je nacrtan i cijeli snop vektora $x$ koji završavaju na tom pravcu.
+Ispod piše:
+\[
+a\T x = a\T x_0 = b
+\]
+Poruka: \emph{svi} vektori koji završavaju na hiperravnini imaju \textbf{isti}
+skalarni produkt s $a$. Taj zajednički broj je $b$.
+
+\emph{Desni crtež.} Isti pravac, ali su označeni $x_0$, proizvoljna točka $x$ na
+pravcu, i njihova razlika $(x - x_0)$ koja \emph{leži} u pravcu. Ispod piše:
+\[
+a\T(x - x_0) = 0
+\]
+Poruka: $a$ je okomit na svaki vektor koji leži unutar hiperravnine. Zato se $a$
+zove \textbf{vektor normale}.
+
+\emph{Veza između dva zapisa:} $a\T(x - x_0) = a\T x - a\T x_0 = a\T x - b$, pa
+je $a\T(x-x_0) = 0$ isto što i $a\T x = b$. \checkmark
+
+\begin{definicija}[Poluprostor]
+\textbf{Poluprostor} je skup oblika
+\[
+H := \{\, x \in \R^n \mid a\T x \le b \,\}
+\]
+za zadani $a \in \R^n$, $a \ne 0$ i $b \in \R$.
+\end{definicija}
+
+\textbf{Slika sa slajda} \str{66}\textbf{.} Nacrtan je kosi pravac, na njemu
+točka $x_0$ i iz nje strelica $a$ okomito na pravac. Strana \emph{u koju
+pokazuje} $a$ označena je s $a\T x \ge b$, a suprotna strana je osjenčana i
+označena s $a\T x \le b$.
+
+\textbf{Pravilo koje iz toga slijedi} (i koje ćemo stalno koristiti pri
+crtanju dozvoljenih skupova):
+
+\begin{teorem}[Koju stranu sjenčati]
+Hiperravnina $a\T x = b$ dijeli prostor na dva dijela. Vektor $a$ pokazuje u
+polovicu gdje je $a\T x \ge b$. Za ograničenje oblika $a\T x \le b$ sjenča se
+strana \textbf{suprotna} od smjera vektora $a$.
+\end{teorem}
+
+\textbf{Praktična provjera testnom točkom.} Umjesto pamćenja pravila, uzmite
+bilo koju točku koja nije na granici (najlakše ishodište, ako smije) i uvrstite
+je u nejednadžbu. Ako je zadovoljena, ta točka je u dozvoljenoj polovici; ako
+nije, dozvoljena je druga polovica. Ovu tehniku smo već koristili u
+odjeljku~\ref{sec:uvodni-primjer}.
+
+\begin{zadatak}[Vježbe 1, Zadatak 3: poluprostor]
+\str{V1:29}
+
+\textbf{Postavka (doslovno sa slajda).} „Pronađite vektor $a$ i skalar $b$
+takve da ograničenje $a\T x \le b$ definira sivo osjenčan poluprostor sa
+slike.”
+
+\begin{napomena}[stanje izvornika]
+Slajd V1:29 sadrži \textbf{samo} tekst zadatka i riječi „\emph{na ploči}” ---
+nema ni slike na koju se poziva ni rješenja. Zato je niže uzet
+\textbf{konkretan primjer istog tipa}, riješen postupkom koji slijedi izravno
+iz definicije poluprostora \str{V1:28} i slike sa str.\ 66. Postupak je ono što
+treba naučiti; brojevi ovise o slici koju dobijete.
+\end{napomena}
+
+\textbf{Primjer.} Osjenčan je poluprostor čija granica prolazi točkama
+$(3, 0)$ i $(0, 2)$, a osjenčana je strana \textbf{prema ishodištu}.
+
+\textbf{Korak 1 --- jednadžba granice.} Granica je pravac kroz dvije zadane
+točke. Iz segmentnog oblika jednadžbe pravca
+$\frac{x_1}{p} + \frac{x_2}{q} = 1$ (gdje su $p, q$ sjecišta s osima):
+\[
+\frac{x_1}{3} + \frac{x_2}{2} = 1
+\]
+Pomnožimo cijelu jednadžbu s $6$ (najmanji zajednički višekratnik od 3 i 2) da
+uklonimo razlomke:
+\[
+\frac{6x_1}{3} + \frac{6x_2}{2} = 6
+\quad\Longrightarrow\quad
+2x_1 + 3x_2 = 6
+\]
+
+\emph{Provjera na obje zadane točke:}
+\begin{itemize}
+  \item $(3,0)$: $2\cdot3 + 3\cdot0 = 6$ \checkmark
+  \item $(0,2)$: $2\cdot0 + 3\cdot2 = 6$ \checkmark
+\end{itemize}
+
+\textbf{Korak 2 --- očitavanje $a$ i $b$.} Usporedimo s oblikom
+$a\T x = b$:
+\[
+\begin{pmatrix} 2 & 3\end{pmatrix}
+\begin{pmatrix} x_1 \\ x_2\end{pmatrix} = 6
+\quad\Longrightarrow\quad
+a = \begin{pmatrix} 2 \\ 3\end{pmatrix}, \qquad b = 6
+\]
+
+\textbf{Korak 3 --- provjera smjera nejednakosti.} Trebamo provjeriti daje li
+$a\T x \le b$ \emph{osjenčanu} stranu. Uvrstimo ishodište (ono je u osjenčanom
+dijelu):
+\[
+a\T \begin{pmatrix}0\\0\end{pmatrix} = 2\cdot 0 + 3\cdot 0 = 0 \le 6
+\quad\checkmark
+\]
+Nejednakost je zadovoljena, dakle traženo ograničenje je
+\[
+\boxed{\;2x_1 + 3x_2 \le 6, \qquad
+a = \begin{pmatrix}2\\3\end{pmatrix}, \quad b = 6\;}
+\]
+
+\textbf{Korak 4 --- što ako je osjenčana druga strana?} Tada bi trebalo
+\textbf{pomnožiti sve s $-1$} (što okreće smjer nejednakosti):
+\[
+-2x_1 - 3x_2 \le -6, \qquad
+a = \begin{pmatrix}-2\\-3\end{pmatrix}, \quad b = -6
+\]
+Isti pravac, suprotna normala, suprotna polovica.
+
+\begin{napomena}[rješenje nije jedinstveno]
+Par $(a, b)$ nije jedinstven: množenje \emph{bilo kojim} pozitivnim brojem daje
+isti poluprostor. Npr.\ $4x_1 + 6x_2 \le 12$ i $x_1 + 1{,}5x_2 \le 3$ opisuju
+potpuno isti skup. Pozitivan faktor smjer nejednakosti ne mijenja --- samo
+negativan.
+\end{napomena}
+
+\begin{crtanje}[poluprostor]
+\textbf{Korak 1.} Nacrtajte osi $x_1$ i $x_2$, obje otprilike od $-2$ do $5$.
+
+\textbf{Korak 2.} Ucrtajte dvije točke granice: $(3,0)$ na osi $x_1$ i $(0,2)$
+na osi $x_2$. Povucite pravac kroz njih --- to je hiperravnina $a\T x = b$.
+
+\textbf{Korak 3.} Odaberite jednu točku na pravcu, npr.\ $x_0 = (1{,}5;\ 1)$
+(provjera: $2\cdot1{,}5 + 3\cdot 1 = 3 + 3 = 6$ \checkmark). Iz nje nacrtajte
+strelicu $a = (2,3)$: dvije jedinice desno, tri gore. Provjerite okom da je
+okomita na pravac.
+
+\textbf{Korak 4 --- sjenčanje.} Nejednakost je $a\T x \le b$, dakle sjenča se
+strana \textbf{suprotna} od smjera strelice $a$, tj.\ donja lijeva polovica ---
+ona koja sadrži ishodište. Osjenčajte je.
+
+\textbf{Korak 5.} Označite obje polovice: osjenčanu s $a\T x \le b$, drugu s
+$a\T x \ge b$.
+
+\textbf{Što graf znači.} Svako pojedinačno linearno ograničenje nejednakosti u
+optimizacijskom problemu „odreže” točno jedan ovakav poluprostor. Dozvoljeni
+skup je presjek svih tih poluprostora --- što je tema sljedećeg zadatka.
+\end{crtanje}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.62\textwidth]{02-poluprostor.png}
+\caption{Poluprostor $\{x \mid a\T x \le b\}$ za $a = (2,3)\T$, $b = 6$.
+Vektor normale $a$ pokazuje u \emph{nedozvoljenu} polovicu.}
+\end{figure}
+\end{zadatak}
+
+% =====================================================================
+\section{Poliedar i politop}
+\label{sec:poliedar}
+\str{V1:30}
+
+\begin{definicija}[Poliedarski skup]
+Presjek konačnog broja hiperravnina $\{x \mid A_Jx = b_J\}$ i poluprostora
+$\{x \mid A_Nx \le b_N\}$ definira \textbf{poliedar} (engl.\ \emph{polyhedron}).
+
+Poliedar $P = \{\, x \mid A_Nx \le b_N,\; A_Jx = b_J \,\}$ je
+\textbf{konveksan} skup.
+
+\textbf{Kompaktan} ($=$ zatvoren i ograničen) poliedar je \textbf{politop}
+(engl.\ \emph{polytope}).
+\end{definicija}
+
+\textbf{Objašnjenje pojmova:}
+\begin{itemize}
+  \item Indeks $J$ označava \emph{jednakosti}, indeks $N$ \emph{nejednakosti}.
+        Svaki \emph{redak} matrice $A_N$ s pripadnim elementom vektora $b_N$
+        daje jedan poluprostor.
+  \item \textbf{Zatvoren} znači da skup sadrži svoj rub (nejednakosti su
+        $\le$, ne $<$).
+  \item \textbf{Ograničen} znači da stane u neku dovoljno veliku kuglu --- ne
+        bježi u beskonačnost.
+  \item Zašto je poliedar konveksan: svaki poluprostor je konveksan, svaka
+        hiperravnina je konveksna (čak i afina), a \emph{presjek konveksnih
+        skupova je konveksan} \str{59}.
+\end{itemize}
+
+\textbf{Primjeri.} Trokut, kvadrat i pravilni šesterokut u ravnini su politopi.
+Kocka i tetraedar u prostoru su politopi. Poluprostor je poliedar, ali
+\emph{nije} politop (nije ograničen). Traka između dva paralelna pravca je
+poliedar, ali nije politop.
+
+\begin{zadatak}[Vježbe 1, Zadatak 4: politop]
+\str{V1:31}
+
+\textbf{Postavka (doslovno sa slajda).} „Pronađite matricu $A$ i vektor $b$
+takve da ograničenje $Ax \le b$ definira sivo osjenčan politop sa slike.”
+
+\begin{napomena}[stanje izvornika]
+Kao i kod Zadatka 3, slajd V1:31 sadrži samo tekst i riječ „\emph{na ploči}”
+--- bez slike i bez rješenja. Niže je konkretan primjer istog tipa, riješen
+postupkom koji slijedi iz definicije poliedra \str{V1:30} i iz Zadatka 3.
+\end{napomena}
+
+\textbf{Primjer.} Osjenčan je četverokut s vrhovima
+$(0,0)$, $(3,0)$, $(3,1)$, $(0,4)$.
+
+\textbf{Postupak (opći recept).} Politop je presjek poluprostora, pa se traži
+\textbf{jedno ograničenje po svakoj stranici}:
+\begin{enumerate}
+  \item odredi pravac na kojem leži stranica;
+  \item zapiši ga u obliku $a_i\T x = b_i$;
+  \item testnom točkom \emph{iz unutrašnjosti} politopa provjeri smjer;
+        ako nejednakost nije zadovoljena, pomnoži redak s $-1$;
+  \item složi sve $a_i\T$ kao \emph{retke} matrice $A$, a $b_i$ u vektor $b$.
+\end{enumerate}
+
+Kao testnu točku unutrašnjosti uzmimo $x_{\text{test}} = (1;\ 0{,}5)$.
+
+\textbf{Stranica 1 --- od $(0,0)$ do $(3,0)$.} Obje točke imaju $x_2 = 0$, pa
+je pravac $x_2 = 0$. Test: $x_{\text{test},2} = 0{,}5$, a treba biti
+$\le 0$? Ne. Dakle množimo s $-1$:
+\[
+-x_2 \le 0 \qquad\text{(test: } -0{,}5 \le 0 \;\checkmark\text{)}
+\]
+
+\textbf{Stranica 2 --- od $(0,0)$ do $(0,4)$.} Obje točke imaju $x_1 = 0$, pa
+je pravac $x_1 = 0$. Isti zaključak:
+\[
+-x_1 \le 0 \qquad\text{(test: } -1 \le 0 \;\checkmark\text{)}
+\]
+
+\textbf{Stranica 3 --- od $(0,4)$ do $(3,1)$.} Nađimo pravac kroz te dvije
+točke. Nagib:
+\[
+k = \frac{1 - 4}{3 - 0} = \frac{-3}{3} = -1
+\]
+Odsječak na osi $x_2$ je $4$ (jer pravac prolazi točkom $(0,4)$), dakle
+$x_2 = -x_1 + 4$, odnosno
+\[
+x_1 + x_2 = 4
+\]
+\emph{Provjera na drugoj točki:} $3 + 1 = 4$ \checkmark.
+Test unutrašnjosti: $1 + 0{,}5 = 1{,}5 \le 4$ \checkmark, dakle predznak je već
+dobar:
+\[
+x_1 + x_2 \le 4
+\]
+
+\textbf{Stranica 4 --- od $(3,0)$ do $(3,1)$.} Obje točke imaju $x_1 = 3$, pa
+je pravac $x_1 = 3$. Test: $1 \le 3$ \checkmark:
+\[
+x_1 \le 3
+\]
+
+\textbf{Slaganje u matrični oblik.} Četiri ograničenja
+\[
+-x_1 \le 0, \qquad -x_2 \le 0, \qquad x_1 + x_2 \le 4, \qquad x_1 \le 3
+\]
+zapisujemo tako da koeficijente svakog stavimo kao \emph{redak}:
+\[
+\boxed{\;
+A = \begin{pmatrix}
+-1 & 0 \\
+ 0 & -1 \\
+ 1 & 1 \\
+ 1 & 0
+\end{pmatrix}, \qquad
+b = \begin{pmatrix} 0 \\ 0 \\ 4 \\ 3 \end{pmatrix}
+\;}
+\]
+
+\textbf{Kontrola --- provjera svih vrhova.} Svaki vrh mora zadovoljavati svih
+$4$ nejednakosti:
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{vrh} & $-x_1 \le 0$ & $-x_2 \le 0$ & $x_1+x_2 \le 4$ & $x_1 \le 3$ \\
+\midrule
+$(0,0)$ & $0 \le 0$ \checkmark & $0 \le 0$ \checkmark & $0 \le 4$ \checkmark & $0 \le 3$ \checkmark \\
+$(3,0)$ & $-3 \le 0$ \checkmark & $0 \le 0$ \checkmark & $3 \le 4$ \checkmark & $3 \le 3$ \checkmark \\
+$(3,1)$ & $-3 \le 0$ \checkmark & $-1 \le 0$ \checkmark & $4 \le 4$ \checkmark & $3 \le 3$ \checkmark \\
+$(0,4)$ & $0 \le 0$ \checkmark & $-4 \le 0$ \checkmark & $4 \le 4$ \checkmark & $0 \le 3$ \checkmark \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Uočite da je u svakom vrhu \emph{barem dvoje} ograničenja zadovoljeno s
+jednakošću --- upravo to i čini točku vrhom: sjecište dviju granica. Taj će
+pojam biti ključan u poglavlju~\ref{ch:lpqp}.
+
+\begin{crtanje}[politop]
+\textbf{Korak 1.} Nacrtajte osi $x_1$ i $x_2$, obje od $-1$ do $5$, jednako
+mjerilo.
+
+\textbf{Korak 2 --- prvo ograničenje $-x_2 \le 0$, tj.\ $x_2 \ge 0$.} Granica
+je vodoravna os. Dopušteno je \textbf{iznad} nje (jer $x_2$ mora biti
+nenegativan).
+
+\textbf{Korak 3 --- drugo ograničenje $-x_1 \le 0$, tj.\ $x_1 \ge 0$.} Granica
+je okomita os. Dopušteno je \textbf{desno} od nje. Presjek s korakom 2 je prvi
+kvadrant --- beskonačan, dakle još nije politop.
+
+\textbf{Korak 4 --- treće ograničenje $x_1 + x_2 \le 4$.} Granica je pravac
+kroz $(4,0)$ i $(0,4)$. Testna točka $(0,0)$: $0 \le 4$ \checkmark, dakle
+dopušteno je \textbf{ispod} pravca (strana prema ishodištu). Sada je područje
+trokut $(0,0)$--$(4,0)$--$(0,4)$: ograničen, ali još nije traženi oblik.
+
+\textbf{Korak 5 --- četvrto ograničenje $x_1 \le 3$.} Granica je okomit pravac
+kroz $x_1 = 3$. Dopušteno je \textbf{lijevo} od njega. On „odsijeca” desni vrh
+trokuta $(4,0)$ i stvara dva nova vrha: $(3,0)$ i $(3,1)$.
+
+\textbf{Korak 6 --- sjenčanje.} Osjenčajte preostali četverokut
+$(0,0) \to (3,0) \to (3,1) \to (0,4)$. To je politop.
+
+\textbf{Što graf znači.} Svaka nejednakost „odsijeca” po jedan poluprostor;
+presjek svih njih je dozvoljeni skup. Kad su sva ograničenja linearna,
+dozvoljeni skup je uvijek ovakav „ravnoplošni” lik --- poliedar. Ako je uz to
+ograničen, to je politop. Kod linearnog programiranja
+(poglavlje~\ref{ch:lpqp}) optimum se uvijek nalazi u nekom \textbf{vrhu} ovakvog
+lika.
+\end{crtanje}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.62\textwidth]{02-politop.png}
+\caption{Politop $\{x \mid Ax \le b\}$ kao presjek četiriju poluprostora.
+U svakom vrhu sijeku se po dvije granice.}
+\end{figure}
+\end{zadatak}
+
+% =====================================================================
+\section{Konveksne i konkavne funkcije}
+\label{sec:konveksne-funkcije}
+\str{61--64}
+
+Dosad smo govorili o konveksnosti \emph{skupova}. Sada isti pojam za
+\emph{funkcije}.
+
+\begin{definicija}[Konveksna funkcija \str{61}]
+Funkcija $f : S \to \R$ je \textbf{konveksna funkcija} ako
+\begin{itemize}
+  \item je $S$ konveksan skup, i ako
+  \item za sve $x_1, x_2 \in S$ i za svaki $\alpha$ gdje je $0 < \alpha < 1$
+        vrijedi
+        \begin{equation}
+        \label{eq:konveksnost}
+        f(\alpha x_1 + (1-\alpha)x_2) \le \alpha f(x_1) + (1-\alpha)f(x_2)
+        \end{equation}
+\end{itemize}
+Funkcija $f$ je \textbf{striktno konveksna} ako u \eqref{eq:konveksnost}
+zamijenimo $\le$ sa $<$.
+\end{definicija}
+
+\textbf{Kako čitati nejednakost \eqref{eq:konveksnost}.} Uzmite dvije točke na
+grafu funkcije i spojite ih ravnom crtom (\textbf{sekantom}).
+
+\begin{itemize}
+  \item \textbf{Lijeva strana} $f(\alpha x_1 + (1-\alpha)x_2)$ je vrijednost
+        \emph{funkcije} u nekoj točki između $x_1$ i $x_2$.
+  \item \textbf{Desna strana} $\alpha f(x_1) + (1-\alpha)f(x_2)$ je vrijednost
+        \emph{sekante} u toj istoj točki.
+\end{itemize}
+
+Uvjet dakle glasi: \textbf{graf funkcije nikad nije iznad sekante} --- „funkcija
+se drži ispod svojih tetiva”. Slikovito: funkcija ima oblik zdjele, ne kupole.
+
+\begin{napomena}[zašto je uvjet „$S$ konveksan” dio definicije]
+Bez toga izraz $f(\alpha x_1 + (1-\alpha)x_2)$ možda ne bi ni bio definiran ---
+točka između $x_1$ i $x_2$ mogla bi ispasti izvan domene. Konveksnost domene
+osigurava da je cijela dužina u domeni.
+\end{napomena}
+
+\begin{definicija}[Konkavna funkcija \str{62}]
+Funkcija $f : S \to \R$ je \textbf{konkavna funkcija} ako je $-f$ konveksna
+funkcija.
+
+Napomena sa slajda: uočite da iz gornje definicije slijedi da je i za konkavnu
+funkciju domena $S$ nužno konveksna.
+
+Funkcija $f$ je \textbf{striktno konkavna} ako je $-f$ striktno konveksna.
+\end{definicija}
+
+Konkavna funkcija je dakle „obrnuta zdjela” --- kupola. Njezin graf nikad nije
+\emph{ispod} sekante.
+
+\subsection{Primjeri konveksnih i nekonveksnih funkcija}
+\str{63}
+
+\begin{center}
+\begin{tabular}{p{6.2cm}p{6.6cm}}
+\toprule
+\textbf{Konveksne funkcije} & \textbf{Nekonveksne funkcije} \\
+\midrule
+$f(x) = ax^2 + bx + c$ za $a > 0$ & $f(x) = x^3$ na cijelom skupu $\R$ \\
+$f(x) = |x|$                      & $f(x) = -|x|$ (konkavna funkcija) \\
+$f(x) = \|x\|$                    & $f(x) = \sqrt{x}$ na $\R_+$ \\
+$f(x) = \sin(x)$ na $[\pi, 2\pi]$ & $f(x) = \sin(x)$ na $[0, \pi]$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Komentar uz svaki primjer:}
+\begin{itemize}
+  \item $ax^2+bx+c$, $a>0$: parabola otvorena prema gore --- prototip zdjele.
+        (Za $a<0$ bila bi konkavna.)
+  \item $|x|$: „V”-oblik. Konveksna je iako \emph{nije derivabilna} u nuli ---
+        konveksnost ne traži glatkoću.
+  \item $\|x\|$: bilo koja norma je konveksna. To dokazujemo u
+        odjeljku~\ref{sec:norme}.
+  \item $\sin x$ na $[\pi, 2\pi]$: to je donja „grba” sinusa, zdjelasta.
+        Na $[0,\pi]$ je gornja grba, dakle \emph{konkavna}, a ne konveksna.
+  \item $x^3$ na $\R$: konkavna je za $x<0$, konveksna za $x>0$ --- dakle na
+        cijelom $\R$ ni jedno ni drugo.
+  \item $\sqrt{x}$: raste sve sporije, dakle kupolasta --- konkavna.
+\end{itemize}
+
+\begin{napomena}[„nekonveksna” $\ne$ „konkavna”]
+Slajd u desnom stupcu nabraja funkcije koje \emph{nisu konveksne}. Neke od njih
+\emph{jesu} konkavne ($-|x|$, $\sqrt x$, $\sin$ na $[0,\pi]$), ali $x^3$ na
+$\R$ nije ni konveksna ni konkavna. „Nije konveksna” ne povlači „jest
+konkavna”.
+\end{napomena}
+
+\textbf{Važan primjer sa slajda} \str{64}:
+
+\begin{teorem}[Linearne i afine funkcije]
+Linearne i afine funkcije su i \textbf{konveksne i konkavne istovremeno} (ali
+ne i striktno konveksne/konkavne). \textbf{To su jedine funkcije s takvim
+svojstvom.}
+\end{teorem}
+
+\emph{Zašto:} kod afine funkcije graf \emph{jest} pravac (odn.\ hiperravnina),
+pa sekanta leži točno \emph{na} grafu. Nejednakost
+\eqref{eq:konveksnost} vrijedi s jednakošću, dakle vrijedi i „$\le$” i „$\ge$”.
+Zato je afina funkcija granični slučaj i konveksnosti i konkavnosti --- i zato
+u konveksnim problemima ograničenja \emph{jednakosti} smiju biti afina: uvjet
+$a\T x = b$ je istovremeno $a\T x \le b$ i $-a\T x \le -b$, dakle dvije
+konveksne nejednakosti.
+
+% =====================================================================
+\section{Vektorske norme}
+\label{sec:norme}
+\str{V1:32--34}
+
+\begin{definicija}[Norma]
+\textbf{Norma} je skalarna vrijednost koja služi kao \textbf{mjera veličine}
+vektora ili matrice.
+
+Tzv.\ \textbf{$p$-norma} vektora $x \in \R^n$ (ili $\mathbb{C}^n$) definirana
+je:
+\[
+\|x\|_p := \left(\sum_{i=1}^{n}|x_i|^p\right)^{\frac{1}{p}},
+\qquad 1 \le p < \infty,
+\]
+\[
+\|x\|_\infty := \max_{1\le i\le n}\left(|x_i|\right), \qquad p = \infty
+\]
+
+\textbf{Euklidska norma (2-norma):}
+\[
+\|x\|_2 = \sqrt{x^{*}x} = \sqrt{x_1^2 + x_2^2 + \dots + x_n^2}
+\]
+\end{definicija}
+
+\textbf{Tri norme koje ćemo najviše koristiti:}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Oznaka} & \textbf{Formula} & \textbf{Značenje} \\
+\midrule
+$\|x\|_1$ & $|x_1| + |x_2| + \dots + |x_n|$
+  & zbroj apsolutnih vrijednosti („\emph{Manhattan}”) \\
+$\|x\|_2$ & $\sqrt{x_1^2 + \dots + x_n^2}$
+  & obična duljina vektora (Pitagora) \\
+$\|x\|_\infty$ & $\max_i |x_i|$
+  & najveća komponenta po apsolutnoj vrijednosti \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\emph{Zašto ime „Manhattan”:} u pravokutnoj mreži ulica put od ishodišta do
+točke $(x_1,x_2)$ iznosi $|x_1|+|x_2|$ --- ne može se ići dijagonalno kroz
+zgrade.
+
+\emph{Zašto oznaka $\infty$:} kad $p$ raste, u sumi $\sum|x_i|^p$ sve više
+prevladava \emph{najveći} član, jer se on potencira najbrže. U granici ostaje
+samo on, pa $\|x\|_p \to \max_i|x_i|$.
+
+\textbf{Brojčani primjer.} Za $x = (3, -4)\T$:
+\begin{align}
+\|x\|_1 &= |3| + |-4| = 3 + 4 = 7 \\
+\|x\|_2 &= \sqrt{3^2 + (-4)^2} = \sqrt{9 + 16} = \sqrt{25} = 5 \\
+\|x\|_\infty &= \max(|3|, |-4|) = \max(3,4) = 4
+\end{align}
+Uočite poredak $\|x\|_\infty \le \|x\|_2 \le \|x\|_1$ --- to vrijedi uvijek.
+
+\textbf{Slika sa slajda} \str{V1:33}\textbf{: jedinične kugle.} Slajd prikazuje
+u ravnini krivulje $\{x \mid \|x\|_p = 1\}$ za
+$p = 1;\ 1{,}5;\ 2;\ 3;\ 6;\ \infty$:
+
+\begin{itemize}
+  \item $p = 1$: \textbf{romb} (kvadrat zarotiran za $45^\circ$) s vrhovima u
+        $(\pm1, 0)$ i $(0, \pm1)$;
+  \item $p = 2$: \textbf{kružnica} polumjera 1;
+  \item rastući $p$: oblik se sve više „napuhuje” prema van;
+  \item $p = \infty$: \textbf{kvadrat} sa stranicama $x_1 = \pm1$,
+        $x_2 = \pm1$.
+\end{itemize}
+
+Svi ti oblici su \textbf{konveksni skupovi} --- što je slikoviti dokaz da je
+svaka norma konveksna funkcija (nivo skupovi konveksne funkcije su konveksni,
+vidi odjeljak~\ref{sec:svojstva-konv}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.56\textwidth]{02-norme-jedinicne-kugle.png}
+\caption{Jedinične kugle $p$-normi u $\R^2$: romb ($p=1$), kružnica ($p=2$) i
+kvadrat ($p=\infty$), s međuslučajevima.}
+\end{figure}
+
+\textbf{Slika sa slajda} \str{V1:34}\textbf{: 3D slučaj.} Prikazan je
+\textbf{oktaedar} (jedinična kugla 1-norme u $\R^3$) upisan u \textbf{kocku}
+(jedinična kugla $\infty$-norme). Vrhovi oktaedra dodiruju sredine stranica
+kocke. Kugla 2-norme (obična sfera) bila bi između njih.
+
+% =====================================================================
+\section{Važna svojstva konveksnih funkcija}
+\label{sec:svojstva-konv}
+\str{67--70}
+
+\subsection{Dva svojstva sa slajda 67}
+
+\begin{teorem}[Svojstva konveksnih funkcija]
+\begin{itemize}
+  \item \textbf{Pozitivno semidefinitan Hessian} na cijelom $S$.
+  \item \textbf{Nivo skupovi} su \textbf{konveksni skupovi} (ne vrijedi nužno i
+        obrnuto: konveksni nivo skupovi $\;\not\Longrightarrow\;$ konveksna
+        funkcija).
+\end{itemize}
+\end{teorem}
+
+Slajd 67 to ilustrira crtežom: nacrtane su tri ugniježđene zatvorene nivo
+krivulje (svaka konveksnog oblika), na jednoj od njih je označena točka $x$ i
+strelica $\nabla f(x)$ koja iz nje izlazi okomito na krivulju.
+
+\textbf{Napomena o zagradi.} Tvrdnja „nivo skupovi konveksni $\Rightarrow$
+funkcija konveksna” \emph{ne vrijedi}. Funkcije koje imaju konveksne nivo
+skupove, a same nisu konveksne, imaju svoje ime --- sljedeći odjeljak.
+
+\subsection{Kvazikonveksne funkcije}
+\str{68}
+
+\begin{definicija}[Kvazikonveksna funkcija]
+\textbf{Kvazikonveksne funkcije} (koje nisu konveksne funkcije) imaju
+\textbf{konveksne nivo skupove}.
+\end{definicija}
+
+\textbf{Slika sa slajda.} Prikazana je funkcija jedne varijable koja: kreće s
+neke vrijednosti, pada do „ravnog dna”, ostaje neko vrijeme približno
+konstantna, pa naglo raste. Vodoravnim isprekidanim crtama označene su dvije
+razine $\alpha$ (niža) i $\beta$ (viša), a na osi apscisa točke $a$, $b$, $c$.
+
+Poanta slike: presjek grafa s bilo kojom vodoravnom razinom daje \emph{jedan
+povezan interval} (npr.\ za razinu $\alpha$ interval oko dna, za razinu $\beta$
+širi interval) --- a interval je konveksan skup. Funkcija ipak nije konveksna
+jer joj graf mjestimično „visi” iznad sekante.
+
+\begin{napomena}[zašto nas kvazikonveksnost zanima]
+Kod kvazikonveksne funkcije još uvijek vrijedi da se minimum može tražiti
+„gledanjem nivo skupova”, pa postoje algoritmi (npr.\ bisekcija po razini) koji
+je pouzdano minimiziraju. Kvazikonveksnost je dakle \emph{slabija}, ali još
+uvijek korisna pretpostavka.
+\end{napomena}
+
+\subsection{Uvjeti prvog reda}
+\str{69}
+
+\begin{teorem}[Uvjeti prvog reda za konveksnost]
+Neka je $f : \R^n \to \R$ diferencijabilna funkcija s konveksnom domenom. Tada
+je $f$ konveksna funkcija \textbf{ako i samo ako}
+\[
+f(y) \ge f(x) + \nabla f(x)\T(y - x)
+\]
+za sve $x, y$ iz domene od $f$.
+\end{teorem}
+
+\textbf{Kako to čitati.} Desna strana je upravo \textbf{linearizacija}
+(tangenta) funkcije $f$ u točki $x$, iz odjeljka~\ref{sec:gradijent}. Uvjet
+kaže: \textbf{graf konveksne funkcije nikad nije ispod svoje tangente} ---
+tangenta u bilo kojoj točki podupire funkciju odozdo.
+
+Slajd 69 to crta: zakrivljena krivulja $f(y)$ i pravac
+$f(x) + \nabla f(x)^T(y-x)$ koji je dodiruje u točki $(x, f(x))$ i cijelim
+ostatkom prolazi ispod nje.
+
+\begin{napomena}[dvije „nikad ispod / nikad iznad” slike --- ne zamijeniti]
+\begin{itemize}
+  \item Definicija \eqref{eq:konveksnost}: graf je \textbf{ispod sekante}
+        (crte koja spaja dvije točke \emph{na} grafu).
+  \item Uvjet prvog reda: graf je \textbf{iznad tangente} (crte koja grafa
+        dodiruje u jednoj točki).
+\end{itemize}
+Obje slike opisuju istu stvar --- zakrivljenost prema gore.
+\end{napomena}
+
+\textbf{Posljedica koja objašnjava zašto je konveksnost tako moćna.} Ako je
+$\nabla f(x) = 0$ u nekoj točki $x$, uvjet prvog reda daje
+\[
+f(y) \ge f(x) + 0\T(y-x) = f(x) \qquad\text{za \emph{sve} } y
+\]
+Dakle $x$ je \textbf{globalni} minimum. Kod konveksnih funkcija stacionarna
+točka automatski je globalni minimum --- nema „zamki” lokalnih minimuma.
+
+\subsection{Uvjeti drugog reda}
+\str{70}
+
+\begin{teorem}[Uvjeti drugog reda za konveksnost]
+Neka je $f : \R^n \to \R$ diferencijabilna funkcija s konveksnom domenom. Tada
+vrijedi:
+\begin{itemize}
+  \item $f$ je konveksna funkcija \textbf{ako i samo ako} $\nabla^2f(x)
+        \succeq 0$ za sve $x$ u domeni;
+  \item ako je $\nabla^2f(x) \succ 0$ za sve $x$ u domeni, tada je $f$
+        \textbf{striktno konveksna} funkcija.
+\end{itemize}
+\end{teorem}
+
+\textbf{Ovo je najkorisniji praktični test konveksnosti:} izračunaj Hessian i
+provjeri je li pozitivno semidefinitan (odjeljak~\ref{sec:definitnost}).
+
+\begin{napomena}[smjer druge tvrdnje]
+Prva tvrdnja je „ako i samo ako”, druga samo „ako”. Obrat druge \emph{ne}
+vrijedi: $f(x) = x^4$ je striktno konveksna, ali $f''(0) = 0$, dakle Hessian
+nije svugdje strogo pozitivan.
+\end{napomena}
+
+\textbf{Primjer primjene.} Za $f(x) = \tfrac12 x\T Q x + c\T x + d$ Hessian je
+$\nabla^2 f = Q$ (konstantan). Dakle takva kvadratna funkcija je konveksna
+$\Leftrightarrow$ $Q \succeq 0$, i striktno konveksna ako je $Q \succ 0$. Time
+smo dobili gotov kriterij za sve kvadratne probleme --- koristit ćemo ga u
+poglavlju~\ref{ch:lpqp}.
+
+% =====================================================================
+\section{Konveksan optimizacijski problem}
+\label{sec:konveksni-problem}
+\str{71--72 \textnormal{i} V2:2--3}
+
+Sve prethodno vodi do sljedeće definicije, koja se u izvorniku pojavljuje i na
+predavanju \str{71--72} i na vježbama \str{V2:2--3}, s identičnim sadržajem.
+
+\begin{definicija}[Konveksan optimizacijski problem]
+\begin{equation}
+\begin{aligned}
+\minim & f(x) \\
+\uzogr & h_i(x) = 0, && i = 1,\dots,m \\
+       & g_j(x) \le 0, && j = 1,\dots,p
+\end{aligned}
+\end{equation}
+gdje su $f(x)$ i $g_j(x)$, $j = 1,\dots,p$ \textbf{konveksne} funkcije, a
+$h_i(x)$, $i = 1,\dots,m$ su \textbf{afine} funkcije.
+\end{definicija}
+
+Budući da je svaka afina funkcija oblika $a_i\T x - b_i$, isti se problem piše i
+ovako \str{72 \textnormal{i} V2:3}:
+
+\begin{definicija}[Konveksan optimizacijski problem --- eksplicitni oblik]
+\begin{equation}
+\begin{aligned}
+\minim & f(x) \\
+\uzogr & a_i\T x = b_i, && i = 1,\dots,m \\
+       & g_j(x) \le 0, && j = 1,\dots,p
+\end{aligned}
+\end{equation}
+gdje su $f(x)$ i $g_j(x)$, $j = 1,\dots,p$ konveksne funkcije.
+\end{definicija}
+
+\textbf{Kontrolna lista --- je li problem konveksan?} Provjerite tri stvari:
+
+\begin{enumerate}
+  \item Je li funkcija cilja $f$ \textbf{konveksna}? (Ako maksimizirate,
+        pretvorite u $\min(-f)$ i onda provjerite.)
+  \item Jesu li \emph{sve} funkcije nejednakosti $g_j$ \textbf{konveksne}, i to
+        u standardnoj formi $g_j(x) \le 0$?
+  \item Jesu li \emph{sve} funkcije jednakosti $h_i$ \textbf{afine}? (Ne samo
+        konveksne --- \textbf{afine}.)
+\end{enumerate}
+
+\begin{napomena}[najčešće zamke pri provjeri]
+\begin{itemize}
+  \item \textbf{Smjer nejednakosti je bitan.} Ako je $g$ konveksna, skup
+        $\{g(x) \le 0\}$ je konveksan, ali $\{g(x) \ge 0\}$ općenito
+        \textbf{nije}. Prvo prevedite sve u oblik „$\le 0$”.
+  \item \textbf{Jednakosti moraju biti afine.} Ograničenje $h(x) = 0$ s
+        konveksnom, ali nelinearnom $h$ opisuje zakrivljenu plohu --- a ploha
+        nije konveksan skup.
+  \item \textbf{Konveksnost ovisi o zapisu, ne o skupu.} Isti dozvoljeni skup
+        može biti zapisan nekonveksno; tada se problem često može
+        \emph{reformulirati} u konveksan (primjer 2) niže).
+\end{itemize}
+\end{napomena}
+
+\begin{zadatak}[Vježbe 2, Primjer 1: prepoznavanje konveksnih problema]
+\str{V2:4--5}
+
+\textbf{Postavka.} Koji od sljedećih problema spadaju u konveksne opt.\
+probleme?
+
+\begin{enumerate}
+  \item $\min\limits_x \{\, 2x^2 - 3x + 1 \mid 0 \le x \le 10 \,\}$
+  \item $\min\limits_x \{\, 2x^2 - 3x + 1 \mid x^2 - 1 \ge 0,\; x \ge 1 \,\}$
+  \item $\min\limits_x \{\, x^4 - 3x + 1 \mid x(x-1) = 0 \,\}$
+  \item $\min\limits_x \{\, x^4 - 3x + 1 \mid x \in \{0, 1\} \,\}$
+  \item $\min\limits_{x\in\R^3} \left\{\, \|x\|_2 \;\middle|\;
+        \begin{pmatrix}1&1&1\end{pmatrix}x = 0,\; x_2 \le 0 \,\right\}$
+  \item $\min\limits_{x\in\R^3} \big(\|x\|_1 - \|x\|_2\big)$
+\end{enumerate}
+
+\medskip
+\textbf{Rješenja (doslovno sa slajda V2:5):}
+\begin{enumerate}
+  \item konveksan
+  \item nije konveksan, ali kad se reformulira u
+        $\min_x\{\, 2x^2 - 3x + 1 \mid x \ge 1 \,\}$, je konveksan
+  \item nije konveksan
+  \item nije konveksan
+  \item konveksan
+  \item nije konveksan
+\end{enumerate}
+
+\medskip
+\textbf{Obrazloženja} \emph{(slajd daje samo verdikte; obrazloženja niže slijede
+iz kontrolne liste gore i definicija s prethodnih slajdova).}
+
+\textbf{1) $\min 2x^2 - 3x + 1$ uz $0 \le x \le 10$ --- konveksan.}
+\begin{itemize}
+  \item \emph{Cilj:} $f(x) = 2x^2 - 3x + 1$; $f''(x) = 4 > 0$, dakle konveksna
+        (uvjeti drugog reda \str{70}; ovo je i primjer $ax^2+bx+c$, $a>0$ sa
+        str.\ 63).
+  \item \emph{Ograničenja u standardnoj formi:} $0 \le x$ postaje $-x \le 0$;
+        $x \le 10$ postaje $x - 10 \le 0$. Obje su \textbf{afine}, dakle
+        konveksne.
+  \item Sva tri uvjeta kontrolne liste su ispunjena. \checkmark
+\end{itemize}
+
+\textbf{2) $\min 2x^2 - 3x + 1$ uz $x^2 - 1 \ge 0$, $x \ge 1$ --- nije
+konveksan (ali se dade popraviti).}
+\begin{itemize}
+  \item Cilj je konveksan (kao gore).
+  \item Problem je prvo ograničenje. U standardnu formu: $x^2 - 1 \ge 0$
+        $\Leftrightarrow$ $1 - x^2 \le 0$, dakle $g_1(x) = 1 - x^2$. Njegova
+        druga derivacija je $g_1'' = -2 < 0$, dakle $g_1$ je
+        \textbf{konkavna}, a ne konveksna. Kontrolna lista pada na koraku 2.
+  \item \emph{Geometrijski:} skup $\{x \mid x^2 \ge 1\}$ je
+        $(-\infty,-1] \cup [1,\infty)$ --- dva odvojena dijela, dakle
+        \textbf{nije konveksan skup} (dužina od $-1$ do $1$ izlazi iz skupa).
+  \item \emph{Reformulacija:} presjek s drugim ograničenjem $x \ge 1$ daje
+        $\Feas = \{x \ge 1\}$, jer je $[1,\infty)$ već sadržan u skupu
+        $x^2\ge1$. Prvo ograničenje je dakle \textbf{suvišno} i može se
+        izbaciti. Ostaje $\min_x\{2x^2-3x+1 \mid x \ge 1\}$ --- konveksan
+        problem s afinim ograničenjem $1 - x \le 0$. \checkmark
+  \item \textbf{Poanta:} isti dozvoljeni skup, dva zapisa --- jedan konveksan,
+        drugi ne. Uvijek se isplati pojednostaviti zapis prije nego zaključite
+        da problem nije konveksan.
+\end{itemize}
+
+\textbf{3) $\min x^4 - 3x + 1$ uz $x(x-1) = 0$ --- nije konveksan.}
+\begin{itemize}
+  \item Cilj \emph{jest} konveksan: $f(x) = x^4 - 3x + 1$, $f'' = 12x^2 \ge 0$
+        za sve $x$.
+  \item Ali ograničenje jednakosti je $h(x) = x(x-1) = x^2 - x$, što je
+        \textbf{kvadratna}, dakle \textbf{nije afina}. Kontrolna lista pada na
+        koraku 3.
+  \item \emph{Geometrijski:} $x(x-1) = 0$ znači $x = 0$ ili $x = 1$ --- dvije
+        izolirane točke, što nije konveksan skup.
+\end{itemize}
+
+\textbf{4) $\min x^4 - 3x + 1$ uz $x \in \{0,1\}$ --- nije konveksan.}
+\begin{itemize}
+  \item Ovo je \emph{isti} problem kao 3), samo zapisan pripadnošću diskretnom
+        skupu umjesto jednadžbom (usporedi slajdove 16 i 17 iz
+        predavanja).
+  \item Dozvoljeni skup $\{0,1\}$ je diskretan, dakle nije konveksan. Ovo je
+        \textbf{cjelobrojni} problem.
+\end{itemize}
+
+\textbf{5) $\min \|x\|_2$ uz $\begin{pmatrix}1&1&1\end{pmatrix}x = 0$,
+$x_2 \le 0$ --- konveksan.}
+\begin{itemize}
+  \item \emph{Cilj:} $\|x\|_2$ je norma, a norme su konveksne funkcije
+        \str{63}. \checkmark
+  \item \emph{Jednakost:} $\begin{pmatrix}1&1&1\end{pmatrix}x = 0$ je
+        $x_1 + x_2 + x_3 = 0$, dakle oblika $a\T x = b$ uz $a = (1,1,1)\T$,
+        $b = 0$ --- \textbf{afina}. \checkmark
+  \item \emph{Nejednakost:} $x_2 \le 0$ je afina (može se pisati kao
+        $e_2\T x \le 0$). \checkmark
+  \item Sva tri uvjeta ispunjena.
+  \item \emph{Usput, rješenje je očito:} $x\opt = (0,0,0)$ zadovoljava oba
+        ograničenja i daje $\|x\|_2 = 0$, što je najmanja moguća vrijednost
+        norme.
+\end{itemize}
+
+\textbf{6) $\min \|x\|_1 - \|x\|_2$ --- nije konveksan.}
+\begin{itemize}
+  \item Problem \emph{nema} ograničenja, pa je pitanje isključivo je li cilj
+        konveksan.
+  \item $\|x\|_1$ je konveksna, ali $-\|x\|_2$ je \textbf{konkavna} (negativ
+        konveksne funkcije, po definiciji sa str.\ 62). \textbf{Razlika dviju
+        konveksnih funkcija općenito nije konveksna} --- zbroj konveksnih jest,
+        ali razlika nije.
+  \item \emph{Konkretna provjera nejednakosti \eqref{eq:konveksnost}} u $\R^2$:
+        uzmimo $x_1 = (1,0)\T$, $x_2 = (0,1)\T$ i $\alpha = 0{,}5$. Označimo
+        $f(x) = \|x\|_1 - \|x\|_2$.
+        \begin{align}
+        f(x_1) &= (|1|+|0|) - \sqrt{1^2+0^2} = 1 - 1 = 0 \\
+        f(x_2) &= (|0|+|1|) - \sqrt{0^2+1^2} = 1 - 1 = 0
+        \end{align}
+        Desna strana: $0{,}5\cdot 0 + 0{,}5\cdot 0 = 0$.
+        Srednja točka: $0{,}5x_1 + 0{,}5x_2 = (0{,}5;\ 0{,}5)\T$, pa
+        \[
+        f(0{,}5;\ 0{,}5) = (0{,}5 + 0{,}5) - \sqrt{0{,}25 + 0{,}25}
+        = 1 - \sqrt{0{,}5} = 1 - 0{,}7071 = 0{,}2929
+        \]
+        Lijeva strana $0{,}2929$ je \textbf{veća} od desne $0$, dakle uvjet
+        \eqref{eq:konveksnost} je \textbf{prekršen} --- funkcija nije
+        konveksna. \checkmark
+\end{itemize}
+\end{zadatak}
+
+% =====================================================================
+\section{Norme kao konveksne funkcije i praktične reformulacije}
+\str{V2:6--11}
+
+\subsection{Kako izgledaju norme kao funkcije}
+\str{V2:6--8}
+
+Slajdovi V2:6--8 prikazuju svaku od tri norme dvaput: kao 3D plohu nad
+ravninom $(x_1,x_2)$ i kao nivo krivulje u toj ravnini.
+
+\begin{center}
+\begin{tabular}{p{3.3cm}p{4.6cm}p{4.8cm}}
+\toprule
+\textbf{Funkcija} & \textbf{3D ploha} & \textbf{Nivo krivulje} \\
+\midrule
+$f(x) = \|x\|_1 = \sum_{i=1}^{n}|x_i|$
+  & „šator” s četiri ravne plohe, vrh (nula) u ishodištu
+  & koncentrični \textbf{rombovi} \\
+$f(x) = \|x\|_2 = \sqrt{\sum_{i=1}^n (x_i)^2}$
+  & glatki \textbf{stožac} s vrhom u ishodištu
+  & koncentrične \textbf{kružnice} \\
+$f(x) = \|x\|_\infty = \max_{1\le i\le n}(|x_i|)$
+  & piramida s četiri ravne plohe
+  & koncentrični \textbf{kvadrati} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Sve tri plohe su „zdjelastog” (točnije, stožastog) oblika s najnižom točkom u
+ishodištu --- vizualna potvrda konveksnosti. Nivo krivulje su upravo kugle iz
+odjeljka~\ref{sec:norme}, samo skalirane.
+
+\subsection{Minimizacija norme kao konveksan optimizacijski problem}
+\str{V2:9--11}
+
+Ovo su tri vrlo korisne \textbf{reformulacije}: problem s normom u funkciji
+cilja prevodimo u oblik koji standardni rješavači izravno prihvaćaju. Sve tri
+imaju istu strukturu:
+
+\[
+\begin{aligned}
+\min_x \quad & \|Ax + b\|_{\bullet} \\
+\uzogr & h_i(x) = 0,\; i=1,\dots,m \\
+& g_j(x) \le 0,\; j = 1,\dots,p
+\end{aligned}
+\]
+
+\subsubsection*{1-norma \str{V2:9}}
+
+\[
+\begin{aligned}
+\min_x \quad & \|Ax + b\|_1 \\
+\uzogr & h_i(x) = 0,\; i=1,\dots,m \\
+& g_j(x) \le 0,\; j = 1,\dots,p
+\end{aligned}
+\qquad\Longleftrightarrow\qquad
+\begin{aligned}
+\min_{x,\,y} \quad & \mathbf{1}\T y = \sum_i y_i \\
+\uzogr & -y \le Ax + b \le y \\
+& h_i(x) = 0,\; i=1,\dots,m \\
+& g_j(x) \le 0,\; j = 1,\dots,p
+\end{aligned}
+\]
+
+gdje je (sa slajda) $y$ vektor iste veličine kao i $x$, a $\mathbf{1}$ je
+vektor stupac sa svim elementima jednakim 1. \textbf{Funkcija cilja je linearna
+(pa stoga i konveksna).}
+
+\textbf{Zašto to radi --- korak po korak.}
+\begin{itemize}
+  \item Označimo $r = Ax + b$ („rezidual”). Tada je
+        $\|r\|_1 = \sum_i |r_i|$.
+  \item Dvostruka nejednakost $-y_i \le r_i \le y_i$ znači točno
+        $|r_i| \le y_i$: apsolutna vrijednost je omeđena odozgo s $y_i$.
+        (Ako je $r_i \ge 0$, veže desna nejednakost; ako je $r_i < 0$, lijeva.)
+  \item Minimiziramo $\sum_i y_i$, dakle svaki $y_i$ guramo što niže. Najniže
+        što $y_i$ smije biti je $|r_i|$.
+  \item U optimumu je zato $y_i = |r_i|$ za svaki $i$, pa je
+        $\sum_i y_i = \sum_i |r_i| = \|Ax+b\|_1$. Dva problema imaju istu
+        optimalnu vrijednost. \checkmark
+  \item \textbf{Dobitak:} apsolutne vrijednosti (koje nisu derivabilne) nestale
+        su iz zapisa; ostale su same linearne funkcije. Ako su i $h_i$, $g_j$
+        linearne, ovo je \textbf{LP} (poglavlje~\ref{ch:lpqp}).
+\end{itemize}
+
+\begin{napomena}[napomena o dimenziji]
+Na slajdu piše da je $y$ „iste veličine kao i $x$”. Preciznije, $y$ mora imati
+onoliko komponenata koliko ih ima rezidual $Ax + b$, tj.\ koliko $A$ ima
+\emph{redaka}. Kad je $A$ kvadratna, to je isto.
+\end{napomena}
+
+\subsubsection*{2-norma \str{V2:10}}
+
+\[
+\begin{aligned}
+\min_x \quad & \|Ax + b\|_2 \\
+\uzogr & h_i(x) = 0 \\
+& g_j(x) \le 0
+\end{aligned}
+\quad\Longleftrightarrow\quad
+\begin{aligned}
+\min_x \quad & (Ax+b)\T(Ax+b)
+  = x\T \underbrace{A\T A}_{Q} x + 2b\T Ax + b\T b \\
+\uzogr & h_i(x) = 0 \\
+& g_j(x) \le 0
+\end{aligned}
+\]
+
+Budući da je matrica $Q = A\T A$ nužno pozitivno semidefinitna, funkcija cilja
+je konveksna.
+
+\textbf{Zašto to radi --- korak po korak.}
+\begin{itemize}
+  \item \textbf{Uklanjanje korijena:} $\|r\|_2 = \sqrt{r\T r}$, a kvadriranje
+        je strogo rastuća transformacija na nenegativnim brojevima, pa
+        \emph{ne mijenja položaj} minimuma (isti trik kao u
+        odjeljku~1.8.3). Zato minimiziramo $\|r\|_2^2 = r\T r$.
+  \item \textbf{Raspis kvadratne forme:}
+        \begin{align}
+        (Ax+b)\T(Ax+b)
+        &= (x\T A\T + b\T)(Ax + b) \\
+        &= x\T A\T Ax + x\T A\T b + b\T Ax + b\T b \\
+        &= x\T A\T A x + 2b\T Ax + b\T b
+        \end{align}
+        \emph{Međukorak kod spajanja:} $x\T A\T b$ je broj ($1\times1$), a broj
+        je jednak svojem transponatu: $(x\T A\T b)\T = b\T A x$. Zato su ta dva
+        člana jednaka i zbrajaju se u $2b\T Ax$.
+  \item \textbf{Zašto je $Q = A\T A \succeq 0$:} za bilo koji $x$,
+        \[
+        x\T (A\T A) x = (Ax)\T(Ax) = \|Ax\|_2^2 \ge 0
+        \]
+        jer je kvadrat norme uvijek nenegativan. To je točno definicija
+        pozitivne semidefinitnosti \str{46}. \checkmark
+  \item \textbf{Dobitak:} cilj je kvadratna funkcija s $Q \succeq 0$, dakle
+        konveksna (uvjeti drugog reda \str{70}). Ako su ograničenja linearna,
+        ovo je \textbf{QP} (poglavlje~\ref{ch:lpqp}).
+  \item Zadnji član $b\T b$ je konstanta i ne utječe na $\argmin$ --- može se
+        i izostaviti.
+\end{itemize}
+
+\subsubsection*{$\infty$-norma \str{V2:11}}
+
+\[
+\begin{aligned}
+\min_x \quad & \|Ax + b\|_\infty \\
+\uzogr & h_i(x) = 0 \\
+& g_j(x) \le 0
+\end{aligned}
+\quad\Longleftrightarrow\quad
+\begin{aligned}
+\min_{x,\,t} \quad & t \\
+\uzogr & -t\mathbf{1} \le Ax + b \le t\mathbf{1} \\
+& h_i(x) = 0 \\
+& g_j(x) \le 0
+\end{aligned}
+\]
+
+gdje je $t \in \R$ dodatna \textbf{skalarna} projektna varijabla, a
+$\mathbf{1}$ je vektor stupac sa svim elementima jednakim 1. \textbf{Funkcija
+cilja je linearna (pa stoga i konveksna).}
+
+\textbf{Zašto to radi --- korak po korak.}
+\begin{itemize}
+  \item $\|r\|_\infty = \max_i |r_i|$ --- najveća komponenta po apsolutnoj
+        vrijednosti.
+  \item Uvjet $-t\mathbf{1} \le r \le t\mathbf{1}$ znači $|r_i| \le t$ za
+        \emph{svaki} $i$ (isti $t$ za sve!). To je isto što i
+        $\max_i|r_i| \le t$.
+  \item Minimiziramo $t$, dakle guramo tu zajedničku gornju ogradu što niže.
+        Najniže što smije biti je točno $\max_i|r_i|$.
+  \item U optimumu je $t\opt = \|Ax+b\|_\infty$. \checkmark
+  \item \textbf{Razlika u odnosu na 1-normu:} tamo je svaka komponenta imala
+        \emph{svoju} varijablu $y_i$ (vektor), ovdje sve dijele \emph{jedan}
+        $t$ (skalar) --- jer $\max$ traži jednu zajedničku ogradu, a suma
+        pojedinačne.
+\end{itemize}
+
+\begin{napomena}[prepoznajte obrazac]
+Sve tri reformulacije koriste isti trik koji smo prvi put vidjeli kod problema
+dopustivosti \eqref{eq:dopustivost}: \textbf{uvođenje pomoćne varijable koja
+zamjenjuje $\max$ ili $|\cdot|$ običnom nejednakošću}. Kad god u funkciji cilja
+vidite $\max$, apsolutnu vrijednost ili normu, prvo posegnite za ovim trikom.
+On se ponavlja i u poglavljima~\ref{ch:lpqp}~i~\ref{ch:robusno}.
+\end{napomena}
+
+\textbf{Kada koju normu birati.} Sve tri mjere „veličinu pogreške”, ali
+različito:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Norma} & \textbf{Što kažnjava} & \textbf{Tip problema} \\
+\midrule
+$\|\cdot\|_1$ & zbroj svih odstupanja & LP \\
+$\|\cdot\|_2$ & kvadrate odstupanja (velika jače) & QP \\
+$\|\cdot\|_\infty$ & samo najgore odstupanje & LP \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Ako je bitno da \emph{nijedna} pojedinačna pogreška ne bude velika, bira se
+$\infty$-norma. Ako je bitan ukupni zbroj, $1$- ili $2$-norma. Ovim se detaljno
+bavimo u Vježbama 4 (poglavlje~\ref{ch:lpqp}).
+
+% =====================================================================
+\section{Sažetak poglavlja}
+
+\textbf{Što morate znati napamet:}
+
+\begin{enumerate}
+  \item \textbf{Linearno} $=$ $f(x) = Ax$ (kroz ishodište); \textbf{afino} $=$
+        $f(x) = Ax + b$. Razlika je bitna kod ograničenja jednakosti.
+  \item \textbf{Nivo krivulja} $\mathcal{S}_c = \{x \mid f(x) = c\}$; nivo
+        krivulje linearne funkcije su paralelni pravci, a $a$ je okomit na njih.
+  \item \textbf{Skalarni produkt} $x\T y = \|x\|\|y\|\cos\varphi$; nula
+        $\Leftrightarrow$ okomitost; predznak određuje poluprostor.
+  \item \textbf{Gradijent} $\nabla f$ --- smjer najbržeg rasta, okomit na nivo
+        krivulju. Smjer pada: $\nabla f(x)\T d \le 0$.
+  \item \textbf{Hessian} $\nabla^2 f$ --- simetrična matrica drugih derivacija.
+  \item \textbf{Uvjeti bez ograničenja:} nužno $\nabla f = 0$ i
+        $\nabla^2 f \succeq 0$; dovoljno $\nabla f = 0$ i $\nabla^2 f \succ 0$.
+  \item \textbf{Definitnost:} preko svojstvenih vrijednosti ili vodećih glavnih
+        minora ($D_1, D_2, \dots > 0$ za $\succ 0$).
+  \item \textbf{Afin skup} (pravac ostaje u skupu) vs.\ \textbf{konveksan skup}
+        (dužina ostaje u skupu). Presjek konveksnih je konveksan.
+  \item \textbf{Hiperravnina} $a\T x = b$, \textbf{poluprostor} $a\T x \le b$,
+        \textbf{poliedar} $=$ presjek konačno mnogo njih, \textbf{politop} $=$
+        ograničen poliedar.
+  \item \textbf{Konveksna funkcija:} ispod sekante, iznad tangente,
+        $\nabla^2 f \succeq 0$. Norme su konveksne.
+  \item \textbf{Konveksan problem:} $f$ i $g_j$ konveksne, $h_i$ \textbf{afine}.
+  \item \textbf{Reformulacije normi} preko pomoćne varijable ($y$ za 1-normu,
+        kvadriranje za 2-normu, $t$ za $\infty$-normu).
+\end{enumerate}
+
+\textbf{Zašto je konveksnost prava granica.} Kod konveksnog problema svaka
+stacionarna točka je globalni minimum (posljedica uvjeta prvog reda,
+odjeljak~\ref{sec:svojstva-konv}). Kod nekonveksnog problema algoritam može
+zapeti u lošem lokalnom minimumu i nikad ne saznamo koliko smo daleko od
+najboljeg rješenja. Zato je moderna podjela „konveksno vs.\ nekonveksno”, a ne
+„linearno vs.\ nelinearno” \str{52}.
+
+\textbf{Terminologija (hrvatski $\leftrightarrow$ engleski):}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Hrvatski} & \textbf{Engleski} \\
+\midrule
+afina funkcija / afin skup & affine function / affine set \\
+konveksan skup / funkcija & convex set / function \\
+konveksna ljuska & convex hull \\
+hiperravnina & hyperplane \\
+poluprostor & half-space \\
+poliedar / politop & polyhedron / polytope \\
+gradijent & gradient \\
+Hessian & Hessian \\
+pozitivno (semi)definitna & positive (semi)definite \\
+nivo krivulja / nivo skup & level curve / sublevel set \\
+infimum / supremum & infimum / supremum \\
+lokalni / globalni minimizator & local / global minimiser \\
+cjelobrojno optimiranje & integer optimization \\
+\bottomrule
+\end{tabular}
+\end{center}
