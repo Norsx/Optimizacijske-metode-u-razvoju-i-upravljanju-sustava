@@ -1357,39 +1357,239 @@ $g(x,y,z) = 0$ iako se u ostatku izvoda koristi $h$; radi se o istoj vezi.
 
 % =====================================================================
 \section{Ravnotežni položaj preko minimizacije potencijalne energije}
+\label{sec:ravnoteza}
 \str{64--68}
 
-Slajdovi 64--68 daju niz primjera oznake „Primjer”. \textbf{Svi su prikazani
-isključivo kao slike (skice i grafovi), bez ispisanih formula} --- računi su
-očito rađeni na ploči. Zato ih ovdje opisujem točno onako kako izgledaju, uz
-naznaku kojim se aparatom iz ovog poglavlja rješavaju; formule ne izmišljam.
+\begin{napomena}[stanje izvornika]
+Slajdovi 64--68 prikazani su \textbf{isključivo kao slike} (skice i konturni
+grafovi), \textbf{bez ijedne ispisane formule} --- računi su rađeni na ploči.
+Postavke problema (geometrija, oznake) preuzete su sa skica doslovno, a
+\textbf{rješenja su izvedena aparatom ovog poglavlja}: minimizacijom
+potencijalne energije, uz Lagrangeove množitelje odnosno KKT uvjete. Brojčane
+vrijednosti parametara izvornik ne navodi, pa su odabrane radi ilustracije i
+kao takve označene; postupak ne ovisi o njima.
+\end{napomena}
 
-\subsection{Primjer 1: uteg na opruzi \str{64}}
+\subsection{Zajednička postavka: potencijalna energija}
 
-Skica prikazuje: vodoravnu šrafiranu stropnu plohu s objesištem; koordinatni
-sustav $(x,y)$ s ishodištem u objesištu; oprugu koja visi prema dolje i na
-njezinu kraju kuglicu označenu $m = $ masa utega. Sa strane je strelica prema
-dolje označena $g$, gravitacija. Kotirana je duljina $L_0 = $ duljina
+Sve tri konfiguracije koriste \textbf{istu} funkciju potencijalne energije,
+onu koju smo uveli u poglavlju~\ref{ch:uvod} \str{1:40}, samo s jednom oprugom.
+Objesište je u ishodištu, os $y$ pokazuje prema gore, masa visi u točki
+$(x,y)$ s $y < 0$:
+
+\begin{equation}
+\label{eq:V-opruga}
+V(x,y) = \underbrace{mgy}_{\text{gravitacijska}}
+       + \underbrace{\frac{k}{2}\Big(\sqrt{x^2+y^2} - L_0\Big)^2}_{\text{elastična}}
+\end{equation}
+
+gdje je $L_0$ duljina neopterećene opruge (kotirana na svim skicama), $k$
+konstanta opruge, $m$ masa i $g$ ubrzanje sile teže.
+
+\textbf{Gradijent} (treba nam u svim trima primjerima). Uz oznaku
+$r := \sqrt{x^2+y^2}$ za trenutnu duljinu opruge:
+\begin{align}
+\frac{\partial V}{\partial x}
+  &= k\,(r - L_0)\,\frac{x}{r} \label{eq:dVdx}\\
+\frac{\partial V}{\partial y}
+  &= mg + k\,(r - L_0)\,\frac{y}{r} \label{eq:dVdy}
+\end{align}
+
+\emph{Raspis prve derivacije:} vanjska funkcija je $\tfrac{k}{2}(\cdot)^2$, pa
+je njezina derivacija $k(r - L_0)$; unutarnja je $r = \sqrt{x^2+y^2}$, čija je
+parcijalna derivacija po $x$ jednaka $\dfrac{x}{\sqrt{x^2+y^2}} = \dfrac{x}{r}$.
+Član $mgy$ ne ovisi o $x$. \checkmark \; Kod druge derivacije taj član daje
+$mg$, a ostatak je analogan.
+
+\textbf{Fizikalno čitanje gradijenta.} $-\nabla V$ je \textbf{sila} koja
+djeluje na masu. Član $mg$ je težina, a $k(r-L_0)$ je iznos sile u opruzi
+(Hookeov zakon: sila $=$ konstanta puta produljenje), dok je $(x/r,\ y/r)$
+jedinični vektor duž opruge.
+
+\textbf{Brojčane vrijednosti za ilustraciju} (nisu iz izvornika):
+\[
+m = 1\ \text{kg}, \quad g = 9{,}81\ \text{m/s}^2, \quad
+k = 100\ \text{N/m}, \quad L_0 = 0{,}30\ \text{m}
+\]
+
+\subsection{Primjer 1: uteg na opruzi --- problem bez ograničenja}
+\str{64}
+
+\textbf{Skica sa slajda.} Vodoravna šrafirana stropna ploha s objesištem;
+koordinatni sustav $(x,y)$ s ishodištem u objesištu; opruga visi prema dolje i
+na njezinu je kraju kuglica označena $m = $ masa utega. Sa strane je strelica
+prema dolje označena $g$, gravitacija. Kotirana je duljina $L_0 = $ duljina
 neopterećene opruge.
 
-\textbf{Tip problema:} minimizacija potencijalne energije \textbf{bez}
-ograničenja --- uteg se slobodno spušta dok se sile ne izjednače. To je isti
-tip problema kao u odjeljku~1.6.5, samo s jednom oprugom.
+\textbf{Problem:} masa se može slobodno gibati u ravnini, pa je ovo
+minimizacija \textbf{bez ograničenja}:
+\[
+\min_{x,y}\; V(x,y)
+\]
 
-\subsection{Primjer 2: klizač na vertikalnoj vodilici \str{65}}
+\textbf{Rješenje --- uvjet $\nabla V = 0$} (odjeljak~\ref{sec:uvjeti-bez-ogr}).
 
-Skica dodaje \textbf{vertikalnu vodilicu} (šrafirani stup) na udaljenosti $x_0$
-lijevo od objesišta. Masa se sada zove $m = $ masa klizača i može se gibati
-\emph{samo} po toj vodilici; kotirana je i visina $y_{\max}$. Opruga je
-razvučena ukoso, od objesišta do klizača.
+\emph{Korak 1 --- prva jednadžba} \eqref{eq:dVdx}:
+\[
+k(r - L_0)\frac{x}{r} = 0
+\]
+Umnožak je nula ako je $x = 0$ ili $r = L_0$. Uzmemo li $r = L_0$, druga
+jednadžba \eqref{eq:dVdy} postaje $mg + 0 = 0$, dakle $mg = 0$ --- nemoguće
+(masa nije nula). Ostaje
+\[
+\boxed{x^\star = 0}
+\]
+--- masa visi točno ispod objesišta, što je i fizikalno očekivano.
 
-\textbf{Tip problema:} minimizacija potencijalne energije \textbf{uz ograničenje
-jednakosti} $x = -x_0$ (klizač mora ostati na vodilici) --- dakle točno
-Lagrangeova metoda iz odjeljka~\ref{sec:lagrange}. Lagrangeov množitelj je
-vodoravna sila kojom vodilica djeluje na klizač (fizikalna interpretacija iz
-prethodnog odjeljka).
+\emph{Korak 2 --- druga jednadžba.} Uz $x = 0$ i $y < 0$ je
+$r = \sqrt{y^2} = |y| = -y$, pa je $\dfrac{y}{r} = \dfrac{y}{-y} = -1$:
+\[
+mg + k(-y - L_0)(-1) = 0
+\quad\Longrightarrow\quad
+mg + k(y + L_0) = 0
+\quad\Longrightarrow\quad
+\boxed{y^\star = -\left(L_0 + \frac{mg}{k}\right)}
+\]
 
-\subsection{Primjeri 3 i 4: nivo krivulje energije s gradijentima \str{66--67}}
+\emph{Interpretacija:} opruga se produlji za točno $\dfrac{mg}{k}$ u odnosu na
+neopterećenu duljinu --- Hookeov zakon, dobiven \emph{iz optimizacije}, bez
+ijedne jednadžbe ravnoteže sila.
+
+\emph{Brojčano:} $\dfrac{mg}{k} = \dfrac{9{,}81}{100} = 0{,}0981$ m, pa je
+\[
+x^\star = 0, \qquad y^\star = -(0{,}30 + 0{,}0981) = -0{,}3981\ \text{m}
+\]
+
+\emph{Provjera:} uvrštavanjem u \eqref{eq:dVdx}--\eqref{eq:dVdy} obje
+derivacije daju nulu (do numeričke točnosti). \checkmark
+
+\begin{napomena}[je li to minimum, a ne maksimum]
+Potencijalna energija \eqref{eq:V-opruga} raste u svim smjerovima kad se masa
+udalji dovoljno daleko (elastični član raste kvadratno, gravitacijski samo
+linearno), pa stacionarna točka u kojoj je energija konačna mora biti
+\textbf{minimum}. Formalno bi se to potvrdilo Hessianom
+(odjeljak~\ref{sec:uvjeti-bez-ogr}), $\nabla^2V \succ 0$.
+\end{napomena}
+
+\subsection{Primjer 2: klizač na vertikalnoj vodilici --- ograničenje jednakosti}
+\str{65}
+
+\textbf{Skica sa slajda.} Skica dodaje \textbf{vertikalnu vodilicu} (šrafirani
+stup) na udaljenosti $x_0$ lijevo od objesišta. Masa se sada zove
+$m = $ masa klizača i može se gibati \emph{samo} po toj vodilici; kotirana je
+i visina $y_{\max}$. Opruga je razvučena ukoso, od objesišta do klizača.
+
+\textbf{Problem:}
+\begin{equation}
+\label{eq:klizac}
+\min_{x,y}\; V(x,y) \qquad\text{uz ograničenje}\qquad h(x,y) := x + x_0 = 0
+\end{equation}
+
+(vodilica je vertikalni pravac $x = -x_0$).
+
+\textbf{Rješenje --- Lagrangeova funkcija} (odjeljak~\ref{sec:lagrange}):
+\[
+L(x,y,\lambda) = V(x,y) + \lambda\,(x + x_0)
+\]
+
+Nužni uvjeti $\nabla L = 0$ daju \textbf{tri} jednadžbe:
+\begin{align}
+\frac{\partial L}{\partial x} &= \frac{\partial V}{\partial x} + \lambda = 0
+  \label{eq:klizac-1}\\
+\frac{\partial L}{\partial y} &= \frac{\partial V}{\partial y} = 0
+  \label{eq:klizac-2}\\
+\frac{\partial L}{\partial \lambda} &= x + x_0 = 0
+  \label{eq:klizac-3}
+\end{align}
+
+\emph{Uočite strukturu:} \eqref{eq:klizac-3} odmah daje $x^\star = -x_0$;
+\eqref{eq:klizac-2} je jedna jednadžba za jednu nepoznanicu $y$; a
+\eqref{eq:klizac-1} \textbf{samo određuje} $\lambda$ nakon što je $(x,y)$ već
+poznat. Multiplikator dakle ne sudjeluje u traženju položaja --- on je
+\emph{posljedica}.
+
+\textbf{Korak 1 --- položaj.} Uz $x = -x_0$, jednadžba \eqref{eq:klizac-2}
+glasi
+\[
+mg + k\big(r - L_0\big)\frac{y}{r} = 0, \qquad r = \sqrt{x_0^2 + y^2}
+\]
+To je \textbf{nelinearna} jednadžba u $y$ (jer $r$ ovisi o $y$) i rješava se
+numerički. Za naše brojke, uz $x_0 = 0{,}20$ m:
+\[
+x^\star = -0{,}20\ \text{m}, \qquad y^\star = -0{,}3604\ \text{m},
+\qquad r^\star = 0{,}4122\ \text{m}
+\]
+
+\emph{Provjera:} uvrštavanjem je $\partial V/\partial y = 3{,}6\cdot10^{-15}
+\approx 0$. \checkmark
+
+\emph{Usporedba s Primjerom 1:} slobodna masa visjela je na $y = -0{,}3981$;
+prisiljena na vodilicu udaljenu $0{,}20$ m, visi \emph{više}
+($y = -0{,}3604$) jer je opruga sada razvučena ukoso i njezina vertikalna
+komponenta mora nositi istu težinu uz veće ukupno produljenje.
+
+\textbf{Korak 2 --- multiplikator.} Iz \eqref{eq:klizac-1} i \eqref{eq:dVdx}:
+\[
+\lambda^\star = -\frac{\partial V}{\partial x}\bigg|_{(x^\star,y^\star)}
+= -k(r^\star - L_0)\frac{x^\star}{r^\star}
+= k(r^\star - L_0)\frac{x_0}{r^\star}
+\]
+Brojčano:
+\[
+\lambda^\star = 100\,(0{,}4122 - 0{,}30)\cdot\frac{0{,}20}{0{,}4122}
+= 5{,}4437\ \text{N}
+\]
+
+\begin{teorem}[Fizikalno značenje multiplikatora --- potvrda]
+$\lambda^\star = 5{,}44$ N je \textbf{vodoravna sila reakcije} kojom vodilica
+djeluje na klizač. Bez nje bi opruga povukla klizač prema objesištu.
+\end{teorem}
+
+To je izravna potvrda općeg rezultata iz odjeljka~3.10 \str{62--63}:
+\emph{reakcija veze je $F_n = \lambda\nabla h$}. Ovdje je
+$\nabla h = (1,0)\T$, pa je reakcija $\lambda^\star\,(1,0)\T$ --- vodoravna,
+usmjerena od vodilice prema objesištu. Jedinica je njutn, dakle
+\textbf{sila} --- ne apstraktan broj.
+
+\begin{crtanje}[ravnoteža klizača preko nivo krivulja]
+\textbf{Korak 1.} Nacrtajte osi $x$ (od $-0{,}55$ do $0{,}35$ m) i $y$ (od
+$-0{,}75$ do $0{,}15$ m), jednako mjerilo. Označite objesište u ishodištu.
+
+\textbf{Korak 2 --- nivo krivulje energije.} Krivulje $V(x,y) = c$ su
+zatvorene petlje oko točke minimuma iz Primjera 1, tj.\ oko $(0;\ -0{,}398)$.
+Nacrtajte nekoliko njih, sve gušće prema središtu.
+
+\emph{Zašto imaju baš takav oblik:} blizu minimuma dominira kvadratni elastični
+član, pa su krivulje približno elipse; dalje od objesišta gravitacijski član
+ih izdužuje prema dolje.
+
+\textbf{Korak 3 --- ograničenje.} Povucite \textbf{vertikalni} pravac
+$x = -x_0 = -0{,}20$. To je vodilica; dopuštene su samo točke na njemu.
+
+\textbf{Korak 4 --- optimum.} Klizite po tom pravcu i tražite točku u kojoj je
+$V$ najmanja --- to je mjesto gdje pravac \textbf{tangira} jednu od nivo
+krivulja. Označite je: $(-0{,}20;\ -0{,}360)$.
+
+\textbf{Korak 5 --- gradijenti.} Iz te točke nacrtajte $\nabla V$ (okomit na
+nivo krivulju, prema većim vrijednostima $V$) i $\nabla h = (1,0)$ (vodoravno
+udesno). Uočite: \textbf{kolinearni su}.
+
+\textbf{Korak 6 --- što graf znači.} Kolinearnost dvaju gradijenata je točno
+uvjet $\nabla V + \lambda\nabla h = 0$ sa slajda 31. Da nisu kolinearni,
+$\nabla V$ bi imao komponentu \emph{duž} vodilice, pa bi se klizač pomaknuo i
+smanjio energiju. Omjer duljina dviju strelica je $|\lambda^\star|$.
+\end{crtanje}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{03-ravnoteza-klizac.png}
+\caption{Rekonstrukcija konturnih grafova sa slajdova 66--67: nivo krivulje
+potencijalne energije $V(x,y)$, vodilica $x = -x_0$ (plavo) i ravnotežni
+položaj u kojem su $\nabla V$ i $\nabla h$ kolinearni.}
+\end{figure}
+
+\subsection{Primjeri 3 i 4: konturni grafovi s gradijentima}
+\str{66--67}
 
 Slajdovi 66 i 67 pokraj iste skice prikazuju \textbf{konturni graf potencijalne
 energije} $V(x,y)$ u ravnini, s nivo krivuljama označenim brojevima
@@ -1397,42 +1597,143 @@ energije} $V(x,y)$ u ravnini, s nivo krivuljama označenim brojevima
 nekoliko obojenih strelica iz jedne točke:
 
 \begin{itemize}
-  \item \textbf{slajd 66:} plava okomita crta (vodilica, tj.\ ograničenje),
-        crvena vodoravna crta, te iz označene crvene točke vodoravne strelice u
-        oba smjera --- zelena udesno i plava ulijevo;
+  \item \textbf{slajd 66:} plava okomita crta (vodilica), crvena vodoravna
+        crta, te iz označene crvene točke vodoravne strelice u oba smjera ---
+        zelena udesno i plava ulijevo;
   \item \textbf{slajd 67:} iz iste točke dodane su još dvije strelice --- plava
         ukoso prema gore-lijevo i crvena prema dolje.
 \end{itemize}
 
-\textbf{Kako to čitati u jeziku ovog poglavlja.} Okomita plava crta je krivulja
-ograničenja (vodilica). Strelice su gradijenti: gradijent energije i gradijent
-ograničenja. Ravnotežni položaj je ondje gdje se te dvije strelice poravnaju,
-tj.\ gdje je $\nabla V = -\lambda\nabla h$ --- upravo uvjet sa slajda 31.
-Konturni graf pokazuje da nivo krivulja energije u toj točki \textbf{tangira}
-vodilicu.
+\textbf{Što ti grafovi pokazuju} --- to je upravo situacija riješena u Primjeru
+2, prikazana geometrijski. Okomita plava crta je vodilica (ograničenje
+jednakosti). Strelice su gradijenti: $\nabla V$ i $\nabla h$. Ravnotežni
+položaj je ondje gdje se te dvije strelice \textbf{poravnaju}, tj.\ gdje
+vrijedi $\nabla V = -\lambda\nabla h$ --- uvjet sa slajda 31. Konturni graf
+pokazuje da nivo krivulja energije u toj točki \textbf{tangira} vodilicu.
 
-\subsection{Primjer 5: uteg na opruzi iznad kose podloge \str{68}}
+Gornja slika (naš izračun) reproducira upravo taj sadržaj s konkretnim
+brojkama.
 
-Zadnja skica prikazuje uteg obješen o oprugu (kao u Primjeru 1), ali ispod njega
-je \textbf{kosa šrafirana ploha} zadana pravcem $y = ax + b$. Uteg ima
-vodoravnu podlogu s označenim točkama $A$ i $B$, a $L_0$ je opet duljina
-neopterećene opruge.
+\subsection{Primjer 5: uteg iznad kose podloge --- ograničenje nejednakosti}
+\str{68}
 
-\textbf{Tip problema:} minimizacija potencijalne energije \textbf{uz ograničenje
-nejednakosti} --- uteg ne smije propasti kroz podlogu, dakle $y \ge ax+b$,
-odnosno u standardnoj formi $ax + b - y \le 0$. Ovo je točno situacija iz
-odjeljka~\ref{sec:nejednakost}, s dva moguća ishoda:
+\textbf{Skica sa slajda.} Zadnja skica prikazuje uteg obješen o oprugu (kao u
+Primjeru 1), ali ispod njega je \textbf{kosa šrafirana ploha} zadana pravcem
+$y = ax + b$. Uteg ima vodoravnu podlogu s označenim točkama $A$ i $B$, a
+$L_0$ je opet duljina neopterećene opruge.
 
+\textbf{Problem.} Uteg ne smije propasti kroz podlogu, dakle $y \ge ax + b$,
+odnosno u standardnoj formi
+\begin{equation}
+\label{eq:kosina}
+\min_{x,y}\; V(x,y) \qquad\text{uz ograničenje}\qquad
+g(x,y) := ax + b - y \le 0
+\end{equation}
+
+\textbf{Rješenje --- KKT uvjeti} (odjeljak~\ref{sec:kkt}). Uz
+$\nabla g = (a,\ -1)\T$:
+\begin{align}
+\frac{\partial V}{\partial x} + \mu\,a &= 0 && \text{(stacionarnost)}
+  \label{eq:kkt-kosina-1}\\
+\frac{\partial V}{\partial y} - \mu &= 0 && \text{(stacionarnost)}
+  \label{eq:kkt-kosina-2}\\
+ax + b - y &\le 0 && \text{(dopustivost)} \\
+\mu\,(ax + b - y) &= 0 && \text{(komplementarnost)} \\
+\mu &\ge 0 && \text{(predznak)}
+\end{align}
+
+\textbf{Postupak je „pogađanje aktivnog skupa”} iz odjeljka~\ref{sec:kkt}, a
+ovdje ima samo \textbf{dva} slučaja.
+
+\subsubsection*{Slučaj A --- ograničenje neaktivno ($\mu = 0$)}
+
+Tada \eqref{eq:kkt-kosina-1}--\eqref{eq:kkt-kosina-2} daju $\nabla V = 0$,
+dakle rješenje iz \textbf{Primjera 1}:
+$(x,y) = \big(0,\ -(L_0 + mg/k)\big)$. Taj je slučaj valjan \textbf{ako i samo
+ako} je ta točka dopustiva:
+\[
+g\Big(0,\ -\big(L_0 + \tfrac{mg}{k}\big)\Big)
+= b + L_0 + \frac{mg}{k} \le 0
+\]
+
+\emph{Fizikalno:} opruga je dovoljno kratka (ili je podloga dovoljno nisko), pa
+uteg \textbf{visi u zraku} i podloge uopće ne dodiruje. Reakcija podloge je
+nula --- baš to kaže $\mu = 0$.
+
+\subsubsection*{Slučaj B --- ograničenje aktivno ($g = 0$)}
+
+Uteg \textbf{leži na podlozi}, pa vrijedi $y = ax + b$, a preostale dvije
+jednadžbe određuju $x$ i $\mu$. Sustav triju jednadžbi
+\eqref{eq:kkt-kosina-1}, \eqref{eq:kkt-kosina-2} i $y = ax+b$ nelinearan je i
+rješava se numerički.
+
+\textbf{Brojčani primjer.} Uzmimo kosinu $y = 0{,}5x - 0{,}35$ (dakle
+$a = 0{,}5$, $b = -0{,}35$).
+
+\emph{Provjera koji slučaj vrijedi:} slobodni optimum je
+$(0;\ -0{,}3981)$, pa je
+\[
+g(0;\ -0{,}3981) = 0{,}5\cdot0 + (-0{,}35) - (-0{,}3981) = +0{,}0481 > 0
+\]
+--- \textbf{prekršeno}, dakle Slučaj A otpada i ograničenje je
+\textbf{aktivno}. (Uteg bi propao $4{,}8$ cm ispod podloge.)
+
+\emph{Rješenje Slučaja B:}
+\[
+\boxed{\;
+x^\star = -0{,}0498\ \text{m}, \qquad
+y^\star = -0{,}3749\ \text{m}, \qquad
+\mu^\star = 2{,}0590\ \text{N}
+\;}
+\]
+
+\emph{Provjere:}
 \begin{itemize}
-  \item \textbf{ograničenje neaktivno} ($\mu = 0$): opruga je dovoljno kratka,
-        uteg visi u zraku iznad podloge i ravnoteža je ista kao u Primjeru 1;
-  \item \textbf{ograničenje aktivno} ($\mu > 0$): uteg leži na podlozi, a $\mu$
-        je \textbf{normalna reakcija podloge}.
+  \item $\mu^\star = 2{,}06 \ge 0$ \checkmark --- KKT uvjet predznaka vrijedi,
+        pa je rješenje valjano;
+  \item sve tri jednadžbe zadovoljene do numeričke točnosti ($10^{-9}$)
+        \checkmark;
+  \item $y^\star = 0{,}5\cdot(-0{,}0498) - 0{,}35 = -0{,}3749$ \checkmark ---
+        uteg doista leži na kosini;
+  \item $V(x^\star,y^\star) = -3{,}372$ J, dok je slobodni minimum
+        $-3{,}424$ J. Energija je \emph{veća} --- ograničenje košta, točno kao
+        u uvodnom primjeru poglavlja~\ref{ch:uvod}.
 \end{itemize}
 
-Uvjet komplementarnosti $\mu\,g(x) = 0$ ovdje ima izravno fizikalno značenje:
-\emph{podloga gura samo ako je tijelo dodiruje}. Ako tijelo lebdi, reakcija je
-nula; ako je reakcija pozitivna, tijelo nužno leži na podlozi.
+\begin{teorem}[Komplementarnost je fizika]
+Uvjet $\mu\,g(x,y) = 0$ ovdje ima izravno mehaničko značenje:
+\[
+\textbf{podloga gura samo ako je tijelo dodiruje.}
+\]
+\begin{itemize}
+  \item Ako uteg lebdi ($g < 0$), reakcija je nula ($\mu = 0$).
+  \item Ako je reakcija pozitivna ($\mu > 0$), uteg nužno leži na podlozi
+        ($g = 0$).
+\end{itemize}
+Uvjet $\mu \ge 0$ također je fizika: podloga može samo \textbf{gurati}, ne i
+vući. Da je iz računa ispao $\mu < 0$, to bi značilo da podloga „drži” uteg
+odozgo --- nemoguće, i signal da je pretpostavka o aktivnosti bila kriva.
+\end{teorem}
+
+\begin{napomena}[zašto je ovaj niz primjera zaključak poglavlja]
+Tri konfiguracije --- slobodna masa, klizač na vodilici, uteg na podlozi ---
+pokrivaju \textbf{sva tri tipa} uvjeta optimalnosti obrađena u ovom poglavlju:
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Konfiguracija} & \textbf{Tip problema} & \textbf{Uvjet} \\
+\midrule
+slobodna masa & bez ograničenja & $\nabla V = 0$ \\
+klizač na vodilici & ograničenje jednakosti
+  & $\nabla V + \lambda\nabla h = 0$ \\
+uteg na podlozi & ograničenje nejednakosti
+  & KKT, $\mu \ge 0$, $\mu g = 0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+I u sva tri slučaja multiplikator je \textbf{sila reakcije} --- što je i bila
+poruka odjeljka~3.10.
+\end{napomena}
 
 % =====================================================================
 \section{Sažetak poglavlja}

@@ -75,7 +75,7 @@ def pendulum() -> None:
     """Closed loop of the inverted pendulum with the robust gain."""
     M, m, L, J, G = 0.5, 0.2, 0.3, 0.006, 9.81
     c = 1.0 / (J * (M + m) + M * m * L**2)
-    K = np.array([[1.2049, 9.3029, -16.1561, -11.1823]])
+    K = np.array([[1.1174, 2.8759, -21.0582, -3.4250]])
     Bv = np.array([[0.0], [(J + m * L**2) * c], [0.0], [m * L * c]])
 
     def A_of(b: float) -> np.ndarray:
@@ -92,9 +92,9 @@ def pendulum() -> None:
 
     for b, boja in zip(np.linspace(0.05, 0.5, 5), boje):
         Acl = A_of(b) + Bv @ K
-        sol = solve_ivp(lambda tt, x: Acl @ x, (0.0, 60.0), x0,
+        sol = solve_ivp(lambda tt, x: Acl @ x, (0.0, 25.0), x0,
                         dense_output=True, rtol=1e-9)
-        tt = np.linspace(0.0, 60.0, 1200)
+        tt = np.linspace(0.0, 25.0, 1200)
         xt = sol.sol(tt)
         axs[0].plot(tt, xt[2], lw=1.7, color=boja, label=rf"$b={b:.3g}$")
         axs[1].plot(tt, (K @ xt).ravel(), lw=1.7, color=boja)

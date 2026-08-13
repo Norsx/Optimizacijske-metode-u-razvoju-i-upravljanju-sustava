@@ -651,7 +651,9 @@ očekivane vrijednosti koeficijenta $b$}.
 \texttt{Vjezbe\_5.pdf} sadrži \textbf{samo tekst zadatka} --- nema rješenja.
 Rješenje niže izvedeno je aparatom ovog poglavlja: kvadratna stabilnost na
 vrhovima \eqref{eq:vrhovi} plus sinteza supstitucijom \eqref{eq:sinteza-lmi}.
-Brojevi su dobiveni skriptom
+Dobiveni LMI je \textbf{semidefinitni program}, pa se --- kao i svi ostali
+zadaci s vježbi --- predaje rješavaču preko modelirajućeg sloja: u Vježbama 3
+to je bio YALMIP u MATLAB-u, ovdje istu ulogu ima \texttt{cvxpy} u skripti
 \texttt{skripta/scripts/solve\_vj5\_robusna.py}, koja je dio ovog
 repozitorija. Za ubrzanje sile teže uzeto je $g = 9{,}81$
 m/s\textsuperscript{2} (slajd ga ne navodi brojčano).
@@ -736,32 +738,39 @@ definitan. \checkmark
 
 \subsection*{Korak 4 --- rezultat}
 
-Rješavanjem \eqref{eq:pendulum-lmi} dobiva se (uz normalizaciju
-$\tr Q = 4$):
+Rješavanjem \eqref{eq:pendulum-lmi} (uz normalizaciju $Q \succeq I$) dobiva se
 \[
-Q = \begin{pmatrix}
-0{,}8102 & -0{,}0485 & 0{,}1007 & -0{,}0004 \\
--0{,}0485 & 1{,}5660 & -0{,}0066 & 1{,}4176 \\
-0{,}1007 & -0{,}0066 & 0{,}0815 & -0{,}0314 \\
--0{,}0004 & 1{,}4176 & -0{,}0314 & 1{,}5423
-\end{pmatrix},
-\quad
-Y = \begin{pmatrix}-1{,}0975 & -1{,}2355 & -0{,}9049 & -3{,}5510\end{pmatrix}
+Y = \begin{pmatrix}-3855{,}30 & -1464{,}99 & -4184{,}35 & 4691{,}11\end{pmatrix},
+\qquad
+P = Q^{-1} = \begin{pmatrix}
+0{,}00033 & 0{,}00019 & -0{,}00082 & -0{,}00021 \\
+0{,}00019 & 0{,}00062 & -0{,}00169 & -0{,}00048 \\
+-0{,}00082 & -0{,}00169 & 0{,}00860 & 0{,}00204 \\
+-0{,}00021 & -0{,}00048 & 0{,}00204 & 0{,}00072
+\end{pmatrix}
 \]
 
-pa je $P = Q^{-1}$ i
+pa je
 \[
 \boxed{\;
 K = YQ^{-1} = \begin{pmatrix}
-1{,}2049 & 9{,}3029 & -16{,}1561 & -11{,}1823
+1{,}1174 & 2{,}8759 & -21{,}0582 & -3{,}4250
 \end{pmatrix}
 \;}
 \]
 
 odnosno upravljački zakon
 \[
-F = 1{,}2049\,x + 9{,}3029\,\dot x - 16{,}1561\,\varphi - 11{,}1823\,\dot\varphi
+F = 1{,}1174\,x + 2{,}8759\,\dot x - 21{,}0582\,\varphi - 3{,}4250\,\dot\varphi
 \]
+
+\begin{napomena}[zašto su $Q$, $Y$ i $P$ tako velikih odnosno malih iznosa]
+LMI \eqref{eq:pendulum-lmi} je \textbf{homogen}: ako je par $(Q,Y)$ rješenje,
+onda je i $(tQ, tY)$ za svaki $t > 0$, a oba daju \emph{isti} $K$. Zato se uz
+$Q \succ 0$ mora dodati normalizacija koja fiksira mjerilo --- ovdje
+$Q \succeq I$. Iznosi pojedinih elemenata stoga nisu sami po sebi informativni;
+jedino je $K$ jednoznačno određen.
+\end{napomena}
 
 \subsection*{Korak 5 --- provjera}
 
@@ -772,8 +781,8 @@ vrijednosti $b$ iz intervala:
 \begin{tabular}{lccccc}
 \toprule
 $b$ & $0{,}05$ & $0{,}15$ & $0{,}25$ & $0{,}35$ & $0{,}50$ \\
-$\max\operatorname{Re}\lambda$ & $-0{,}1317$ & $-0{,}1332$ & $-0{,}1347$
-  & $-0{,}1362$ & $-0{,}1386$ \\
+$\max\operatorname{Re}\lambda$ & $-0{,}5171$ & $-0{,}5532$ & $-0{,}5974$
+  & $-0{,}6540$ & $-0{,}7887$ \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -788,7 +797,8 @@ $A_{cl}(b) = A(b) + BK$:
 \begin{tabular}{lccc}
 \toprule
 $b$ & $0{,}05$ & $0{,}275$ & $0{,}5$ \\
-najveća svojstvena vrijednost & $-0{,}0445$ & $-0{,}0702$ & $-0{,}0608$ \\
+najveća svojstvena vrijednost & $-4\cdot10^{-6}$ & $-9\cdot10^{-6}$
+  & $-9\cdot10^{-6}$ \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -807,20 +817,22 @@ gotovo poklapaju jer trenje slabo utječe na dinamiku.}
 
 \begin{napomena}[interpretacija dobivenog regulatora]
 \begin{itemize}
-  \item $k_3 = -16{,}16$ uz $\varphi$: kad njihalo padne udesno (pozitivan
+  \item $k_3 = -21{,}06$ uz $\varphi$: kad njihalo padne udesno (pozitivan
         $\varphi$), sila gura vozičak \emph{ulijevo}\,---\,ispod njihala, da ga
         „uhvati”. To je fizikalno očekivano.
-  \item $k_4 = -11{,}18$ uz $\dot\varphi$: prigušenje --- reagira na
+  \item $k_4 = -3{,}43$ uz $\dot\varphi$: prigušenje --- reagira na
         \emph{brzinu} pada, ne samo na otklon.
-  \item $k_1 = 1{,}20$, $k_2 = 9{,}30$ uz $x$ i $\dot x$: vraćaju vozičak prema
+  \item $k_1 = 1{,}12$, $k_2 = 2{,}88$ uz $x$ i $\dot x$: vraćaju vozičak prema
         ishodištu; bez njih bi njihalo ostalo uspravno, ali bi vozičak
         odlutao.
-  \item Zatvoreni krug je stabilan, ali \textbf{spor}
-        ($\max\operatorname{Re}\lambda \approx -0{,}13$, dakle vremenska
-        konstanta oko $7{,}5$ s). To je zato što smo tražili \emph{samo}
-        stabilnost. Brži odziv dobio bi se dodavanjem uvjeta na brzinu
-        opadanja: $A_i\T P + PA_i \prec -2\alpha P$ za zadani $\alpha > 0$ ---
-        također LMI, pa se dodaje „besplatno”.
+  \item Zatvoreni krug je stabilan uz $\max\operatorname{Re}\lambda$ između
+        $-0{,}52$ i $-0{,}79$, dakle vremenska konstanta oko $2$ s. Uočite da
+        je odziv \emph{brži} za veće trenje --- trenje pomaže prigušenju.
+  \item Traženo je \emph{samo} da zatvoreni krug bude stabilan, pa je
+        \eqref{eq:pendulum-lmi} riješen kao problem \textbf{dopustivosti}. Želi
+        li se zajamčena brzina opadanja, dodaje se uvjet
+        $A_i\T P + PA_i \prec -2\alpha P$ za zadani $\alpha > 0$ --- također
+        LMI, pa se ugrađuje „besplatno”.
 \end{itemize}
 \end{napomena}
 \end{zadatak}

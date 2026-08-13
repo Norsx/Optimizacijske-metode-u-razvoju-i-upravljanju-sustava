@@ -1,10 +1,19 @@
 r"""Solve Zadatak 1 of Vjezbe 5 -- production and flow optimisation in a network.
 
 The exercise sheet states the problem but carries no worked solution, so the
-notes solve it with the machinery of chapter 5 (a QP with linear flow
-constraints) and read the investment answer off the dual variables of the
-capacity constraints, exactly as the sensitivity analysis of chapter 4
-prescribes.
+notes solve it with the machinery of chapter 5: a QP with linear flow
+constraints.
+
+Method fidelity: the exercises solve such problems with a modelling layer on
+top of a solver (YALMIP + quadprog, Vjezbe 3, str. 32-33) and read the optimal
+dual variables straight off the solver as a by-product -- `mu_opt.ineqlin` in
+MATLAB, `constraint.dual_value` here.  The investment question is then answered
+by the sensitivity result of chapter 4,
+
+    d p* / d v_j = - mu_j*,
+
+so the capacity multipliers rank the arcs directly.  No constraint is perturbed
+and nothing is re-solved.
 
 Network (arcs are directed):
 
@@ -13,101 +22,81 @@ Network (arcs are directed):
         |   \ | /   |
         2 --> 4 --> 6
 
-Producers sit at nodes 1 and 2, consumers at nodes 5 and 6.
-
-    min  C1(p1) + C2(p2) + sum_e cost_e * f_e
-    s.t. flow balance at every node
-         0 <= f_e <= cap_e,  p1, p2 >= 0
-
-with C1(p1) = 0.5 p1^2 + 2 p1 and C2(p2) = 0.3 p2^2 + 5 p2.
-
 Printed output feeds the worked solution in poglavlja/05-lp-qp.tex.
 """
 
+import cvxpy as cp
 import numpy as np
-from scipy.optimize import minimize
 
-# arcs in a fixed order: variables f[0..8]
 ARCS = [(1, 3), (1, 4), (2, 3), (2, 4), (3, 4), (3, 5), (4, 5), (4, 6), (5, 6)]
 COST = np.array([1.0, 2.0, 1.0, 3.0, 2.0, 1.5, 2.0, 2.5, 1.0])
 CAP = np.array([15.0, 15.0, 20.0, 20.0, 20.0, 30.0, 20.0, 15.0, 30.0])
 
 D5, D6 = 30.0, 20.0
-
-# decision vector z = [f_0 .. f_8, p1, p2]
 NF = len(ARCS)
-NZ = NF + 2
 
 
-def balance_matrix() -> tuple[np.ndarray, np.ndarray]:
-    """Rows of A_eq z = b_eq: one flow balance per node 1..6."""
-    A = np.zeros((6, NZ))
+def balance() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Node balance  Af f + Ap p = b, one row per node 1..6."""
+    Af = np.zeros((6, NF))
+    Ap = np.zeros((6, 2))
     b = np.zeros(6)
     for k, (u, v) in enumerate(ARCS):
-        A[u - 1, k] -= 1.0        # flow leaves u
-        A[v - 1, k] += 1.0        # flow enters v
-    A[0, NF] = 1.0                # p1 injected at node 1
-    A[1, NF + 1] = 1.0            # p2 injected at node 2
-    b[4] = D5                     # node 5 consumes d5
-    b[5] = D6                     # node 6 consumes d6
-    return A, b
-
-
-def total_cost(z: np.ndarray) -> float:
-    f, p1, p2 = z[:NF], z[NF], z[NF + 1]
-    return 0.5 * p1**2 + 2.0 * p1 + 0.3 * p2**2 + 5.0 * p2 + COST @ f
-
-
-def total_cost_grad(z: np.ndarray) -> np.ndarray:
-    g = np.zeros(NZ)
-    g[:NF] = COST
-    g[NF] = z[NF] + 2.0
-    g[NF + 1] = 0.6 * z[NF + 1] + 5.0
-    return g
+        Af[u - 1, k] -= 1.0          # flow leaves u
+        Af[v - 1, k] += 1.0          # flow enters v
+    Ap[0, 0] = 1.0                   # p1 injected at node 1
+    Ap[1, 1] = 1.0                   # p2 injected at node 2
+    b[4] = D5                        # node 5 consumes d5
+    b[5] = D6                        # node 6 consumes d6
+    return Af, Ap, b
 
 
 def main() -> None:
-    A_eq, b_eq = balance_matrix()
+    Af, Ap, b = balance()
 
-    bounds = [(0.0, CAP[k]) for k in range(NF)] + [(0.0, None), (0.0, None)]
-    cons = [{"type": "eq",
-             "fun": lambda z: A_eq @ z - b_eq,
-             "jac": lambda z: A_eq}]
+    f = cp.Variable(NF, name="f")
+    p = cp.Variable(2, name="p")
 
-    z0 = np.full(NZ, 5.0)
-    res = minimize(total_cost, z0, jac=total_cost_grad, bounds=bounds,
-                   constraints=cons, method="SLSQP",
-                   options={"maxiter": 800, "ftol": 1e-12})
+    trosak_proizvodnje = 0.5 * cp.square(p[0]) + 2.0 * p[0] \
+        + 0.3 * cp.square(p[1]) + 5.0 * p[1]
+    trosak_transporta = COST @ f
+    cilj = cp.Minimize(trosak_proizvodnje + trosak_transporta)
 
-    z = res.x
-    f, p1, p2 = z[:NF], z[NF], z[NF + 1]
+    c_balans = Af @ f + Ap @ p == b
+    c_kapacitet = f <= CAP
+    c_f_nenegativan = f >= 0
+    c_p_nenegativan = p >= 0
 
-    print("uspjeh:", res.success, "|", res.message)
-    print(f"\nukupan trosak = {total_cost(z):.4f}")
-    print(f"  proizvodnja: p1 = {p1:.4f}, p2 = {p2:.4f}  (zbroj {p1 + p2:.4f})")
-    print(f"  trosak proizvodnje = "
-          f"{0.5 * p1**2 + 2 * p1 + 0.3 * p2**2 + 5 * p2:.4f}")
-    print(f"  trosak transporta  = {COST @ f:.4f}")
+    prob = cp.Problem(cilj, [c_balans, c_kapacitet,
+                             c_f_nenegativan, c_p_nenegativan])
+    prob.solve(solver=cp.CLARABEL)
 
-    print("\ntokovi po bridovima:")
+    print("status:", prob.status)
+    print(f"\nukupan trosak p* = {prob.value:.4f}")
+    print(f"  proizvodnja: p1 = {p.value[0]:.4f}, p2 = {p.value[1]:.4f}"
+          f"  (zbroj {p.value.sum():.4f})")
+    print(f"  trosak proizvodnje = {trosak_proizvodnje.value:.4f}")
+    print(f"  trosak transporta  = {trosak_transporta.value:.4f}")
+
+    mu = c_kapacitet.dual_value          # multipliers of  f <= cap
+    print("\ntokovi i dualne varijable kapaciteta:")
     for k, (u, v) in enumerate(ARCS):
-        zas = "  <-- ZASICEN" if f[k] > CAP[k] - 1e-6 else ""
-        print(f"  ({u},{v}): f = {f[k]:8.4f} / {CAP[k]:5.1f}"
-              f"   cijena {COST[k]:4.1f}{zas}")
+        zas = "ZASICEN" if f.value[k] > CAP[k] - 1e-6 else "       "
+        print(f"  ({u},{v}): f = {f.value[k]:8.4f} / {CAP[k]:5.1f}  {zas}"
+              f"   mu = {mu[k]:7.4f}   dp*/dv = {-mu[k]:+7.4f}")
 
-    # Sensitivity to capacity: re-solve with cap_e raised by one unit and read
-    # off the change in the optimal cost.  This is the numerical counterpart of
-    # the dual variable of the capacity constraint (chapter 4).
-    print("\nosjetljivost na povecanje kapaciteta za +1:")
-    base = total_cost(z)
-    for k, (u, v) in enumerate(ARCS):
-        cap2 = CAP.copy()
-        cap2[k] += 1.0
-        b2 = [(0.0, cap2[i]) for i in range(NF)] + [(0.0, None), (0.0, None)]
-        r2 = minimize(total_cost, z, jac=total_cost_grad, bounds=b2,
-                      constraints=cons, method="SLSQP",
-                      options={"maxiter": 800, "ftol": 1e-12})
-        print(f"  ({u},{v}): delta = {total_cost(r2.x) - base:+.4f}")
+    lam = c_balans.dual_value
+    print("\ndualne varijable balansa po vrhovima (cijena goriva u vrhu):")
+    for i, l in enumerate(lam, start=1):
+        print(f"  vrh {i}: lambda = {l:8.4f}")
+
+    k_best = int(np.argmax(mu))
+    print(f"\ninvesticija -> brid {ARCS[k_best]}, "
+          f"dobitak {mu[k_best]:.4f} po jedinici kapaciteta")
+
+    # marginal production costs, for the interpretation in the notes
+    print(f"\nmarginalni troskovi: C1'(p1) = {p.value[0] + 2.0:.4f}, "
+          f"C2'(p2) = {0.6 * p.value[1] + 5.0:.4f}")
 
 
 if __name__ == "__main__":

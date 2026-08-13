@@ -202,9 +202,56 @@ def mreza() -> None:
     plt.close(fig)
 
 
+def ekstremne_tocke() -> None:
+    """Worked example for lecture 05, str. 21: vertices = basic feasible solutions.
+
+        min -3x1 - 2x2   s.t.  x1 + x2 <= 4,  x1 + 3x2 <= 6,  x1, x2 >= 0
+    """
+    fig, ax = plt.subplots(figsize=(6.2, 5.4))
+
+    vrhovi = np.array([[0.0, 0.0], [4.0, 0.0], [3.0, 1.0], [0.0, 2.0]])
+    ax.fill(vrhovi[:, 0], vrhovi[:, 1], color=SIVA, alpha=0.6, zorder=0)
+
+    t = np.linspace(-0.6, 7.0, 50)
+    ax.plot(t, 4.0 - t, lw=1.9, color=PLAVA, label=r"$x_1+x_2=4$")
+    ax.plot(t, (6.0 - t) / 3.0, lw=1.9, color=ZELENA, label=r"$x_1+3x_2=6$")
+    ax.axhline(0, color="#B35C00", lw=1.5)
+    ax.axvline(0, color="#9467BD", lw=1.5)
+
+    for c in (0.0, -4.0, -8.0, -12.0, -16.0):
+        ax.plot(t, (c + 3.0 * t) / -2.0, ls="--", lw=0.8, color="#8a8a8a")
+
+    oznake = ["O", "C", "B", "A"]
+    redoslijed = [vrhovi[0], vrhovi[3], vrhovi[2], vrhovi[1]]
+    odmaci = [(-20, -18), (-24, 6), (10, 8), (10, -6)]
+    for lab, v, off in zip(oznake, redoslijed, odmaci):
+        ax.plot(*v, marker="o", ms=9, color="k", zorder=6)
+        ax.annotate(rf"${lab}=({v[0]:.0f},{v[1]:.0f})$", xy=v, xytext=off,
+                    textcoords="offset points", fontsize=10)
+
+    ax.plot(4.0, 0.0, marker="o", ms=13, mfc="none", mec=CRVENA, mew=2.5,
+            zorder=7)
+    ax.annotate(r"optimum, $c^\top x=-12$", xy=(4.0, 0.0), xytext=(-30, -34),
+                textcoords="offset points", fontsize=10, color=CRVENA)
+
+    ax.set_xlim(-0.6, 7.0)
+    ax.set_ylim(-0.6, 3.4)
+    ax.set_xlabel(r"$x_1$")
+    ax.set_ylabel(r"$x_2$")
+    ax.set_title("Ekstremne točke $=$ bazna dozvoljena rješenja", fontsize=11)
+    ax.grid(alpha=0.22)
+    ax.legend(loc="upper right", fontsize=8)
+    ax.set_aspect("equal", adjustable="box")
+
+    fig.tight_layout()
+    fig.savefig(OUT / "05-ekstremne-tocke.png", dpi=160)
+    plt.close(fig)
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     lp_geometrija()
+    ekstremne_tocke()
     aproksimacije()
     rekonstrukcija()
     mreza()
