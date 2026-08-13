@@ -88,7 +88,7 @@ Legenda: ✅ obrađeno i zapisano · 🔄 u tijeku · ⬜ nije počelo
 | `02_Definicije_klasifikacija_konveksnost.pdf` | 1–72 | ✅ | cijelo predavanje, poglavlje 2 |
 | `03_Uvjeti_optimalnosti.pdf` | 1–68 | ✅ | cijelo predavanje, poglavlje 3 |
 | `04_Lagrangeova_dualnost.pdf` | 1–34 | ✅ | cijelo predavanje, poglavlje 4 |
-| `05_LP_QP.pdf` | 1–40 | ⬜ | |
+| `05_LP_QP.pdf` | 1–40 | ✅ | cijelo predavanje, poglavlje 5 |
 | `06_QCP_SDP.pdf` | 1–31 | ⬜ | |
 | `07_Dinamicki_sustavi_Ljapunov_disipativnost.pdf` | 1–55 | ⬜ | |
 | `08_Robusno_optimiranje.pdf` | 1–21 | ⬜ | |
@@ -100,8 +100,8 @@ Legenda: ✅ obrađeno i zapisano · 🔄 u tijeku · ⬜ nije počelo
 | `Vjezbe_1.pdf` | 1–34 | ✅ | ugrađeno inline u poglavlje 2 (zadaci 1–4) |
 | `Vjezbe_2.pdf` | 1–11 | ✅ | ugrađeno inline u poglavlje 2 (Primjer 1 + norme) |
 | `Vjezbe_3.pdf` | 1–42 | ✅ | ugrađeno inline u poglavlje 4 (Primjer 1 + Primjer 2 a–f) |
-| `Vjezbe_4.pdf` | 1–41 | ⬜ | |
-| `Vjezbe_5.pdf` | 1–7 | ⬜ | |
+| `Vjezbe_4.pdf` | 1–41 | 🔄 | str. 1–30 u poglavlju 5; str. 31–41 (geometrijski) idu u 6 |
+| `Vjezbe_5.pdf` | 1–7 | 🔄 | Zad. 1 (str. 2–4) u poglavlju 5; Zad. 2 (str. 5–7) ide u 7 |
 
 ### Detaljna evidencija — poglavlje 1
 
@@ -225,6 +225,50 @@ Vježbe 3:
 | 34–39 | d) postavljanje i rješavanje dualnog problema | 4.8.2 |
 | 40–41 | e) osjetljivost | 4.11.4 |
 | 42 | f) ponovljeno s promijenjenim ograničenjima | 4.11.4 |
+
+### Detaljna evidencija — poglavlje 5
+
+Predavanje 05:
+
+| Str. izvora | Tema | Odjeljak skripte |
+|---|---|---|
+| 4–5 | LP problem, eliminacija jednakosti | 5.1 |
+| 6–7 | primjer proizvodnje i distribucije | 5.1.2 |
+| 8–9 | geometrija LP-a | 5.2 |
+| 10–13 | standardni oblik i transformacija | 5.3 |
+| 14–19 | ekstremne točke, bazna dozvoljena rješenja | 5.4 |
+| 20 | simpleks algoritam | 5.4.5 |
+| 21 | primjer ekstremnih točaka (samo slika u izvorniku) | 5.4.6 |
+| 22–27 | Primjer 1: po dijelovima afine funkcije kao LP | 5.5.1 |
+| 28–29 | Primjer 2: Chebyshevljev centar poliedra | 5.5.2 |
+| 31–32 | kvadratne funkcije, simetrija matrice Q | 5.6.1 |
+| 33–34 | QP problem i njegova geometrija | 5.6.2 |
+| 35–36 | Primjer 1: najmanji kvadrati | 5.7.1 |
+| 37–38 | Primjer 2: udaljenost između poliedara | 5.7.2 |
+| 39–40 | Primjer 3: LP sa slučajnim c (rizik) | 5.7.3 |
+
+Vježbe 4 (str. 1–30):
+
+| Str. izvora | Tema | Odjeljak skripte |
+|---|---|---|
+| 4–5 | aproksimacija u zadanoj normi, tri formulacije | 5.8 |
+| 6–13 | **Primjer 1** — aproksimacija baznim funkcijama + MATLAB | 5.9 |
+| 14 | aproksimacije s ograničenjima | 5.9.5 |
+| 15–17 | **Primjer 2** — sinteza filtra | 5.10 |
+| 19–20 | regularizirana aproksimacija, Pareto fronta | 5.11 |
+| 21–25 | **Primjer 3** — optimiranje trajektorije ulaza | 5.12 |
+| 26–30 | **Primjer 4** — rekonstrukcija signala | 5.13 |
+
+Vježbe 5 (Zadatak 1):
+
+| Str. izvora | Tema | Odjeljak skripte |
+|---|---|---|
+| 2–4 | **Zadatak 1** — proizvodnja i tokovi u mreži | 5.14 |
+
+> `Vjezbe_5.pdf` sadrži samo tekst Zadatka 1, bez rješenja. U skripti je riješen
+> kao QP aparatom poglavlja 5, a odgovor na pitanje o investiciji očitan je iz
+> dualnih varijabli (poglavlje 4). Brojevi su dobiveni skriptom
+> `scripts/solve_vj5_mreza.py`, koja je dio repozitorija.
 
 ## Izvan opsega
 

@@ -1,4 +1,1739 @@
 \chapter{Linearno i kvadratno programiranje}
 \label{ch:lpqp}
 
-\emph{Poglavlje je u izradi.}
+\begin{izvor}
+\textbf{Izvori:} \texttt{05\_LP\_QP.pdf} (str.\ 1--40),
+\texttt{Vjezbe\_4.pdf} (str.\ 1--30: aproksimacije i regularizirana
+aproksimacija) i \texttt{Vjezbe\_5.pdf} (str.\ 1--4: Zadatak 1).
+
+Geometrijski problemi s Vježbi 4 (str.\ 31--41) koriste konične i
+semidefinitne formulacije, pa idu u poglavlje~\ref{ch:qcpsdp}. Zadatak 2 s
+Vježbi 5 (robusna stabilizacija) ide u poglavlje~\ref{ch:dinamicki}.
+\end{izvor}
+
+Ovo je prvo poglavlje o \emph{konkretnim klasama} konveksnih problema. Sve što
+smo dosad gradili (konveksnost, KKT, dualnost) sada se primjenjuje na dvije
+najvažnije klase u praksi.
+
+% =====================================================================
+\section{Linearno programiranje (LP)}
+\str{4}
+
+\begin{definicija}[LP problem]
+Za zadane matrice $G \in \R^{p\times n}$, $A \in \R^{q\times n}$, i vektore
+$c \in \R^n$, $h \in \R^p$, $b \in \R^q$, problem \textbf{linearnog
+programiranja} je optimizacijski problem oblika
+\begin{equation}
+\label{eq:lp}
+\begin{aligned}
+\minim & c\T x \\
+\uzogr & Gx \le h \\
+       & Ax = b
+\end{aligned}
+\end{equation}
+gdje je $x \in \R^n$ vektor projektnih varijabli.
+\end{definicija}
+
+\textbf{Svojstva sa slajda:}
+
+\begin{itemize}
+  \item Funkcija cilja je \textbf{linearna} u projektnim varijablama.
+  \item Ograničenja su \textbf{linearna (afina)}.
+  \item LP problemi i s preko \textbf{10 000 varijabli} se mogu učinkovito
+        riješiti.
+  \item Široko dostupni računalni programi za rješavanje LP problema.
+  \item \textbf{Rješavanje LP problema je tehnologija!}
+\end{itemize}
+
+\begin{napomena}[„tehnologija”]
+Ta rečenica (koja se na slajdovima ponavlja dvaput) znači: LP više nije
+istraživačko pitanje nego \emph{gotov alat}, kao što je to kalkulator ili
+rješavač linearnih sustava. Ako uspijete svoj problem svesti na LP, smatrajte
+ga riješenim.
+
+Uočite i vezu s poglavljem~\ref{ch:definicije}: LP je najuži krug „moderne
+podjele svijeta optimiranja” \str{2:10}, dakle najlakša klasa konveksnih
+problema.
+\end{napomena}
+
+\subsection{Eliminacija ograničenja jednakosti}
+\str{5}
+
+Ograničenja jednakosti mogu se eliminirati parametrizacijom svih rješenja
+$Ax = b$ oblika
+\[
+\{\, x \mid Ax = b \,\} = \{\, Fz + x_0 \mid z \in \R^{n-p} \,\}
+\]
+gdje je $x_0$ \textbf{partikularno rješenje} ograničenja $Ax_0 = b$, dok je
+matrica $F$ matrica čija je slika jednaka \textbf{jezgri} matrice $A$ (za
+proizvoljan $z$ i $w = Fz$ vrijedi $Aw = 0$).
+
+Supstitucijom $\tilde x = Fz + x_0$ u funkciju cilja i ograničenja nejednakosti
+dobiva se ekvivalentan problem:
+
+\begin{definicija}[LP bez ograničenja jednakosti]
+\[
+\min_{\tilde x} \; \tilde c\T\tilde x
+\qquad\text{uz ograničenja}\quad
+\tilde A\tilde x \le \tilde b, \qquad \tilde A \in \R^{m\times\tilde n}
+\]
+\end{definicija}
+
+\textbf{Pojmovi od nule.}
+\begin{itemize}
+  \item \textbf{Jezgra} matrice $A$ (engl.\ \emph{null space}) je skup svih
+        vektora $w$ za koje je $Aw = 0$.
+  \item \textbf{Slika} matrice $F$ je skup svih vektora oblika $Fz$.
+  \item \textbf{Zašto to radi:} ako je $Ax_0 = b$ i $Aw = 0$, onda je
+        $A(x_0 + w) = b + 0 = b$. Dakle \emph{jedno} rješenje plus \emph{bilo
+        koji} element jezgre daje opet rješenje --- i tako se dobiju sva.
+        (Usporedi s dokazom da je skup rješenja afin skup,
+        odjeljak~\ref{sec:konveksno}.)
+\end{itemize}
+
+\textbf{Složenost} (sa slajda):
+\begin{itemize}
+  \item Vrijeme izvršavanja algoritma za traženje rješenja je proporcionalno s
+        $\tilde n^2 m$ za $m \ge \tilde n$.
+  \item Manje vrijeme izračuna ako je problem strukturiran i struktura se
+        iskoristi.
+\end{itemize}
+
+\subsection{Primjer: problem proizvodnje i distribucije robe}
+\str{6--7}
+
+Slajdovi 6 i 7 ponavljaju primjer iz odjeljka~1.7 (dvije tvornice, sedam
+trgovina):
+\begin{equation}
+\begin{aligned}
+\min \quad & \sum_{i=1}^{2}\sum_{j=1}^{7} c_{ij}x_{ij} \\
+\uzogr & \sum_{j=1}^{7}x_{ij} \le a_i, && i = 1,2 \\
+       & \sum_{i=1}^{2}x_{ij} \ge b_j, && j = 1,\dots,7 \\
+       & x_{ij} \ge 0
+\end{aligned}
+\end{equation}
+
+\textbf{Napomena sa slajda:} \emph{Više o ovom primjeru (rješenje, \dots) --- u
+vježbama.} To je najava Zadatka 1 s Vježbi 5, koji je isti tip problema (tok u
+mreži) i obrađen je u odjeljku~\ref{sec:vj5-mreza}.
+
+% =====================================================================
+\section{Geometrija LP problema}
+\str{8--9}
+
+Slajd 8 ponavlja definiciju \textbf{poliedra} i \textbf{politopa} iz
+odjeljka~\ref{sec:poliedar}: presjek konačnog broja hiperravnina i poluprostora
+je poliedar; poliedar je konveksan skup; kompaktan poliedar je politop.
+
+\textbf{Geometrijska interpretacija LP problema} \str{9}\textbf{:}
+\[
+\min_{x\in\mathcal{P}} c\T x
+\]
+
+Slajd 9 prikazuje sivi šesterokut $\mathcal{P}$, preko njega niz isprekidanih
+paralelnih pravaca (nivo krivulje funkcije $c\T x$), i u \textbf{vrhu} politopa
+označenu točku $x^\star$ iz koje izlazi strelica označena $-c$.
+
+\begin{crtanje}[LP na politopu]
+\textbf{Korak 1.} Nacrtajte osi $x_1$, $x_2$, jednako mjerilo.
+
+\textbf{Korak 2 --- dozvoljeni skup.} Nacrtajte konveksan mnogokut (npr.\
+peterokut) i osjenčajte ga. To je politop $\mathcal{P}$ --- presjek poluprostora
+zadanih retcima od $Gx \le h$.
+
+\textbf{Korak 3 --- nivo krivulje cilja.} Funkcija $c\T x$ je linearna, pa su
+njezine nivo krivulje \textbf{paralelni pravci} okomiti na $c$
+(Zadatak~\ref{zad:nivo-linearna}). Nacrtajte niz takvih pravaca, jednako
+razmaknutih, preko cijelog crteža.
+
+\textbf{Korak 4 --- smjer pada.} Iz bilo koje točke nacrtajte strelicu $-c$.
+To je smjer u kojem cilj \emph{opada}. Nivo krivulje su okomite na nju.
+
+\textbf{Korak 5 --- pomicanje pravca.} Zamislite da klizite jednim od tih
+pravaca u smjeru $-c$. Vrijednost cilja pada. Klizite dok pravac još dodiruje
+politop.
+
+\textbf{Korak 6 --- optimum.} Zadnja točka dodira je optimum $x^\star$.
+Označite je. \textbf{Ona je uvijek vrh} (ili cijeli brid, ako je pravac
+slučajno paralelan s njim).
+
+\textbf{Što graf znači.} Linearna funkcija nema unutarnji minimum --- gradijent
+joj je konstantan i nikad nije nula. Zato se optimum uvijek „nasloni” na rub, i
+to na \emph{vrh}. To je geometrijski sadržaj teorema o ekstremnim točkama koji
+slijedi, i temelj simpleks algoritma: dovoljno je pregledati vrhove.
+\end{crtanje}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.66\textwidth]{05-lp-geometrija.png}
+\caption{Geometrija LP-a: nivo krivulje cilja su paralelni pravci, a optimum
+$x^\star$ leži u vrhu politopa, u smjeru $-c$.}
+\end{figure}
+
+% =====================================================================
+\section{Standardni oblik LP problema}
+\label{sec:lp-standard}
+\str{10--13}
+
+\textbf{Tvrdnja sa slajda 10:} svaki LP problem može se reformulirati u
+ekvivalentan problem u standardnom obliku.
+
+\begin{definicija}[LP problem, standardni oblik]
+Za zadanu matricu $A \in \R^{m\times n}$ i vektore $b \in \R^m$, $c \in \R^n$:
+\begin{equation}
+\label{eq:lp-standard}
+\begin{aligned}
+\min_x \quad & c\T x \\
+\uzogr & Ax = b \\
+       & x \ge 0
+\end{aligned}
+\end{equation}
+\end{definicija}
+
+\textbf{U standardnom obliku} (sa slajda):
+\begin{itemize}
+  \item Jedina ograničenja nejednakosti su ograničenja \textbf{ne-negativnosti}
+        projektnih varijabli.
+  \item Sva ostala ograničenja su ograničenja \textbf{jednakosti}.
+\end{itemize}
+
+\subsection{Opći recept za transformaciju}
+\str{11--13}
+
+\textbf{Originalni problem:}
+\[
+\minim c\T x \qquad \uzogr Gx \le h, \quad Ax = b
+\]
+
+\textbf{1.\ korak transformacije} \str{11}\textbf{.} Uvodimo vektor novih
+varijabli $s$ i ograničenja nejednakosti transformiramo u ograničenja
+jednakosti:
+\[
+\begin{aligned}
+\minim & c\T x \\
+\uzogr & Gx + s = h \\
+       & Ax = b \\
+       & s \ge 0
+\end{aligned}
+\]
+
+\emph{Zašto to radi:} $Gx \le h$ znači da postoji „rezerva” $s = h - Gx \ge 0$.
+Uvođenjem te rezerve kao \emph{varijable} nejednakost postaje jednakost. Vektor
+$s$ zove se \textbf{dopunska varijabla} (engl.\ \emph{slack variable}).
+
+\textbf{2.\ korak transformacije} \str{12}\textbf{.} Vektor originalnih
+projektnih varijabli se prikazuje kao razlika dva nova vektora projektnih
+varijabli, koji su oba ne-negativni, tj.
+\[
+x = x^+ - x^-, \qquad x^+ \ge 0,\; x^- \ge 0
+\]
+čime se LP iz prethodnog koraka transformira u sljedeći oblik:
+\[
+\begin{aligned}
+\minim & c\T x^+ + c\T x^- \\
+\uzogr & Gx^+ - Gx^- + s = h \\
+       & Ax^+ - Ax^- = b \\
+       & s \ge 0,\quad x^+ \ge 0,\quad x^- \ge 0
+\end{aligned}
+\]
+
+\emph{Zašto to radi:} svaki realan broj može se napisati kao razlika dvaju
+nenegativnih brojeva (npr.\ $-3 = 0 - 3$). Time se varijabla bez ograničenja
+predznaka zamjenjuje s dvije nenegativne.
+
+\begin{napomena}[greška u predznaku na slajdu 12]
+U funkciji cilja na slajdu piše $c\T x^+ + c\T x^-$. Budući da je
+$x = x^+ - x^-$, ispravno je
+\[
+c\T x = c\T(x^+ - x^-) = c\T x^+ - c\T x^-
+\]
+dakle \textbf{minus}, ne plus. To potvrđuje i sljedeći slajd 13, gdje je
+$\tilde c = \begin{pmatrix} c \\ c \\ 0\end{pmatrix}$ --- a da bi taj zapis bio
+konzistentan s $\tilde x = (x^+, x^-, s)$, drugi blok bi morao biti $-c$.
+Ograničenja na slajdu su ispravna ($Gx^+ - Gx^-$, $Ax^+ - Ax^-$).
+\end{napomena}
+
+\textbf{Kompaktni zapis} \str{13}\textbf{.} Uz definicije
+\[
+\tilde x = \begin{pmatrix} x^+ \\ x^- \\ s \end{pmatrix}, \quad
+\tilde c = \begin{pmatrix} c \\ c \\ 0 \end{pmatrix}, \quad
+\tilde A = \begin{pmatrix} G & -G & I \\ A & -A & 0 \end{pmatrix}, \quad
+\tilde b = \begin{pmatrix} h \\ b \end{pmatrix}
+\]
+LP problem s prethodne stranice zapisuje se u sljedećem kompaktnom obliku, koji
+je u biti standardni oblik LP problema:
+\[
+\min_{\tilde x} \; \tilde c\T\tilde x
+\qquad\text{uz ograničenja}\quad \tilde A\tilde x = \tilde b, \quad
+\tilde x \ge 0
+\]
+
+\textbf{Kontrola dimenzija.} Ako je $x \in \R^n$, $Gx \le h$ ima $p$ redaka i
+$Ax = b$ ima $q$ redaka, onda je $\tilde x \in \R^{2n+p}$ i
+$\tilde A \in \R^{(p+q)\times(2n+p)}$. Problem je narastao, ali je dobio oblik
+koji simpleks algoritam izravno prihvaća.
+
+% =====================================================================
+\section{Ekstremne točke i bazna dozvoljena rješenja}
+\str{14--19}
+
+\begin{definicija}[Ekstremna točka \str{14}]
+Neka je $S$ konveksan skup. Tada je $x$ \textbf{ekstremna točka} skupa $S$ ako
+\textbf{ne postoje} točke $y, z \in S$ i skalarna vrijednost $\alpha$, gdje je
+$0 < \alpha < 1$, tako da vrijedi
+\[
+x = \alpha y + (1-\alpha)z.
+\]
+\end{definicija}
+
+Dakle (sa slajda): $x \in S$ je ekstremna točka konveksnog skupa $S$ ako se
+\textbf{ne može prikazati kao konveksna kombinacija} neke druge dvije točke iz
+skupa $S$, od kojih nijedna od te dvije točke ne smije biti jednaka $x$.
+
+\textbf{Slikovito:} ekstremne točke su \textbf{vrhovi} politopa. Točka na
+sredini brida \emph{jest} kombinacija dvaju krajeva tog brida, pa nije
+ekstremna; vrh nije „između” ničega.
+
+\textbf{Dva pogleda na isti pojam} \str{15}:
+\begin{itemize}
+  \item \textbf{Geometrijski pojam:} ekstremne točke (engl.\ \emph{extreme
+        points}) --- \textbf{ET}
+  \item \textbf{Algebarski pojam:} bazna dozvoljena rješenja (engl.\
+        \emph{basic feasible solutions}) --- \textbf{BDR}
+\end{itemize}
+
+\begin{teorem}[\str{15}]
+\textbf{ET $=$ BDR}
+\end{teorem}
+
+\subsection{Bazna rješenja}
+\str{16}
+
+\textbf{Pretpostavimo} da je sustav ograničenja jednakosti
+\[
+Ax = b, \qquad
+A = \begin{pmatrix} a_1 & a_2 & \cdots & a_n \end{pmatrix} \in \R^{m\times n}
+\]
+takav da je $m \le n$ i $\rank(A) = m$. Dakle, rang matrice $A$ jednak je broju
+redaka u matrici. \textbf{Ovo je slučaj kad nema redundantnih ograničenja.}
+
+Tada možemo izabrati $m$ stupaca iz $A$ (pretpostavimo da su to prvih $m$
+stupaca), tako da je matrica
+\[
+B = \begin{pmatrix} a_1 & a_2 & \cdots & a_m \end{pmatrix}
+\]
+kvadratna i \textbf{regularna} (postoji inverz). Tada je
+$A = \begin{pmatrix} B & N\end{pmatrix}$ i ograničenja
+\[
+Ax = \begin{pmatrix} B & N\end{pmatrix}
+\begin{pmatrix} x_B \\ x_N \end{pmatrix} = Bx_B + Nx_N = b
+\]
+imaju rješenje gdje je
+\[
+x_B = B^{-1}b - B^{-1}Nx_N
+\]
+Ovdje je $x_N \in \R^{\,n-m}$ proizvoljan vektor, pa možemo uzeti $x_N = 0$.
+
+\begin{definicija}[Bazno rješenje]
+$(x_B, 0) = (B^{-1}b, 0)$ je \textbf{bazno rješenje} (engl.\ \emph{basic
+solution}) od $Ax = b$ u bazi $B$.
+\end{definicija}
+
+\begin{napomena}[tipfeler na slajdu 16]
+Na slajdu piše $x_N \in \R^{m-n}$; treba biti $\R^{\,n-m}$, jer je $n-m$ broj
+ne-baznih varijabli (a $m \le n$, pa bi $m-n$ bilo negativno).
+\end{napomena}
+
+\textbf{Rastav vektora} \str{17}\textbf{.} Vektor $x$ koji zadovoljava
+ograničenja $Ax = b$ moguće je razdvojiti na dva „podvektora”:
+
+\begin{itemize}
+  \item $x_N$ koji ima $n - m$ \textbf{„ne-baznih”} varijabli, koje su sve
+        jednake nuli;
+  \item $x_B$ koji ima $m$ \textbf{„baznih”} varijabli.
+\end{itemize}
+
+U slučaju da imamo više od $n-m$ elemenata od $x$ koji su nula, $x_B$ i $x_N$
+mogu biti izabrani na više načina.
+
+\begin{definicija}[Bazno dozvoljeno rješenje (BDR) \str{17}]
+Točka $x$ je \textbf{bazno dozvoljeno rješenje} (engl.\ \emph{basic feasible
+solution}) ako je $x$ bazno rješenje \textbf{i} ako je $x \ge 0$.
+\end{definicija}
+
+\subsection{Dva teorema koja opravdavaju simpleks}
+\str{18}
+
+\begin{teorem}[\str{18}]
+Ekstremna točka $=$ Bazno dozvoljeno rješenje (BDR).
+\end{teorem}
+
+\begin{teorem}[\str{18}]
+\textbf{Optimalno rješenje LP problema} (jedno od rješenja) \textbf{je
+istovremeno i bazno dozvoljeno rješenje (BDR) ($=$ ekstremna točka).}
+\end{teorem}
+
+\textbf{Zašto je to velika stvar.} Dozvoljeni skup je \emph{beskonačan} skup
+točaka. Ova dva teorema kažu da je dovoljno pregledati \textbf{konačan} popis
+vrhova --- optimum je sigurno među njima.
+
+\subsection{Koliko ima BDR-ova}
+\str{19}
+
+Broj BDR-a je \textbf{konačan} i ograničen je brojem načina na koji iz $x$
+($x \in \R^n$) možemo izabrati $m$ elemenata koji čine bazu $x_B$. Broj tih
+kombinacija:
+\[
+\binom{n}{m} = \frac{n!}{m!(n-m)!}
+\]
+
+\textbf{Neće svi mogući izbori za $x_B$ dati dozvoljene točke} (broj BDR-a je
+manji od broja baznih rješenja jednadžbe $Ax = b$) --- jer neki izbori daju
+$x_B$ s negativnim komponentama, što krši $x \ge 0$.
+
+\textbf{Ideja za algoritam:} sustavno pretraživanje BDR-ova dok ne dođemo do
+optimuma.
+
+\begin{napomena}[zašto se ipak ne nabrajaju svi vrhovi]
+Broj $\binom{n}{m}$ raste \textbf{eksponencijalno}. Već za $n = 50$, $m = 25$
+to je oko $1{,}26\cdot10^{14}$ kombinacija --- previše. Simpleks algoritam ne
+nabraja sve, nego se \emph{kreće od vrha do susjednog vrha} tako da cilj u
+svakom koraku pada, pa u praksi obiđe tek nekolicinu njih.
+\end{napomena}
+
+\subsection{Simpleks algoritam}
+\str{20}
+
+\textbf{Dantzigov simpleks algoritam} (sve doslovno sa slajda):
+
+\begin{itemize}
+  \item Autor: \textbf{G.\,B.\ Dantzig}. Publicirano \textbf{1948.} godine.
+  \item Prema časopisu „\emph{Computing in Science and Engineering}” jedan od
+        \textbf{10 najznačajnijih algoritama 20.\ stoljeća}.
+  \item \textbf{Ne treba miješati} Dantzigovu simpleks metodu s
+        \emph{Nelder-Mead} metodom, koja se u literaturi isto ponekad zove
+        simpleks metoda.
+  \item U današnje vrijeme LP se rješava \textbf{„metodom unutrašnje točke”}
+        (engl.\ \emph{interior point method}).
+  \item \textbf{Rješavanje LP problema je tehnologija!}
+\end{itemize}
+
+\subsection{Primjer ekstremnih točaka}
+\str{21}
+
+Slajd 21 prikazuje crtež u ravnini $(x_1, x_2)$: četverokutno dozvoljeno
+područje omeđeno crvenim pravcima označenima $g_1$ i $g_2$ te koordinatnim
+osima, s četiri plavo označena vrha: \textbf{O} u ishodištu, \textbf{A} na osi
+$x_1$ (oko $x_1 \approx 15$), \textbf{B} u sjecištu dvaju crvenih pravaca (oko
+$(10,5)$) i \textbf{C} na osi $x_2$ (oko $x_2 \approx 8$). Preko crteža su
+sivi paralelni pravci --- nivo krivulje funkcije cilja --- s vrijednostima
+označenim uz rubove ($-515$, $-600$, $-400$, $-200$, $-100$, $300$, \dots).
+
+\begin{napomena}[stanje izvornika]
+Slajd 21 sadrži \textbf{samo sliku}; jednadžbe ograničenja, funkcija cilja i
+brojčano rješenje nisu ispisani. Zato ovdje ostaje samo opis crteža --- brojeve
+i formule ne izmišljam. Sadržajno, slika ilustrira upravo teorem s prethodnog
+slajda: četiri vrha $O, A, B, C$ su ekstremne točke $=$ BDR-ovi, a optimum je
+u jednom od njih (onom koji leži na nivo krivulji s najnižom vrijednošću).
+\end{napomena}
+
+% =====================================================================
+\section{Primjeri LP formulacija}
+\str{22--29}
+
+\subsection{Primjer 1: minimizacija po dijelovima afinih funkcija}
+\label{sec:pwa}
+\str{22--27}
+
+\textbf{Problem.} Za zadan skup $\{a_i, b_i\}_{i=1,\dots,m}$, gdje su
+$a_i \in \R^n$, $b_i \in \R$, minimiziraj \textbf{po dijelovima afinu}
+funkciju
+\[
+f(x) = \max_{i\in\{1,\dots,m\}} a_i\T x + b_i
+\]
+
+\textbf{Podzadaci:} a) pokaži da se radi o konveksnom optimizacijskom problemu;
+b) formuliraj problem kao LP.
+
+\begin{napomena}[numeracija na slajdovima]
+Slajd 22 najavljuje podzadatke kao a) i b), ali su na slajdovima 23--27 oba
+označena s „b)”. Sadržajno je prvi dokaz konveksnosti, drugi LP formulacija.
+\end{napomena}
+
+\textbf{a) Dokaz konveksnosti} \str{24--25}\textbf{.} Provjeravamo definiciju
+konveksnosti \eqref{eq:konveksnost} izravno:
+\begin{align}
+f(\alpha x + (1-\alpha)y)
+&= \max\{a_1\T(\alpha x + (1-\alpha)y) + b_1, \dots,
+         a_m\T(\alpha x + (1-\alpha)y) + b_m\} \\
+&= \max\{\alpha(a_1\T x + b_1) + (1-\alpha)(a_1\T y + b_1), \dots, \\
+&\qquad\quad \alpha(a_m\T x + b_m) + (1-\alpha)(a_m\T y + b_m)\} \\
+&\le \alpha\max\{(a_1\T x + b_1),\dots,(a_m\T x + b_m)\} \\
+&\qquad + (1-\alpha)\max\{(a_1\T y + b_1),\dots,(a_m\T y + b_m)\} \\
+&= \alpha f(x) + (1-\alpha)f(y)
+\end{align}
+
+\textbf{Objašnjenje svakog koraka:}
+
+\begin{itemize}
+  \item \emph{Drugi redak:} raspis $a_i\T(\alpha x + (1-\alpha)y) + b_i$. Trik
+        je u tome što se konstanta $b_i$ „razdijeli”:
+        $b_i = \alpha b_i + (1-\alpha)b_i$ (jer je $\alpha + (1-\alpha) = 1$).
+        Time svaki član postaje konveksna kombinacija vrijednosti u $x$ i $y$.
+  \item \emph{Nejednakost:} koristi se opće svojstvo
+        $\max_i(u_i + v_i) \le \max_i u_i + \max_i v_i$. Maksimum zbroja ne
+        prelazi zbroj maksimuma, jer se maksimumi mogu postizati u
+        \emph{različitim} indeksima.
+  \item \emph{Zadnji redak:} po definiciji $f$.
+\end{itemize}
+
+\textbf{Napomena sa slajda 25 --- generalizacija:}
+
+\begin{teorem}[Maksimum konveksnih funkcija]
+Ako su funkcije $f_1, \dots, f_m$ konveksne, tada je i funkcija
+\[
+f(x) := \max\{f_1(x), \dots, f_m(x)\}
+\]
+konveksna funkcija.
+\end{teorem}
+
+Ovo je \textbf{vrlo korisno pravilo} za brzo prepoznavanje konveksnosti ---
+zapamtite ga.
+
+\textbf{b) LP formulacija} \str{27}\textbf{.} Ekvivalentan LP:
+\[
+\begin{aligned}
+\min_{x,\,t} \quad & t \\
+\uzogr & a_i\T x + b_i \le t, \qquad i = 1,\dots,m
+\end{aligned}
+\]
+
+\textbf{Zašto to radi.} Isti trik kao kod $\infty$-norme
+(odjeljak~2.20.2) i kod problema dopustivosti \eqref{eq:dopustivost}: uvodimo
+pomoćnu skalarnu varijablu $t$ koja mora biti \emph{gornja ograda} za sve
+$a_i\T x + b_i$, dakle $t \ge \max_i(a_i\T x + b_i) = f(x)$. Minimiziranjem $t$
+ta se ograda spušta točno na $f(x)$.
+
+Rezultat: cilj je linearan ($t$), sva ograničenja su linearna --- dakle
+\textbf{LP} u $n+1$ varijabli.
+
+\subsection{Primjer 2: Chebyshevljev centar poliedra}
+\str{28--29}
+
+\begin{definicija}[Chebyshevljev centar]
+\textbf{Chebyshevljev centar} poliedra
+$\mathcal{P} = \{x \mid a_i\T x \le b_i,\; i = 1,\dots,m\}$ je centar $x_c$
+kugle \textbf{najvećeg radijusa} $r$ koja se može upisati u taj poliedar.
+
+Kugla: $B = \{\, x_c + u \mid \|u\|_2 \le r \,\}$.
+\end{definicija}
+
+Slajd prikazuje mnogokut s upisanom najvećom kružnicom i označenim središtem.
+
+\textbf{Uvjet da kugla stane u poliedar} \str{29}\textbf{:}
+\[
+a_i\T x \le b_i \text{ za sve } x \in B,
+\quad\text{ako i samo ako}\quad
+\sup_u \{\, a_i\T(x_c + u) \mid \|u\|_2 \le r \,\} \le b_i
+\quad\text{za sve } i = 1,\dots,m
+\]
+
+\emph{Čitanje:} da bi \emph{cijela} kugla zadovoljavala $i$-to ograničenje,
+dovoljno je i nužno da ga zadovoljava njezina \textbf{najgora} točka --- ona
+koja daje najveću vrijednost $a_i\T x$.
+
+\textbf{Ključni korak.} Budući da vrijedi
+\[
+\sup_u \{\, a_i\T(x_c + u) \mid \|u\|_2 \le r \,\} = a_i\T x_c + r\|a_i\|_2,
+\]
+imamo sljedeću formulaciju u obliku LP-a:
+\[
+\begin{aligned}
+\max_{x_c,\,r} \quad & r \\
+\uzogr & a_i\T x_c + r\|a_i\|_2 \le b_i, \qquad i = 1,\dots,m
+\end{aligned}
+\]
+
+\emph{Odakle taj supremum:} $a_i\T(x_c+u) = a_i\T x_c + a_i\T u$. Prvi član je
+konstanta; drugi je maksimalan kad je $u$ \emph{u smjeru} $a_i$ i najduži
+mogući, tj.\ $u = r\,a_i/\|a_i\|_2$. Tada je
+$a_i\T u = r\,\|a_i\|_2^2/\|a_i\|_2 = r\|a_i\|_2$. \checkmark
+(To je izravna primjena $\langle a,u\rangle = \|a\|\|u\|\cos\varphi$ iz
+odjeljka~\ref{sec:skalarni}, uz $\cos\varphi = 1$.)
+
+\begin{napomena}[tipfeler na slajdu 29]
+U završnoj formulaciji na slajdu piše
+$a_ix_c + r\|a_i\|_2 \le r$; desna strana treba biti $b_i$ (kao u retku iznad),
+inače ograničenje ne bi imalo veze s poliedrom. Ispravno je
+\[
+a_i\T x_c + r\|a_i\|_2 \le b_i
+\]
+\end{napomena}
+
+\textbf{Zašto je to LP:} varijable su $x_c$ i $r$; $\|a_i\|_2$ su
+\emph{poznati brojevi} (izračunati iz zadanih podataka), pa su sva ograničenja
+linearna u $(x_c, r)$, a cilj je linearan.
+
+% =====================================================================
+\section{Kvadratno programiranje (QP)}
+\str{31--34}
+
+\subsection{Kvadratne funkcije}
+\str{31--32}
+
+\begin{definicija}[Kvadratna funkcija \str{31}]
+\textbf{Kvadratna funkcija} je funkcija $f : \R^n \to \R$ oblika
+\[
+f(x) = \tfrac12 x\T Qx + b\T x + c
+\]
+gdje je $Q = Q\T \in \R^{n\times n}$ \textbf{simetrična} matrica, $b \in \R^n$
+je vektor i $c \in \R$ je skalar.
+\end{definicija}
+
+\textbf{Primjer sa slajda 31:}
+\[
+3x_1^2 + x_3^2 + 2x_1x_2 + 7x_3 + 2 =
+\begin{pmatrix}x_1\\x_2\\x_3\end{pmatrix}\T
+\begin{pmatrix}3&1&0\\1&0&0\\0&0&1\end{pmatrix}
+\begin{pmatrix}x_1\\x_2\\x_3\end{pmatrix}
++ \begin{pmatrix}0\\0\\7\end{pmatrix}\T
+\begin{pmatrix}x_1\\x_2\\x_3\end{pmatrix} + 2
+\]
+
+\emph{Provjera kvadratnog dijela:} $x\T Qx = \sum_{i,j}Q_{ij}x_ix_j
+= 3x_1^2 + 1\cdot x_1x_2 + 1\cdot x_2x_1 + 1\cdot x_3^2
+= 3x_1^2 + 2x_1x_2 + x_3^2$ \checkmark. Uočite da se mješoviti član $2x_1x_2$
+razdijelio na dva simetrična elementa $Q_{12} = Q_{21} = 1$.
+
+\begin{napomena}[faktor $\tfrac12$]
+U definiciji stoji $\tfrac12 x\T Qx$, ali u ovom primjeru je napisano
+$x\T Qx$ bez tog faktora. Oba zapisa su u opticaju; razlikuju se samo za faktor
+2 u matrici. Kad koristite \texttt{quadprog}, provjerite koju konvenciju traži
+(MATLAB traži $\tfrac12 x\T Hx$, kao u Zadatku~\ref{zad:primjer2}).
+\end{napomena}
+
+\textbf{Zašto simetričnost nije ograničenje} \str{32}\textbf{.} Simetrija
+matrice $Q$ nas ne ograničava prilikom definicije proizvoljne kvadratne
+funkcije!
+
+\textbf{Dokaz (sa slajda).} Neka je $A$ proizvoljna, nesimetrična matrica. Tada
+vrijedi
+\[
+x\T Ax = \tfrac12\big(x\T Ax + x\T A\T x\big)
+       = \tfrac12 x\T\big(A + A\T\big)x
+       = \tfrac12 x\T Qx
+\]
+gdje je $Q = A + A\T$ simetrična matrica.
+
+\emph{Objašnjenje prvog koraka:} $x\T Ax$ je skalar, pa je jednak svom
+transponatu: $x\T Ax = (x\T Ax)\T = x\T A\T x$. Prosjek dvaju jednakih brojeva
+je isti broj --- odatle prvi znak jednakosti. \checkmark
+
+\emph{Zašto je $A + A\T$ simetrična:} $(A + A\T)\T = A\T + A = A + A\T$.
+\checkmark
+
+\textbf{Primjer sa slajda:}
+\[
+f(x_1,x_2) = \begin{pmatrix}x_1\\x_2\end{pmatrix}\T
+\begin{pmatrix}1&4\\0&3\end{pmatrix}
+\begin{pmatrix}x_1\\x_2\end{pmatrix}
+= \tfrac12\begin{pmatrix}x_1\\x_2\end{pmatrix}\T
+\begin{pmatrix}2&4\\4&6\end{pmatrix}
+\begin{pmatrix}x_1\\x_2\end{pmatrix}
+\]
+
+\emph{Provjera:} lijevo je $x_1^2 + 4x_1x_2 + 3x_2^2$; desno je
+$\tfrac12(2x_1^2 + 4x_1x_2 + 4x_2x_1 + 6x_2^2) = x_1^2 + 4x_1x_2 + 3x_2^2$.
+\checkmark
+
+\subsection{QP problem}
+\str{33}
+
+\begin{definicija}[QP problem]
+Zadano: matrice $Q$, $A$, $G$ i vektori $c$, $b$, $h$.
+\begin{equation}
+\label{eq:qp}
+\begin{aligned}
+\minim & \tfrac12 x\T Qx + c\T x \\
+\uzogr & Ax = b, \quad Gx \le h
+\end{aligned}
+\end{equation}
+gdje je $x \in \R^n$ vektor projektnih varijabli.
+\end{definicija}
+
+\textbf{Svojstva sa slajda:}
+\begin{itemize}
+  \item Funkcija cilja je \textbf{kvadratna}, dok su ograničenja
+        \textbf{linearne} funkcije u projektnim varijablama.
+  \item Matrica $Q$ mora biti \textbf{pozitivno definitna} (tada imamo
+        (striktnu) konveksnost i nužno konačan minimum).
+\end{itemize}
+
+\begin{napomena}[$Q \succ 0$ ili $Q \succeq 0$?]
+Za \emph{konveksnost} je dovoljno $Q \succeq 0$
+(odjeljak~\ref{sec:svojstva-konv}); za \emph{striktnu} konveksnost i
+jedinstvenost optimuma traži se $Q \succ 0$. Slajd traži jače svojstvo jer ono
+jamči i \emph{konačan} minimum: uz $Q \succeq 0$ singularan, cilj može biti
+neograničen odozdo u smjeru jezgre (npr.\ $f(x) = x_2$ u ravnini).
+\end{napomena}
+
+\textbf{Geometrijska interpretacija QP problema} \str{34}\textbf{.} Slajd
+prikazuje sivi peterokut označen $\Feas$ i preko njega isprekidane
+\emph{zakrivljene} nivo krivulje; točka $x^\star$ je na rubu, s ucrtanom
+strelicom $-\nabla f_0(x^\star)$ koja pokazuje van iz skupa.
+
+Doslovno sa slajda: \emph{Dozvoljeni skup $\Feas$, koji je polihedron, je
+označen sivom bojom. Nivo krivulje funkcije cilja, koje su konveksne, prikazane
+su crtkano. Točka $x^\star$ je optimalna.}
+
+\begin{napomena}[LP vs.\ QP na slici --- jedina razlika]
+Kod LP-a su nivo krivulje \textbf{pravci} i optimum je uvijek u \emph{vrhu}.
+Kod QP-a su nivo krivulje \textbf{elipse} (zakrivljene), pa optimum može biti:
+u vrhu, na stranici, ili \emph{u unutrašnjosti} politopa (ako neograničeni
+minimum kvadratne funkcije slučajno upada u dozvoljeni skup --- tada su sva
+ograničenja neaktivna i svi $\mu_j = 0$).
+\end{napomena}
+
+% =====================================================================
+\section{Primjeri QP formulacija}
+\str{35--40}
+
+\subsection{Primjer 1: problem najmanjih kvadrata}
+\label{sec:najmanji-kvadrati}
+\str{35--36}
+
+Neka su $A \in \R^{m\times n}$ i $b \in \R^m$. Pretpostavimo da su stupci
+matrice $A$ linearno nezavisni ($\rank A = n$).
+\[
+\text{minimiziraj}_x \quad \|Ax - b\|_2^2 = x\T A\T Ax - 2b\T Ax + b\T b
+\]
+
+\textbf{Rješenje} \str{36}\textbf{.} Izjednačimo gradijent s nulom i dobijemo
+\begin{equation}
+\label{eq:normalne-jednadzbe}
+x = (A\T A)^{-1}A\T b
+\end{equation}
+
+\emph{Raspis (na slajdu nije prikazan).} Gradijent kvadratne forme:
+\[
+\nabla_x\big(x\T A\T Ax - 2b\T Ax + b\T b\big) = 2A\T Ax - 2A\T b
+\]
+Izjednačavanjem s nulom: $A\T Ax = A\T b$ (tzv.\ \textbf{normalne jednadžbe}),
+pa množenjem s $(A\T A)^{-1}$ slijeva dobivamo \eqref{eq:normalne-jednadzbe}.
+\checkmark
+
+\textbf{Napomena sa slajda:} uvjet $\rank A = n$ osigurava da $(A\T A)^{-1}$
+postoji.
+
+\begin{napomena}[povezivanje s ranijim gradivom]
+Ovo je isti rezultat do kojeg smo došli u odjeljku~2.20.2 (reformulacija
+2-norme): $Q = A\T A \succeq 0$, a uz $\rank A = n$ čak $Q \succ 0$. Problem
+najmanjih kvadrata je dakle QP \emph{bez ograničenja}, i jedini je iz cijelog
+kolegija koji ima \textbf{zatvorenu formulu} za rješenje.
+\end{napomena}
+
+\subsection{Primjer 2: udaljenost između poliedara}
+\str{37--38}
+
+\textbf{Definicija.} Euklidska udaljenost između poliedara
+$\mathcal{P}_1 = \{x \mid A_1x \le b_1\}$ i
+$\mathcal{P}_2 = \{x \mid A_2x \le b_2\}$ u $\R^n$ definirana je na sljedeći
+način:
+\[
+\dist(\mathcal{P}_1,\mathcal{P}_2)
+= \inf\{\, \|x_1 - x_2\| \mid x_1 \in \mathcal{P}_1,\; x_2 \in \mathcal{P}_2 \,\}
+\]
+
+Ako se poliedri sijeku (presjek im nije prazan skup), udaljenost je nula.
+
+\textbf{Udaljenost između poliedara kao QP} \str{38}:
+\[
+\begin{aligned}
+\text{minimiziraj}_{x_1,x_2} \quad & \|x_1 - x_2\|_2^2 \\
+\text{uz ogr.} \quad & A_1x_1 \le b_1 \\
+& A_2x_2 \le b_2
+\end{aligned}
+\]
+
+\textbf{Kako je to QP.} Varijabla je \emph{par} $(x_1, x_2)$, dakle vektor
+duljine $2n$. Cilj $\|x_1-x_2\|_2^2$ je kvadratna forma tog vektora (uz
+$Q = 2\begin{psmallmatrix} I & -I \\ -I & I\end{psmallmatrix}$, što je
+$\succeq 0$), a oba ograničenja su linearna. \checkmark
+
+Kvadriranje norme je opet trik iz odjeljka~2.20.2: uklanja korijen, ne mijenja
+minimizator.
+
+\subsection{Primjer 3: LP s funkcijom cilja kao slučajnom varijablom}
+\str{39--40}
+
+\textbf{Postavka.} Neka su u linearnom programu
+\[
+\min_x\{\, c\T x \mid Gx \le h,\; Ax = b \,\}
+\]
+elementi vektora $c \in \R^n$ \textbf{slučajne varijable} sa srednjom
+vrijednosti $\bar c$ i kovarijancom
+$\mathbb{E}(c-\bar c)(c-\bar c)\T = S$.
+
+\textbf{Za zadani LP funkcija cilja je slučajna varijabla} sa:
+
+\begin{itemize}
+  \item \textbf{srednjom vrijednosti} $\mathbb{E}\,c\T x = \bar c\T x$;
+  \item \textbf{varijancom}
+        \[
+        \operatorname{var}(c\T x)
+        = \mathbb{E}(c\T x - \mathbb{E}c\T x)^2
+        = \mathbb{E}(c\T x - \bar c\T x)^2
+        = \mathbb{E}\,x\T(c-\bar c)(c-\bar c)\T x
+        = x\T Sx
+        \]
+\end{itemize}
+
+\emph{Raspis zadnjeg lanca:} $(c\T x - \bar c\T x)^2 = ((c-\bar c)\T x)^2$; a
+kvadrat skalara $u\T x$ može se pisati kao $x\T u\,u\T x$. Uz $u = c - \bar c$
+i uzimanjem očekivanja (koje prolazi kroz konstantne $x$) dobiva se
+$x\T\mathbb{E}[(c-\bar c)(c-\bar c)\T]x = x\T Sx$. \checkmark
+
+\textbf{Formulacija s rizikom} \str{39--40}\textbf{.} Jedan način formuliranja
+optimizacijskog problema je minimizacija linearne kombinacije očekivane
+vrijednosti funkcije cilja i varijance funkcije cilja, s pozitivnim
+parametrom \textbf{nesklonosti riziku} $\gamma$:
+\[
+f(x) = \mathbb{E}\,c\T x + \gamma\operatorname{var}(c\T x)
+\]
+
+\[
+\begin{aligned}
+\text{minimiziraj}_x \quad & \mathbb{E}\,c\T x + \gamma\operatorname{var}(c\T x) \\
+\text{uz ogr.} \quad & Gx \le h, \quad Ax = b
+\end{aligned}
+\qquad\Longleftrightarrow\qquad
+\begin{aligned}
+\text{minimiziraj}_x \quad & \bar c\T x + \gamma\, x\T Sx \\
+\text{uz ogr.} \quad & Gx \le h, \quad Ax = b
+\end{aligned}
+\]
+
+\textbf{Interpretacija (sa slajda):} \emph{za velik $\gamma$ spremni smo
+prihvatiti veću funkciju cilja s manjom varijancom.} Ekvivalentan QP je zapisan
+desno.
+
+\begin{napomena}[zašto je to QP i zašto je konveksan]
+Matrica kovarijance $S$ je uvijek \textbf{pozitivno semidefinitna} (jer je
+$x\T Sx = \operatorname{var}(c\T x) \ge 0$ --- varijanca ne može biti
+negativna). Uz $\gamma > 0$ kvadratni dio je konveksan, linearni dio je afin,
+ograničenja su linearna --- dakle konveksan QP.
+
+Ovo je i klasična \textbf{Markowitzeva} formulacija portfelja: očekivani
+prinos protiv rizika, uz $\gamma$ kao „koliko me boji rizika”.
+\end{napomena}
+
+% =====================================================================
+\section{Aproksimacija u zadanoj normi}
+\label{sec:aproksimacija}
+\str{V4:4--5}
+
+Vježbe 4 nastavljaju upravo ondje gdje predavanje staje: pokazuju kako se
+prava inženjerska pitanja svode na LP i QP.
+
+\begin{definicija}[Problem aproksimacije \str{V4:4}]
+Za zadane $A \in \R^{m\times n}$, gdje je $m > n$, i $b \in \R^m$:
+\[
+\min_x \; \|Ax - b\|
+\]
+gdje je $\|\cdot\|$ zadana norma.
+\end{definicija}
+
+\begin{napomena}[zašto $m > n$]
+Više jednadžbi nego nepoznanica znači da sustav $Ax = b$ općenito \textbf{nema}
+točno rješenje (\emph{preodređen} sustav). Zato tražimo $x$ koji ga rješava
+\emph{što bolje} --- a „što bolje” ovisi o izboru norme.
+\end{napomena}
+
+\textbf{Četiri interpretacije istog problema (sve doslovno sa slajda):}
+
+\begin{itemize}
+  \item \textbf{aproksimacija:} vektor $Ax^\star$, gdje je $x^\star$
+        minimizator, je najbolja aproksimacija vektora $b$ dobivena linearnom
+        kombinacijom stupaca od $A$;
+  \item \textbf{geometrijska:} vektor $Ax^\star$ je točka u slici od $A$ koja je
+        najbliža $b$-u (u promatranoj normi $\|\cdot\|$);
+  \item \textbf{estimacija:} za linearan model $y = Ax + v$ mjerimo $y$ a želimo
+        odrediti $x$, dok je $v$ šum (greška u mjerenju). Za $y = b$, estimirana
+        vrijednost od $x$ je $x^\star$;
+  \item \textbf{optimalan dizajn / izbor parametara:} $x$ je vektor varijabli
+        (ulaz), a $Ax$ je rezultat (izlaz). Za željeni rezultat $b$, vektor
+        $x^\star$ je najbolji izbor.
+\end{itemize}
+
+\subsection{Uobičajene norme i pripadne formulacije}
+\str{V4:5}
+
+\begin{center}
+\begin{tabular}{p{2.2cm}p{10.8cm}}
+\toprule
+\textbf{Norma} & \textbf{Naziv i formulacija} \\
+\midrule
+$\|\cdot\|_2$
+  & \textbf{Euklidska aproksimacija.} Problem najmanjih kvadrata (\emph{least
+    squares problem}). Rješenje $x^\star = (A\T A)^{-1}A\T b$ (uz pretpostavku
+    da su stupci od $A$ linearno nezavisni). \\
+\midrule
+$\|\cdot\|_\infty$
+  & \textbf{Chebyshevljeva aproksimacija} (minimax aproksimacija). Formulacija
+    u obliku LP-a:
+    \[
+    \text{minimiziraj}_{x,t}\; t
+    \qquad\text{uz ogr.}\quad -t\mathbf{1} \le Ax - b \le t\mathbf{1}
+    \]
+    gdje je $t \in \R$ i $\mathbf{1}$ vektor stupac sa svim elementima jednakim
+    1. \\
+\midrule
+$\|\cdot\|_1$
+  & \textbf{Suma apsolutnih vrijednosti reziduala.} Formulacija u obliku LP-a:
+    \[
+    \text{minimiziraj}_{x,y}\; \mathbf{1}\T y
+    \qquad\text{uz ogr.}\quad -y \le Ax - b \le y
+    \]
+    \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Ovo su točno reformulacije koje smo izveli u odjeljku~2.20.2 --- vratite se
+tamo ako vam nije jasno \emph{zašto} rade.
+
+\begin{napomena}[praktična razlika između triju normi]
+\begin{itemize}
+  \item $\|\cdot\|_2$: kažnjava \emph{kvadrate} pogrešaka, pa je vrlo osjetljiva
+        na \textbf{stršeće vrijednosti} (engl.\ \emph{outliers}) --- jedna loša
+        točka jako povuče pravac.
+  \item $\|\cdot\|_\infty$: gleda \emph{samo} najgoru pogrešku, pa je
+        \textbf{najosjetljivija} na stršeće vrijednosti; koristi se kad je
+        bitno jamstvo „nijedna pogreška nije veća od \dots”.
+  \item $\|\cdot\|_1$: kažnjava linearno, pa je \textbf{najrobusnija} ---
+        stršeće vrijednosti je manje pomiču.
+\end{itemize}
+\end{napomena}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{05-aproksimacije.png}
+\caption{Ista podatkovna serija (s dvije namjerno ubačene stršeće
+vrijednosti), aproksimirana pravcem u tri norme. $\infty$-norma pokušava
+zadovoljiti i najgoru točku, pa se pravac potpuno izobliči; $1$-norma je
+najotpornija.}
+\end{figure}
+
+% =====================================================================
+\section{Vježbe 4, Primjer 1: aproksimacija skupa točaka}
+\label{sec:vj4-primjer1}
+\str{V4:6--14}
+
+\begin{zadatak}[Vježbe 4, Primjer 1: aproksimacija kombinacijom baznih funkcija]
+\str{V4:6--13}
+
+\textbf{Zadano:}
+\begin{itemize}
+  \item skup podataka $\{x_i, y_i\}_{i=1,\dots,N}$;
+  \item skup \textbf{baznih funkcija} $\{\varphi_j(\cdot)\}_{j=1,\dots,m}$.
+\end{itemize}
+
+\textbf{Cilj:} odrediti vektor parametara
+$c = \begin{pmatrix} c_1 & c_2 & \dots & c_m\end{pmatrix}\T$ takav da funkcija
+\[
+\varphi(x,c) = c_1\varphi_1(x) + \dots + c_m\varphi_m(x)
+\]
+optimalno aproksimira podatke u smislu da je norma vektora reziduala $r(c)$
+minimizirana, gdje je
+\[
+r(c) = \begin{pmatrix}
+y_1 - \varphi(x_1,c) \\
+y_2 - \varphi(x_2,c) \\
+\vdots \\
+y_N - \varphi(x_N,c)
+\end{pmatrix}
+\]
+
+\medskip
+\textbf{Formulacija u obliku aproksimacije u zadanoj normi} \str{V4:7}:
+\[
+\text{minimiziraj}_c \quad \|Ac - y\|
+\]
+gdje je
+\[
+Ac - y = \begin{pmatrix}
+\varphi_1(x_1) & \varphi_2(x_1) & \dots & \varphi_m(x_1) \\
+\varphi_1(x_2) & \varphi_2(x_2) & \dots & \varphi_m(x_2) \\
+\vdots & \vdots & \ddots & \vdots \\
+\varphi_1(x_N) & \varphi_2(x_N) & \dots & \varphi_m(x_N)
+\end{pmatrix}
+\begin{pmatrix} c_1 \\ c_2 \\ \vdots \\ c_m \end{pmatrix}
+- \begin{pmatrix} y_1 \\ y_2 \\ \vdots \\ y_N \end{pmatrix}
+\]
+
+\textbf{Ključno zapažanje.} Funkcija $\varphi(x,c)$ smije biti \emph{proizvoljno
+nelinearna u $x$} (bazne funkcije mogu biti polinomi, sinusi, eksponencijale,
+\dots), ali je \textbf{linearna u parametrima $c$} --- a upravo su $c$ naše
+projektne varijable. Zato je problem konveksan i svodi se na LP ili QP.
+
+\textbf{Struktura matrice $A$:} redak $i$ pripada podatku $x_i$, stupac $j$
+pripada baznoj funkciji $\varphi_j$; element je $\varphi_j(x_i)$. Matrica ima
+$N$ redaka (podataka) i $m$ stupaca (parametara), pa je uvjet $N > m$ upravo
+uvjet $m > n$ iz definicije problema aproksimacije.
+\end{zadatak}
+
+\subsection{MATLAB: generiranje podataka}
+\str{V4:10}
+
+\begin{verbatim}
+c_true=[2 1]   % definicija polinoma 2x+1
+
+x=[0:0.25:5]';      % podatci x-os
+y=polyval(c_true,x);  % podatci y-os
+% niz slucajnih vrijednosti s ocekivanom vrijednosti 0
+% i standardnom devijacijom 0.8:
+r=0.8*randn(length(x),1);
+% jedan element je zanatnije perturbiran (za vrijednost 5):
+r(round(length(x)/4))=5;
+y1=y+r    % perturbirane vrijednosti podataka y
+\end{verbatim}
+
+\emph{Što kod radi:} generira podatke na pravcu $y = 2x + 1$, doda im normalni
+šum, i \textbf{jednu točku namjerno jako pomakne} (za 5). Ta stršeća
+vrijednost je cijela poanta primjera --- na njoj se vidi razlika među normama.
+
+\subsection{MATLAB: $\|\cdot\|_2$ aproksimacija}
+\str{V4:11}
+
+\begin{verbatim}
+%%%%% Rjesenje za Euklidsku normu (drugu normu)
+%%%%% minimizacija sume kvadrata gresaka
+
+A = [x, ones(length(x),1)];
+c_approx_norm2=inv(A'*A)*A'*y1
+
+yApprox_norm2=polyval(c_approx_norm2,x)
+
+figure(1)
+hold on
+plot(x,yApprox_norm2,'r')
+\end{verbatim}
+
+Ovdje su bazne funkcije $\varphi_1(x) = x$ i $\varphi_2(x) = 1$, pa je
+$A = [\,x \;\; \mathbf{1}\,]$. Rješenje je izravna primjena formule
+\eqref{eq:normalne-jednadzbe} --- \textbf{bez ikakvog rješavača}, jer 2-norma
+ima zatvorenu formulu.
+
+\subsection{MATLAB: $\|\cdot\|_\infty$ aproksimacija}
+\str{V4:12}
+
+\begin{verbatim}
+yalmip('clear')
+
+cInf=sdpvar(2,1);
+t=sdpvar(1);
+n=length(x);
+
+Con=[-t*ones(n,1) <= A*cInf - y1 <= t*ones(n,1)];
+Objective=t;
+
+options = sdpsettings('verbose',1,'solver','linprog');
+% Poziv za rjesavanje
+sol = optimize(Con,Objective,options);
+
+c_approx_normInf = value(cInf)   % optimalni parametri
+
+yApprox_normInf=polyval(c_approx_normInf,x)
+
+figure(1);hold on
+plot(x,yApprox_normInf,'g')
+\end{verbatim}
+
+Kod je \textbf{doslovna} implementacija LP formulacije sa str.\ V4:5: jedna
+skalarna varijabla $t$, dvostruka nejednakost, cilj $t$. Rješavač je
+\texttt{linprog} --- jer je problem LP.
+
+\subsection{MATLAB: $\|\cdot\|_1$ aproksimacija}
+\str{V4:13}
+
+\begin{verbatim}
+yalmip('clear')
+
+n=length(x);
+cNorm1=sdpvar(2,1);
+z=sdpvar(n,1);
+
+Con=[-z <= A*cNorm1 - y1 <= z];
+Objective=ones(1,n)*z;
+
+options = sdpsettings('verbose',1,'solver','linprog');
+% Poziv za rjesavanje
+sol = optimize(Con,Objective,options);
+
+c_approx_norm1 = value(cNorm1)   % optimalni parametri
+
+yApprox_norm1=polyval(c_approx_norm1,x)
+
+figure(1)
+hold on
+plot(x,yApprox_norm1,'k')
+\end{verbatim}
+
+\textbf{Razlika u odnosu na $\infty$-normu:} umjesto \emph{jedne} varijable $t$
+imamo \emph{vektor} $z$ duljine $n$ (po jedna ograda za svaki rezidual), a cilj
+je \textbf{zbroj} $\mathbf{1}\T z$ umjesto samog $t$. Točno kako je izvedeno u
+odjeljku~2.20.2.
+
+\subsection{Aproksimacije s ograničenjima}
+\str{V4:14}
+
+Velika prednost ovakvog pristupa je da se lako dodaju \textbf{inženjerski
+zahtjevi} kao ograničenja. Primjeri sa slajda:
+
+\textbf{1) Ograničenja za Lipschitzovu konstantu $L$:}
+\[
+|\varphi(x_j,c) - \varphi(x_k,c)| \le L\|x_j - x_k\|
+\]
+su \textbf{linearne nejednakosti} u varijablama $c$.
+
+\emph{Značenje:} ograničava se koliko brzo aproksimacija smije rasti --- sprječava
+„divlje” oscilacije između podataka.
+
+\textbf{2) Ograničenja na vrijednosti u nekim točkama:}
+\[
+y_{i,\min} \le \varphi(c, x_i) \le y_{i,\max}
+\qquad\text{ili}\qquad
+\varphi(c, x_i) = y_i
+\]
+su \textbf{linearne nejednakosti} u varijablama $c$.
+
+\emph{Značenje:} možemo prisiliti krivulju da prođe \emph{točno} kroz neku
+točku (npr.\ rubni uvjet), ili da ostane u zadanom pojasu.
+
+\textbf{3) Ograničenja na derivacije (gradijent) u točki:}
+\[
+\|\nabla\varphi(c,x_i)\| = \Big\|\sum_{j=1}^{m}c_j\nabla\varphi_j(x_i)\Big\|
+\le M
+\]
+su \textbf{konveksna ograničenja} na $c$ (linearna za norme 1 i $\infty$).
+
+\emph{Zašto su sve to linearna/konveksna ograničenja:} $\varphi$ je linearna u
+$c$, pa su i njezine vrijednosti i njezine derivacije \emph{linearne} funkcije
+od $c$. Apsolutna vrijednost i norma linearne funkcije su konveksne
+(odjeljak~\ref{sec:konveksne-funkcije}).
+
+\begin{napomena}[veza sa seminarskim zadatkom]
+Ovaj odjeljak je izravno gradivo za probleme tipa „optimalna aproksimacija s
+ograničenjima”: minimiziraj odstupanje od zadane funkcije, uz rubne uvjete
+$\varphi(0) = a$, $\varphi(L) = b$ i eventualna ograničenja na nagib. Sve su to
+linearna ograničenja u $c$, pa je problem LP ili QP.
+\end{napomena}
+
+% =====================================================================
+\section{Vježbe 4, Primjer 2: sinteza filtra}
+\str{V4:15--17}
+
+\textbf{Postavka} \str{V4:15}\textbf{:}
+
+\begin{itemize}
+  \item Nasumce generiran impulsni odziv $h$ sustava s \textbf{22 pola}.
+  \item Potrebno je aproksimirati $h$ s odzivima $h_k(\cdot)$ od
+        $1/(s+1)^k$, $k = 1,\dots,14$.
+  \item Korištena uniformna podjela vremenskog intervala $[0,30]$ na
+        \textbf{300 točaka}.
+\end{itemize}
+
+Slajd 15 uz to prikazuje graf \textbf{impulsnih odziva baznih funkcija $h_k$}
+--- niz krivulja koje kreću od nule, imaju vrh i zatim trnu, pri čemu se s
+rastućim $k$ vrh pomiče udesno i postaje niži.
+
+\textbf{Kako se to uklapa u prethodni odjeljak.} Ovo je isti problem
+aproksimacije, samo su „podaci” vrijednosti impulsnog odziva u 300 vremenskih
+trenutaka, a „bazne funkcije” su impulsni odzivi jednostavnih sustava
+$1/(s+1)^k$. Traže se koeficijenti $c_k$ tako da
+$\sum_k c_k h_k(t) \approx h(t)$. Matrica $A$ ima $300$ redaka i $14$ stupaca.
+
+\textbf{Rezultati:}
+
+\begin{itemize}
+  \item \textbf{slajd 16 --- funkcija cilja: $\|\cdot\|_\infty$ norma.}
+        Prikazana su dva grafa: gornji s originalnim sustavom $h$ (crno) i
+        aproksimacijom (crveno) koje se gotovo poklapaju, i donji s
+        \textbf{greškom aproksimacije}. Greška je karakteristično
+        \emph{ravnomjerno raspoređena} --- oscilira između približno jednakih
+        pozitivnih i negativnih vrhova.
+  \item \textbf{slajd 17 --- funkcija cilja: $\|\cdot\|_1$ norma.} Isti par
+        grafova. Greška je ovdje \emph{vrlo mala na većini intervala}, ali ima
+        nekoliko izraženih šiljaka.
+\end{itemize}
+
+\begin{napomena}[zašto greške izgledaju tako različito]
+To je izravna posljedica onoga što norma kažnjava:
+\begin{itemize}
+  \item $\infty$-norma minimizira \emph{najveću} grešku, pa optimalno rješenje
+        „razmaže” grešku ravnomjerno --- nijedan vrh ne smije stršati (klasičan
+        \emph{equiripple} oblik iz teorije filtara);
+  \item $1$-norma minimizira \emph{zbroj} grešaka, pa joj se isplati grešku
+        svesti na nulu gdje god može, čak i po cijenu nekoliko velikih šiljaka.
+\end{itemize}
+Izbor norme je dakle \textbf{inženjerska odluka}, ne matematička sitnica.
+\end{napomena}
+
+% =====================================================================
+\section{Regularizirana aproksimacija}
+\label{sec:regularizacija}
+\str{V4:19--20}
+
+\subsection{Dvokriterijska formulacija}
+\str{V4:19}
+
+\textbf{Primjer, dvije funkcije cilja:}
+\[
+\text{minimiziraj (u } \R^2\text{)} \quad
+\big(\|Ax-b\|,\; \|x\|\big)
+\]
+gdje dvije norme mogu biti različite: prva koja mjeri veličinu reziduala
+$r = Ax - b$ i druga koja mjeri veličinu od $x$.
+
+\textbf{Interpretacija:} pronađi $x$ tako da $Ax$ dobro aproksimira $b$, uz to
+da je $x$ \textbf{malen}.
+
+\textbf{Zašto bismo to htjeli (motivacije sa slajda):}
+
+\begin{itemize}
+  \item \textbf{Motivacija 1 (primjer):} malen $x$ je jeftiniji ili efikasniji,
+        ili linearan model $y = Ax$ vrijedi \emph{samo} za male $x$.
+  \item \textbf{Motivacija 2 (primjer):} dobra aproksimacija $Ax \approx b$ s
+        malim $x$ je \textbf{manje osjetljiva na greške (perturbacije) u $A$}
+        nego s velikim $x$.
+\end{itemize}
+
+\begin{napomena}[što znači „minimizirati u $\R^2$”]
+Ovo je \textbf{višekriterijski} problem: dva cilja koja se međusobno protive
+(manji rezidual traži veći $x$ i obratno). Ne postoji jedno rješenje koje
+istovremeno minimizira oboje --- postoji \emph{obitelj} kompromisa. Zato slijedi
+skalarizacija.
+\end{napomena}
+
+\subsection{Skalarizirani problem}
+\str{V4:20}
+
+\[
+\min_x \; \|Ax - b\| + \gamma\|x\|
+\]
+
+\textbf{Tvrdnje sa slajda:}
+
+\begin{itemize}
+  \item Rješenja za različite $\gamma > 0$ ocrtavaju optimalne kompromise
+        između dvije funkcije cilja (\textbf{Pareto fronta}).
+  \item Često korištena metoda (pogotovo kod Euklidske norme):
+        \[
+        \min_x \; \|Ax-b\|_2 + \gamma\|x\|_2
+        \]
+  \item \textbf{Proširenje:} umjesto $\|x\|$ koristi se regularizacijski član
+        $\|Dx\|$ uz prikladno definiranu matricu $D$. Na primjer, ako $D$
+        reprezentira aproksimaciju operatora diferenciranja (prvog ili drugog
+        stupnja), tada $\|Dx\|$ ima ulogu \textbf{penalizacije prve ili druge
+        derivacije}.
+\end{itemize}
+
+\begin{napomena}[uloga parametra $\gamma$ i Pareto fronta]
+\begin{itemize}
+  \item $\gamma \to 0$: potpuno se ignorira veličina $x$; dobiva se čista
+        aproksimacija (npr.\ najmanji kvadrati).
+  \item $\gamma \to \infty$: dominira zahtjev da je $x$ malen; rješenje teži
+        nuli, a aproksimacija se kvari.
+  \item \textbf{Pareto fronta} je krivulja u ravnini
+        $(\|Ax-b\|,\; \|x\|)$ koju ocrtavaju rješenja za sve $\gamma > 0$.
+        Točke \emph{ispod} nje su nedostižne; točke \emph{iznad} su lošije od
+        nekog dostupnog rješenja. Izbor $\gamma$ je izbor točke na toj krivulji
+        --- inženjerska, ne matematička odluka.
+\end{itemize}
+\end{napomena}
+
+% =====================================================================
+\section{Vježbe 4, Primjer 3: optimiranje trajektorije ulaza}
+\str{V4:21--25}
+
+\begin{zadatak}[Vježbe 4, Primjer 3: optimalna ulazna trajektorija]
+\str{V4:21--22}
+
+\textbf{Relacija ulaza i izlaza kod linearnog sustava s impulsnim odzivom $h$}
+(\textbf{konvolucija}):
+\[
+y(t) = \sum_{\tau=0}^{t} h(\tau)\,u(t-\tau), \qquad t = 1,\dots,N
+\]
+
+\textbf{Cilj optimiranja:} odrediti ulazni niz $u(0), u(1), \dots$ uz sljedeće
+funkcije cilja:
+
+\begin{center}
+\begin{tabular}{p{4.6cm}p{8.4cm}}
+\toprule
+\textbf{Kriterij} & \textbf{Izraz} \\
+\midrule
+praćenje željenog izlaza $y_r$ &
+$\displaystyle J_y = \frac{1}{N+1}\sum_{t=0}^{N}\big(y(t)-y_r(t)\big)^2$ \\[8pt]
+veličina ulaza $u$ &
+$\displaystyle J_u = \frac{1}{N+1}\sum_{t=0}^{N}u(t)^2$ \\[8pt]
+varijacije ulaza $u$ &
+$\displaystyle J_{\dd u} = \frac{1}{N}\sum_{t=0}^{N-1}\big(u(t+1)-u(t)\big)^2$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Regularizirana formulacija (problem najmanjih kvadrata)}
+\str{V4:22}\textbf{:} za zadane $\delta$ i $\eta$
+\[
+\begin{aligned}
+\min_{u(0),\dots,u(N)} \quad & J_y + \delta J_{\dd u} + \eta J_u \\
+\text{uz ogr.} \quad & y(t) = \sum_{\tau=0}^{t} h(\tau)\,u(t-\tau)
+\end{aligned}
+\]
+
+Za primjer na sljedećim slajdovima (S.\ Boyd): $N = 200$ i
+\[
+h(t) = \tfrac19 (0{,}9)^t\big(1 - 0{,}4\cos(2t)\big)
+\]
+
+\medskip
+\textbf{Zašto je to QP.} Konvolucija je \textbf{linearna} operacija: $y$ je
+linearna funkcija od $u$, pa se može pisati $y = Hu$ za donje-trokutastu
+matricu $H$ sastavljenu od vrijednosti $h$. Tada je
+
+\begin{itemize}
+  \item $J_y \propto \|Hu - y_r\|_2^2$ --- kvadratna u $u$;
+  \item $J_u \propto \|u\|_2^2$ --- kvadratna;
+  \item $J_{\dd u} \propto \|Du\|_2^2$, gdje je $D$ matrica razlika ---
+        kvadratna.
+\end{itemize}
+
+Zbroj triju kvadratnih formi uz nenegativne težine je opet kvadratna forma s
+$Q \succeq 0$, dakle \textbf{konveksan QP} (ovdje čak bez ograničenja, jer se
+$y$ eliminira uvrštavanjem).
+
+\textbf{Uloga triju članova:}
+\begin{itemize}
+  \item $J_y$ --- „radi ono što tražim” (praćenje reference);
+  \item $\eta J_u$ --- „nemoj trošiti previše energije” (mala amplituda);
+  \item $\delta J_{\dd u}$ --- „nemoj trzati” (glatkoća ulaza; penalizira prvu
+        derivaciju).
+\end{itemize}
+
+\textbf{Rezultati sa slajdova 23--25.} Prikazani su parovi grafova (gore ulaz
+$u(t)$, dolje izlaz $y(t)$ s referencom) za tri kombinacije parametara:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Slajd} & \textbf{Parametri} & \textbf{Karakter rješenja} \\
+\midrule
+23 & $\delta = 0$, $\eta = 0{,}005$
+   & vrlo agresivan, „trzav” ulaz; izlaz vrlo blizu reference \\
+24 & $\delta = 0$, $\eta = 0{,}05$
+   & manja amplituda ulaza; nešto lošije praćenje \\
+25 & $\delta = 0{,}3$, $\eta = 0{,}05$
+   & \textbf{gladak} ulaz (jer $\delta>0$ kažnjava skokove); praćenje blago
+     sporije \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Pouka:} ista matematička formulacija, tri različita inženjerska
+kompromisa --- birani isključivo kroz $\delta$ i $\eta$. To je Pareto fronta iz
+prethodnog odjeljka, opipljivo.
+\end{zadatak}
+
+% =====================================================================
+\section{Vježbe 4, Primjer 4: rekonstrukcija signala}
+\label{sec:vj4-rekonstrukcija}
+\str{V4:26--30}
+
+\begin{zadatak}[Vježbe 4, Primjer 4: uklanjanje šuma iz signala]
+\str{V4:26--28}
+
+\textbf{Postavka.} Signal $x \in \R^n$ koji je korumpiran sa šumom $v$ želimo
+rekonstruirati iz korumpiranog signala $x_{\text{cor}}$:
+\[
+x_{\text{cor}} = x + v
+\]
+
+\textbf{Optimizacijski problem} \str{V4:27}:
+\[
+\min_{\hat x} \; \big(\|\hat x - x_{\text{cor}}\|_2,\; \phi(\hat x)\big)
+\]
+$\phi : \R^n \to \R$ je \textbf{regularizacijska funkcija} s ciljem dobivanja
+„izglađenog” signala (\emph{smoothing function}).
+
+\medskip
+\textbf{Jednostavna kvadratna regularizacijska funkcija} \str{V4:28}:
+\[
+\phi(x) = \sum_{i=1}^{n-1}(x_{i+1} - x_i)^2 = \|Dx\|_2^2
+\]
+gdje je
+\[
+D = \begin{pmatrix}
+-1 & 1 & 0 & \dots & 0 & 0 & 0 \\
+0 & -1 & 1 & \dots & 0 & 0 & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots \\
+0 & 0 & 0 & \dots & 0 & -1 & 1
+\end{pmatrix}
+\]
+
+\textbf{Optimizacijski problem:}
+\[
+\min_{\hat x} \; \|\hat x - x_{\text{cor}}\|_2^2 + \delta\|D\hat x\|
+\]
+
+\textbf{Rješenje:}
+\begin{equation}
+\label{eq:rekonstrukcija}
+\hat x^\star = \big(I + \delta D\T D\big)^{-1}x_{\text{cor}}
+\end{equation}
+
+\medskip
+\textbf{Objašnjenje matrice $D$.} To je \textbf{matrica konačnih razlika}
+dimenzija $(n-1)\times n$: $i$-ti redak daje $x_{i+1} - x_i$, dakle diskretnu
+aproksimaciju prve derivacije. Vektor $Dx$ sadrži sve uzastopne razlike, pa je
+$\|Dx\|_2^2 = \sum_i (x_{i+1}-x_i)^2$ mjera „nazubljenosti” signala. \checkmark
+
+\textbf{Izvod rješenja} \eqref{eq:rekonstrukcija} (na slajdu nije prikazan,
+slijedi iz uvjeta $\nabla f = 0$ iz odjeljka~\ref{sec:uvjeti-bez-ogr}):
+
+Uz $\phi(\hat x) = \|D\hat x\|_2^2$, cilj je
+\[
+f(\hat x) = (\hat x - x_{\text{cor}})\T(\hat x - x_{\text{cor}})
+          + \delta\,\hat x\T D\T D\hat x
+\]
+Gradijent:
+\[
+\nabla f(\hat x) = 2(\hat x - x_{\text{cor}}) + 2\delta D\T D\hat x = 0
+\]
+Dijeljenjem s 2 i grupiranjem:
+\[
+\hat x + \delta D\T D\hat x = x_{\text{cor}}
+\;\Longrightarrow\;
+(I + \delta D\T D)\hat x = x_{\text{cor}}
+\;\Longrightarrow\;
+\hat x^\star = (I + \delta D\T D)^{-1}x_{\text{cor}}
+\quad\checkmark
+\]
+
+\begin{napomena}[nedosljednost u zapisu na slajdu 28]
+U definiciji je $\phi(x) = \|Dx\|_2^2$ (na \emph{kvadrat}), ali je u
+optimizacijskom problemu napisano $+\,\delta\|D\hat x\|$ (bez kvadrata).
+Rješenje \eqref{eq:rekonstrukcija} vrijedi za \textbf{kvadriranu} verziju ---
+gornji izvod to pokazuje. Bez kvadrata problem više ne bi imao zatvorenu formu.
+Ispravno je dakle
+\[
+\min_{\hat x}\; \|\hat x - x_{\text{cor}}\|_2^2 + \delta\|D\hat x\|_2^2
+\]
+\end{napomena}
+
+\begin{napomena}[zašto inverz uvijek postoji]
+Matrica $D\T D$ je pozitivno semidefinitna (isti argument kao za $A\T A$ u
+odjeljku~2.20.2), pa su joj svojstvene vrijednosti $\ge 0$. Tada
+$I + \delta D\T D$ ima svojstvene vrijednosti $\ge 1 > 0$ za $\delta \ge 0$,
+dakle je pozitivno definitna i regularna. Rekonstrukcija je uvijek dobro
+definirana.
+\end{napomena}
+
+\textbf{Rezultati sa slajdova 29--30.} Slajdovi prikazuju nizove grafova:
+korumpirani signal $x_{\text{cor}}$ i rekonstruirani $\hat x^\star$ za nekoliko
+vrijednosti $\delta$, čime se vidi prijelaz od „premalo izglađen” (ostaje šum)
+preko dobrog kompromisa do „previše izglađen” (gube se stvarne značajke
+signala).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.86\textwidth]{05-rekonstrukcija.png}
+\caption{Rekonstrukcija po formuli \eqref{eq:rekonstrukcija} za tri vrijednosti
+$\delta$. Premalen $\delta$ ostavlja šum, prevelik briše stvarne skokove
+signala.}
+\end{figure}
+\end{zadatak}
+
+% =====================================================================
+\section{Vježbe 5, Zadatak 1: optimiranje proizvodnje i tokova u mreži}
+\label{sec:vj5-mreza}
+\str{V5:2--4}
+
+\begin{zadatak}[Vježbe 5, Zadatak 1: proizvodnja i tokovi u mreži]
+\str{V5:2--4}
+
+\textbf{Postavka (doslovno sa slajda V5:2).} Graf predstavlja mrežu za transport
+goriva. Tok goriva u bridovima grafa je moguć samo u smjeru bridova (strelice
+na slici). U vrhovima 1 i 2 nalaze se proizvođači goriva, a $p_1$ i $p_2$ su
+pripadajuće količine goriva koje ti proizvođači proizvode i injektiraju u
+transportnu mrežu. Vezano uz proizvodnju goriva u količini $p_i$, proizvođač $i$
+ima trošak $C_i(p_i)$. U vrhovima 5 i 6 su potrošači goriva s potražnjama $d_5$
+i $d_6$. Svaki brid ima maksimalan tok goriva koji može prenijeti. Nadalje,
+svaki brid ima pripadajuću cijenu za prijenos jedinične mase goriva između
+svojih krajnjih vrhova.
+
+\textbf{Struktura grafa (sa slike).} Vrhovi 1 i 2 su lijevo, 3 i 4 u sredini,
+5 i 6 desno. Usmjereni bridovi:
+\[
+(1,3),\; (1,4),\; (2,3),\; (2,4),\; (3,4),\; (3,5),\; (4,5),\; (4,6),\; (5,6)
+\]
+
+\textbf{Podaci} \str{V5:3}:
+\[
+C_1(p_1) = 0{,}5\,p_1^2 + 2p_1, \qquad
+C_2(p_2) = 0{,}3\,p_2^2 + 5p_2, \qquad
+d_5 = 30, \quad d_6 = 20
+\]
+
+\begin{center}
+\small
+\begin{tabular}{lccccccccc}
+\toprule
+\textbf{brid} & (1,3) & (1,4) & (2,3) & (2,4) & (3,4) & (3,5) & (4,5) & (4,6) & (5,6) \\
+\midrule
+cijena toka & 1 & 2 & 1 & 3 & 2 & 1{,}5 & 2 & 2{,}5 & 1 \\
+max tok & 15 & 15 & 20 & 20 & 20 & 30 & 20 & 15 & 30 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Pitanja} \str{V5:4}:
+
+\begin{enumerate}[label=\alph*)]
+  \item Odredite koliko svaki od proizvođača treba proizvesti goriva te kako to
+        proizvedeno gorivo prenijeti kroz transportnu mrežu da se zadovolji
+        potražnja, a da pri tome cjelokupni trošak ($=$ trošak proizvodnje $+$
+        trošak transporta) bude minimalan.
+  \item Ako imate na raspolaganju novce za investiciju u povećanje maksimalnog
+        toka za \emph{jedan} brid u transportnoj mreži, koji biste brid
+        odabrali?
+\end{enumerate}
+
+\begin{napomena}[stanje izvornika]
+\texttt{Vjezbe\_5.pdf} sadrži \textbf{samo tekst zadatka} --- nema zapisanog
+rješenja. Rješenje niže izvedeno je aparatom iz ovog poglavlja (QP s linearnim
+ograničenjima) i poglavlja~\ref{ch:dualnost} (osjetljivost preko dualnih
+varijabli), a brojevi su dobiveni skriptom
+\texttt{skripta/scripts/solve\_vj5\_mreza.py}, koja je dio ovog repozitorija.
+\end{napomena}
+
+\subsection*{Korak 1 --- projektne varijable}
+
+\begin{itemize}
+  \item $p_1, p_2 \ge 0$ --- proizvedene količine;
+  \item $f_{uv} \ge 0$ --- tok kroz brid $(u,v)$, za svih devet bridova.
+\end{itemize}
+
+Ukupno $2 + 9 = 11$ varijabli.
+
+\subsection*{Korak 2 --- funkcija cilja}
+
+Ukupan trošak $=$ trošak proizvodnje $+$ trošak transporta:
+\[
+J = \underbrace{0{,}5p_1^2 + 2p_1 + 0{,}3p_2^2 + 5p_2}_{\text{proizvodnja}}
+  + \underbrace{\sum_{(u,v)} c_{uv}f_{uv}}_{\text{transport}}
+\]
+
+\textbf{Ovo je kvadratna funkcija} (kvadrat samo u $p_1, p_2$), a ograničenja
+će biti linearna --- dakle \textbf{QP} \eqref{eq:qp}. Matrica $Q$ je
+dijagonalna s $Q_{11} = 1$, $Q_{22} = 0{,}6$ i nulama za tokove, dakle
+$Q \succeq 0$ --- problem je konveksan.
+
+\subsection*{Korak 3 --- ograničenja}
+
+\textbf{Balans u svakom vrhu} (što uđe $=$ što izađe):
+\[
+\begin{aligned}
+\text{vrh 1:}\quad & p_1 = f_{13} + f_{14} \\
+\text{vrh 2:}\quad & p_2 = f_{23} + f_{24} \\
+\text{vrh 3:}\quad & f_{13} + f_{23} = f_{34} + f_{35} \\
+\text{vrh 4:}\quad & f_{14} + f_{24} + f_{34} = f_{45} + f_{46} \\
+\text{vrh 5:}\quad & f_{35} + f_{45} = d_5 + f_{56} \\
+\text{vrh 6:}\quad & f_{46} + f_{56} = d_6
+\end{aligned}
+\]
+
+\textbf{Kapaciteti i nenegativnost:}
+\[
+0 \le f_{uv} \le \overline{f}_{uv}, \qquad p_1 \ge 0, \quad p_2 \ge 0
+\]
+
+\emph{Kontrola:} zbrojimo li sve retke balansa, unutarnji tokovi se pokrate i
+ostaje $p_1 + p_2 = d_5 + d_6 = 50$ --- ukupna proizvodnja mora pokriti ukupnu
+potražnju. \checkmark
+
+\subsection*{Korak 4 --- rješenje (a)}
+
+\[
+\boxed{\; p_1^\star = 21{,}25, \qquad p_2^\star = 28{,}75, \qquad
+J^\star = 836{,}25 \;}
+\]
+
+Rastav troška: proizvodnja $660{,}00$, transport $176{,}25$.
+
+\begin{center}
+\begin{tabular}{lccccccccc}
+\toprule
+\textbf{brid} & (1,3) & (1,4) & (2,3) & (2,4) & (3,4) & (3,5) & (4,5) & (4,6) & (5,6) \\
+\midrule
+tok $f^\star$ & 10 & 11{,}25 & \textbf{20} & 8{,}75 & 0 & \textbf{30} & 5
+  & \textbf{15} & 5 \\
+kapacitet & 15 & 15 & \textbf{20} & 20 & 20 & \textbf{30} & 20 & \textbf{15} & 30 \\
+zasićen? & & & \textbf{da} & & & \textbf{da} & & \textbf{da} & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Provjere:}
+\begin{itemize}
+  \item vrh 1: $10 + 11{,}25 = 21{,}25 = p_1^\star$ \checkmark
+  \item vrh 2: $20 + 8{,}75 = 28{,}75 = p_2^\star$ \checkmark
+  \item vrh 3: ulaz $10+20 = 30$; izlaz $0 + 30 = 30$ \checkmark
+  \item vrh 4: ulaz $11{,}25 + 8{,}75 + 0 = 20$; izlaz $5 + 15 = 20$ \checkmark
+  \item vrh 5: ulaz $30 + 5 = 35$; izlaz $30 + 5 = 35$ \checkmark
+  \item vrh 6: ulaz $15 + 5 = 20 = d_6$ \checkmark
+  \item transport: $10\cdot1 + 11{,}25\cdot2 + 20\cdot1 + 8{,}75\cdot3
+        + 0\cdot2 + 30\cdot1{,}5 + 5\cdot2 + 15\cdot2{,}5 + 5\cdot1$
+        $= 10 + 22{,}5 + 20 + 26{,}25 + 0 + 45 + 10 + 37{,}5 + 5 = 176{,}25$
+        \checkmark
+  \item proizvodnja: $0{,}5\cdot21{,}25^2 + 2\cdot21{,}25
+        + 0{,}3\cdot28{,}75^2 + 5\cdot28{,}75
+        = 225{,}78 + 42{,}5 + 247{,}97 + 143{,}75 = 660{,}00$ \checkmark
+\end{itemize}
+
+\textbf{Zašto baš takva podjela proizvodnje.} Marginalni troškovi
+(odjeljak~\ref{sec:trziste}) su
+\[
+C_1'(p_1) = p_1 + 2, \qquad C_2'(p_2) = 0{,}6p_2 + 5
+\]
+U optimumu: $C_1'(21{,}25) = 23{,}25$ i $C_2'(28{,}75) = 22{,}25$. Nisu
+\emph{jednaki} --- razlikuju se za $1$ --- upravo zato što su neki bridovi
+zasićeni, pa preraspodjela nije moguća bez dodatnog troška transporta. Da mreža
+nema ograničenja, marginalni troškovi bi se izjednačili, točno kao kod tržišnog
+primjera iz poglavlja~\ref{ch:dualnost}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{05-mreza.png}
+\caption{Optimalni tokovi u transportnoj mreži. Zasićeni bridovi (tok $=$
+kapacitet) označeni su crveno --- to su jedini kandidati za investiciju.}
+\end{figure}
+
+\subsection*{Korak 5 --- rješenje (b): u koji brid investirati}
+
+Po analizi osjetljivosti iz odjeljka~\ref{sec:osjetljivost}, promjena optimalne
+vrijednosti po jediničnom popuštanju $j$-tog ograničenja jednaka je
+$-\mu_j^\star$. Za ograničenja kapaciteta to znači: \textbf{koliko se ukupan
+trošak smanji ako kapacitet povećamo za jednu jedinicu}.
+
+\begin{center}
+\begin{tabular}{lccccccccc}
+\toprule
+\textbf{brid} & (1,3) & (1,4) & (2,3) & (2,4) & (3,4) & (3,5) & (4,5) & (4,6) & (5,6) \\
+\midrule
+$\Delta J$ za $+1$ kapaciteta & $0$ & $0$ & $-1{,}0$ & $0$ & $0$
+  & $\mathbf{-1{,}5}$ & $0$ & $-0{,}5$ & $0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\[
+\boxed{\;\text{Investirati treba u brid } (3,5).\;}
+\]
+
+\textbf{Obrazloženje:}
+
+\begin{itemize}
+  \item Svi \textbf{nezasićeni} bridovi imaju $\Delta J = 0$. To je uvjet
+        komplementarnosti na djelu: ako ograničenje nije aktivno, njegov
+        multiplikator je nula, pa njegovo popuštanje ne donosi ništa. Ulaganje
+        u njih je \textbf{bačen novac}.
+  \item Od triju zasićenih bridova, $(3,5)$ ima najveću korist: $-1{,}5$ po
+        jedinici, protiv $-1{,}0$ za $(2,3)$ i $-0{,}5$ za $(4,6)$.
+  \item Uočite da $(3,5)$ nije ni najskuplji ni najjeftiniji brid --- korist
+        ne ovisi o cijeni samog brida, nego o tome \textbf{koliko cijela mreža
+        pati} zbog tog uskog grla.
+\end{itemize}
+
+\begin{napomena}[kako se to računa u praksi]
+Rješavač (npr.\ \texttt{quadprog}) vraća dualne varijable svih ograničenja kao
+nusprodukt --- kao u Zadatku~\ref{zad:primjer2}, polje
+\texttt{mu\_opt.ineqlin}. Nije potrebno ništa ponovno rješavati: rangiranje
+investicija dobiva se \textbf{besplatno}, iz jednog jedinog poziva rješavača.
+To je najizravnija praktična vrijednost cijelog poglavlja o dualnosti.
+\end{napomena}
+\end{zadatak}
+
+% =====================================================================
+\section{Sažetak poglavlja}
+
+\textbf{Dvije klase problema:}
+
+\begin{center}
+\begin{tabular}{p{3.0cm}p{4.8cm}p{5.0cm}}
+\toprule
+& \textbf{LP} & \textbf{QP} \\
+\midrule
+cilj & $c\T x$ (linearan) & $\tfrac12x\T Qx + c\T x$ (kvadratan) \\
+ograničenja & $Gx\le h$, $Ax=b$ & $Gx\le h$, $Ax=b$ \\
+nivo krivulje & paralelni pravci & elipse \\
+gdje je optimum & \textbf{uvijek u vrhu} & vrh, brid ili unutrašnjost \\
+uvjet konveksnosti & automatski & $Q \succeq 0$ (za jedinstvenost $\succ 0$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Ključni pojmovi LP-a:}
+
+\begin{enumerate}
+  \item \textbf{Standardni oblik} $\min c\T x$ uz $Ax=b$, $x\ge0$; pretvorba
+        preko dopunskih varijabli $s$ i rastava $x = x^+ - x^-$.
+  \item \textbf{Ekstremna točka $=$ bazno dozvoljeno rješenje}, i optimum je
+        uvijek među njima. Njihov broj je $\le \binom{n}{m}$.
+  \item \textbf{Simpleks} (Dantzig, 1948.) i \textbf{metode unutrašnje točke}.
+\end{enumerate}
+
+\textbf{Katalog formulacija koje treba prepoznati:}
+
+\begin{center}
+\begin{tabular}{p{6.6cm}p{2.0cm}p{4.2cm}}
+\toprule
+\textbf{Problem} & \textbf{Klasa} & \textbf{Trik} \\
+\midrule
+$\min\max_i (a_i\T x + b_i)$ & LP & pomoćna varijabla $t$ \\
+$\min\|Ax-b\|_\infty$ & LP & pomoćna varijabla $t$ \\
+$\min\|Ax-b\|_1$ & LP & pomoćni vektor $y$ \\
+Chebyshevljev centar poliedra & LP & $\sup$ po kugli $= r\|a_i\|_2$ \\
+$\min\|Ax-b\|_2$ & QP & kvadriranje norme \\
+najmanji kvadrati & QP & zatvorena formula $(A\T A)^{-1}A\T b$ \\
+udaljenost poliedara & QP & varijabla je par $(x_1,x_2)$ \\
+LP sa slučajnim $c$ (rizik) & QP & $\operatorname{var} = x\T Sx$ \\
+regularizirana aproksimacija & QP & skalarizacija s $\gamma$ \\
+tok u mreži s kvadratnim troškom & QP & balans u svakom vrhu \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Terminologija (hrvatski $\leftrightarrow$ engleski):}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Hrvatski} & \textbf{Engleski} \\
+\midrule
+linearno / kvadratno programiranje & linear / quadratic programming \\
+standardni oblik & standard form \\
+dopunska varijabla & slack variable \\
+ekstremna točka & extreme point \\
+bazno dozvoljeno rješenje & basic feasible solution \\
+simpleks metoda & simplex method \\
+metoda unutrašnje točke & interior point method \\
+po dijelovima afina funkcija & piecewise affine function \\
+Chebyshevljev centar & Chebyshev centre \\
+najmanji kvadrati & least squares \\
+normalne jednadžbe & normal equations \\
+regularizacija & regularisation \\
+Pareto fronta & Pareto front \\
+\bottomrule
+\end{tabular}
+\end{center}
