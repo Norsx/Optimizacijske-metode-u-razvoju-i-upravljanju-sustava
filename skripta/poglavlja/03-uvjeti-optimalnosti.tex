@@ -1,4 +1,1503 @@
 \chapter{Uvjeti optimalnosti}
 \label{ch:uvjeti}
 
-\emph{Poglavlje je u izradi.}
+\begin{izvor}
+\textbf{Izvor:} \texttt{03\_Uvjeti\_optimalnosti.pdf}, stranice 1--68
+(obrađeno u cijelosti).
+
+Ovo je najvažnije poglavlje kolegija: ovdje se izvode \textbf{KKT uvjeti}, koji
+su temelj svega što slijedi. Vježbe 3 se naslanjaju na ovo poglavlje, ali ih
+obrađujemo u poglavlju~\ref{ch:dualnost} jer njihovi zadaci traže i dualnost i
+analizu osjetljivosti.
+\end{izvor}
+
+\section{Postavka: problem s ograničenjima}
+\str{2}
+
+\begin{equation}
+\begin{aligned}
+\minim & f(x) \\
+\uzogr & h(x) = 0, \quad g(x) \le 0
+\end{aligned}
+\end{equation}
+
+Uz definiciju dozvoljenog skupa
+$\Feas := \{\, x \mid h(x) = 0,\; g(x) \le 0 \,\}$, gornji problem se može
+zapisati na kompaktniji način:
+\[
+\min_{x\in\Feas} f(x)
+\]
+
+\textbf{Zašto nam trebaju novi uvjeti.} U poglavlju~\ref{ch:definicije} smo za
+problem \emph{bez} ograničenja dobili uvjet $\nabla f(x^{*}) = 0$
+\str{2:43}. Uz ograničenja to više \textbf{ne vrijedi}: optimum često leži na
+\emph{rubu} dozvoljenog skupa, gdje gradijent nije nula --- funkcija bi i dalje
+padala, ali nas ograničenje sprječava da idemo dalje. Cijelo ovo poglavlje
+gradi zamjenu za taj uvjet.
+
+% =====================================================================
+\section{Dozvoljeni smjerovi i smjerovi pada}
+\label{sec:smjerovi}
+\str{3--8}
+
+\begin{definicija}[Dozvoljeni smjer \str{3}]
+Svaki vektor $d \in \R^n$, gdje $d \ne 0$, zove se \textbf{dozvoljeni smjer} za
+točku $x \in \Feas$, ako postoji $\alpha_0 > 0$ tako da
+\[
+x + \alpha d \in \Feas \quad\text{za sve }\alpha\text{ gdje je }
+0 \le \alpha \le \alpha_0.
+\]
+\end{definicija}
+
+Dakle (sa slajda): $d$ je dozvoljeni smjer za $x$ u $\Feas$ ako možemo napraviti
+\textbf{mali korak} od $x$ u smjeru $d$, tako da ostanemo u dozvoljenom skupu
+$\Feas$.
+
+\begin{napomena}[zašto „mali korak” i zašto $\alpha_0$]
+Ne traži se da cijela zraka $x + \alpha d$ ostane u $\Feas$ za \emph{sve}
+$\alpha > 0$ --- to bi bilo prestrogo (kod ograničenog skupa nijedan smjer ne bi
+prošao). Traži se samo da postoji \emph{neka} duljina koraka $\alpha_0$, ma
+koliko mala, unutar koje ostajemo dopustivi. Broj $\alpha_0$ smije ovisiti o
+$d$.
+\end{napomena}
+
+\begin{definicija}[Skup dozvoljenih smjerova \str{4}]
+Neka je $D(x)$ skup svih dozvoljenih smjerova u $x$, tj.\ za $x \in \Feas$ neka
+je
+\[
+D(x) := \{\, d \mid d \ne 0,\; x + \alpha d \in \Feas
+\text{ za sve } 0 \le \alpha \le \alpha_0 \text{ i za neki } \alpha_0 > 0 \,\}.
+\]
+\end{definicija}
+
+\begin{definicija}[Skup smjerova pada \str{5}]
+Neka je $S$ skup svih \textbf{smjerova pada} funkcije cilja $f$ u točki $x$,
+tj.
+\[
+S(x) := \{\, d \mid d\T\nabla f(x) < 0 \,\}.
+\]
+\end{definicija}
+
+Ovo je pojam iz odjeljka~\ref{sec:gradijent}: korak u smjeru $d$ smanjuje $f$
+ako $d$ zatvara tup kut s gradijentom.
+
+\begin{teorem}[Nužni uvjeti optimalnosti prvog reda \str{6}]
+Ako je $x^{*}$ lokalni minimizator od $f$ na skupu $\Feas$, i ako je $f$
+diferencijabilna funkcija u $x^{*}$, tada vrijedi
+\[
+D(x^{*}) \cap S(x^{*}) = \emptyset
+\]
+Alternativno, za svaki $d \in D(x^{*})$ vrijedi da je $d\T\nabla f(x^{*}) \ge 0$.
+\end{teorem}
+
+\textbf{Objašnjenje sa slajda} \str{7}\textbf{.} Dakle, u točki lokalnog
+minimuma \textbf{presjek svih dozvoljenih smjerova i smjerova koji vode
+poboljšanju funkcije cilja je prazan}. Alternativno, ako je $x^{*}$ minimizator
+optimizacijskog problema s ograničenjima, sa svakim korakom iz $x^{*}$ u
+dozvoljenom smjeru, funkcija cilja \textbf{nužno raste}.
+
+\textbf{Zašto to mora vrijediti.} Kad bi postojao smjer koji je istovremeno
+dozvoljen \emph{i} silazan, mogli bismo napraviti mali korak u tom smjeru,
+ostati unutar $\Feas$ i dobiti \emph{manju} vrijednost $f$. Ali onda $x^{*}$ ne
+bi bio lokalni minimum --- kontradikcija. Dakle takav smjer ne smije postojati:
+presjek mora biti prazan. $\blacksquare$
+
+\begin{napomena}[oznaka $\emptyset$]
+$\emptyset$ označava \textbf{prazan skup} --- skup bez ijednog elementa. Zapis
+$A \cap B = \emptyset$ znači „skupovi $A$ i $B$ nemaju nijedan zajednički
+element”.
+\end{napomena}
+
+\textbf{Poseban slučaj: točka u unutrašnjosti} \str{8}\textbf{.} Ako se $x^{*}$
+dodatno nalazi u \textbf{unutrašnjosti} dozvoljenog skupa $\Feas$ (svaki $d$ je
+dozvoljeni smjer), nužno vrijedi
+\[
+\nabla f(x^{*}) = 0.
+\]
+
+\emph{Zašto:} ako su \emph{svi} smjerovi dozvoljeni, uvjet
+$d\T\nabla f(x^{*}) \ge 0$ mora vrijediti i za $d$ i za $-d$. Iz
+$d\T\nabla f \ge 0$ i $-d\T\nabla f \ge 0$ slijedi $d\T\nabla f = 0$ za sve $d$,
+a jedini vektor okomit na \emph{sve} vektore je nul-vektor. Time smo iz općeg
+uvjeta izveli poznati uvjet za probleme bez ograničenja.
+
+\begin{napomena}[oštro upozorenje sa slajda 8]
+\textbf{Ovo su samo \emph{nužni} uvjeti za optimalnost!} Kod problema s
+ograničenjima, $d\T\nabla f(x^{*}) \ge 0$ za sve $d \in D(x^{*})$ \textbf{ne
+znači} da je $x^{*}$ lokalni minimizator.
+
+Nužan uvjet služi za \emph{izbacivanje} kandidata: točka koja ga ne zadovoljava
+sigurno nije optimum. Točka koja ga zadovoljava je samo \emph{kandidat} i mora
+se dodatno provjeriti.
+\end{napomena}
+
+% =====================================================================
+\section{Primjer: sedlasta funkcija na disku}
+\label{sec:primjer-sedlo}
+\str{9--18}
+
+\textbf{Problem} \str{9}:
+\[
+\min_{x\in\Feas} f(x), \quad\text{gdje je}\quad
+f(x) = x_1^2 - x_2^2, \quad
+\Feas = \{\, x \mid x_1^2 + x_2^2 \le 1 \,\}
+\]
+
+Slajd 9 prikazuje dvije slike: 3D plohu funkcije $f$ (klasično \textbf{sedlo}
+--- raste u smjeru $x_1$, pada u smjeru $x_2$) i njezine nivo krivulje
+(hiperbole) s ucrtanom crvenom jediničnom kružnicom koja omeđuje $\Feas$.
+
+Dozvoljeni skup je \textbf{jedinični disk} (krug s rubom), a funkcija cilja nema
+ni minimum ni maksimum u njegovoj unutrašnjosti --- u ishodištu je
+\emph{sedlo}. Optimum je stoga na rubu, pa je ovo idealan primjer za testiranje
+uvjeta iz prethodnog odjeljka.
+
+\subsection{Kandidat 1: $x^{*} = (0,\,1)\T$ --- prolazi test}
+\str{10--13}
+
+\textbf{Tvrdnja sa slajda} \str{10}\textbf{:} $x^{*} = \begin{pmatrix} 0 & 1
+\end{pmatrix}\T$ je \textbf{lokalni minimum} na rubu dozvoljenog područja
+$\Feas$.
+
+\textbf{Korak 1 --- dozvoljeni smjerovi} \str{11}\textbf{.} Dozvoljeni smjerovi
+u $x^{*}$ su svi vektori oblika $d = \begin{pmatrix} d_1 & d_2\end{pmatrix}\T$
+sa $d_2 \le 0$.
+
+\emph{Zašto:} točka $(0,1)$ je na „vrhu” kružnice. Bilo koji korak s
+\emph{pozitivnom} komponentom $d_2$ vodi izvan diska (jer bi $x_2$ postao veći
+od 1, a onda $x_1^2 + x_2^2 > 1$). Koraci s $d_2 \le 0$ vode dolje ili
+vodoravno --- za dovoljno mali $\alpha$ ostajemo unutar diska.
+
+\textbf{Korak 2 --- gradijent} \str{12}\textbf{.} Gradijent funkcije cilja u
+$x^{*}$ je
+\[
+\nabla f(x^{*}) = \begin{pmatrix} 2x_1^{*} \\ -2x_2^{*}\end{pmatrix}
+= \begin{pmatrix} 0 \\ -2 \end{pmatrix}
+\]
+
+\emph{Raspis:} iz $f = x_1^2 - x_2^2$ slijedi
+$\partial f/\partial x_1 = 2x_1$ i $\partial f/\partial x_2 = -2x_2$.
+Uvrštavanje $x^{*} = (0,1)$: $2\cdot 0 = 0$ i $-2\cdot 1 = -2$. \checkmark
+
+\textbf{Korak 3 --- provjera uvjeta} \str{13}\textbf{.} Nužni uvjeti
+optimalnosti prvog reda za lokalni minimum u točki $x^{*}$:
+\[
+d\T\nabla f(x^{*}) = -2d_2 \ge 0
+\]
+su \textbf{zadovoljeni} jer za sve dozvoljene smjerove vrijedi $d_2 \le 0$.
+
+\emph{Raspis skalarnog produkta:}
+\[
+d\T\nabla f(x^{*})
+= \begin{pmatrix} d_1 & d_2\end{pmatrix}
+  \begin{pmatrix} 0 \\ -2\end{pmatrix}
+= d_1 \cdot 0 + d_2 \cdot (-2) = -2d_2
+\]
+Ako je $d_2 \le 0$, onda je $-2d_2 \ge 0$. \checkmark
+
+\subsection{Kandidat 2: $x^{*} = (1,\,0)\T$ --- pada na testu}
+\str{14--18}
+
+\textbf{Postavka} \str{14}\textbf{.} Promotrimo točku
+$x^{*} = \begin{pmatrix} 1 & 0\end{pmatrix}\T$ na rubu dozvoljenog područja
+$\Feas$.
+
+\textbf{Korak 1 --- dozvoljeni smjerovi} \str{15}\textbf{.} Dozvoljeni smjerovi
+u $x^{*}$ su svi vektori oblika $d = \begin{pmatrix} d_1 & d_2\end{pmatrix}\T$
+sa $d_1 \le 0$.
+
+\emph{Zašto:} $(1,0)$ je na desnom rubu kružnice; korak udesno ($d_1 > 0$)
+izlazi iz diska.
+
+\textbf{Korak 2 --- gradijent} \str{16}:
+\[
+\nabla f(x^{*}) = \begin{pmatrix} 2x_1^{*} \\ -2x_2^{*}\end{pmatrix}
+= \begin{pmatrix} 2 \\ 0 \end{pmatrix}
+\]
+
+\textbf{Korak 3 --- provjera} \str{17}\textbf{.} Nužni uvjeti optimalnosti
+prvog reda traže:
+\[
+d\T\nabla f(x^{*}) = 2d_1 \ge 0 \quad\text{za sve dozvoljene smjerove.}
+\]
+
+\textbf{Korak 4 --- zaključak} \str{18}\textbf{.} Budući da je $d_1 \le 0$ za
+dozvoljene smjerove, izraz $2d_1$ je \textbf{negativan} (npr.\ za
+$d = (-1, 0)\T$ dobivamo $2\cdot(-1) = -2 < 0$). Uvjet je prekršen, pa točka
+$x^{*}$ \textbf{ne može biti lokalni optimum}.
+
+\emph{Provjera zdravim razumom:} krenimo iz $(1,0)$ ulijevo, u $(1-\alpha, 0)$.
+Tada je $f = (1-\alpha)^2 - 0 = (1-\alpha)^2 < 1 = f(1,0)$ za mali $\alpha>0$.
+Funkcija doista pada --- točka nije minimum. \checkmark
+
+\begin{crtanje}[dozvoljeni smjerovi i gradijent na disku]
+\textbf{Korak 1.} Nacrtajte osi $x_1$ i $x_2$ od $-1{,}5$ do $1{,}5$, jednakim
+mjerilom.
+
+\textbf{Korak 2 --- dozvoljeni skup.} Nacrtajte kružnicu polumjera $1$ oko
+ishodišta i osjenčajte njezinu unutrašnjost. To je $\Feas$: nejednakost
+$x_1^2+x_2^2 \le 1$ dopušta \emph{unutrašnjost} (provjera: ishodište daje
+$0 \le 1$ \checkmark).
+
+\textbf{Korak 3 --- nivo krivulje funkcije cilja.} Krivulje
+$x_1^2 - x_2^2 = c$ su \textbf{hiperbole}. Za $c = 0$ dobivamo
+$x_1^2 = x_2^2$, tj.\ dva pravca $x_2 = \pm x_1$ --- nacrtajte ih prve, oni su
+„križ” kroz ishodište. Za $c > 0$ hiperbole se otvaraju lijevo-desno, za
+$c < 0$ gore-dolje.
+
+\textbf{Korak 4 --- prva kandidatna točka.} Označite $(0,1)$ na vrhu kružnice.
+Iz nje nacrtajte gradijent $\nabla f = (0,-2)$: strelicu \textbf{ravno prema
+dolje}, prema unutrašnjosti diska.
+
+\textbf{Korak 5 --- dozvoljeni smjerovi u toj točki.} Iz $(0,1)$ nacrtajte
+nekoliko kratkih strelica koje pokazuju \emph{dolje, lijevo-dolje,
+desno-dolje i vodoravno}. Sve one imaju $d_2 \le 0$. Uočite: nijedna ne pokazuje
+prema gore --- gore je izvan diska.
+
+\textbf{Korak 6 --- geometrijsko čitanje uvjeta.} Uvjet
+$d\T\nabla f \ge 0$ znači da svaka dozvoljena strelica zatvara s gradijentom kut
+$\le 90^\circ$. Provjerite okom: gradijent pokazuje dolje, sve dozvoljene
+strelice imaju komponentu prema dolje ili su vodoravne, dakle nijedna nije
+„suprotna” gradijentu. Uvjet vrijedi.
+
+\textbf{Korak 7 --- druga kandidatna točka.} Označite $(1,0)$ na desnom rubu.
+Nacrtajte gradijent $\nabla f = (2,0)$: strelicu \textbf{ravno udesno}, prema
+\emph{van} iz diska. Dozvoljene strelice pokazuju \emph{ulijevo} --- dakle
+suprotno od gradijenta, kut je $180^\circ$, pa je $d\T\nabla f < 0$. To je
+smjer u kojem $f$ pada, a dozvoljen je: točka nije optimum.
+
+\textbf{Što graf znači.} Usporedba dviju točaka pokazuje bit uvjeta prvog reda:
+u optimumu gradijent mora „gurati” prema \emph{van} iz dozvoljenog skupa (ili
+biti nula). Ako gradijent pokazuje prema unutra, uvijek postoji dozvoljeni
+smjer u kojem se cilj popravlja.
+\end{crtanje}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{03-sedlo-disk.png}
+\caption{Sedlasta funkcija na jediničnom disku. U točki $(0,1)$ (krug)
+gradijent (zeleno) pokazuje u disk, a svi dozvoljeni smjerovi (plavo) zatvaraju
+s njim kut $\le 90^\circ$ --- uvjet je zadovoljen. U točki $(1,0)$ (kvadrat)
+gradijent pokazuje van, a dozvoljeni smjerovi su mu suprotni --- uvjet je
+prekršen.}
+\end{figure}
+
+% =====================================================================
+\section{Problem s jednim ograničenjem jednakosti}
+\label{sec:jedna-jednakost}
+\str{19--32}
+
+\subsection{Postavka}
+\str{19}
+
+\begin{equation}
+\begin{aligned}
+\min \quad & f(x) := x_1 + x_2 \\
+\uzogr & h(x) := 2 - x_1^2 - x_2^2 = 0
+\end{aligned}
+\end{equation}
+
+\textbf{Grafičkom metodom:} rješenje (minimizator) je $x^{*} = (-1, -1)$.
+
+\textbf{Pitanje sa slajda:} \emph{Kako sistematski karakterizirati optimalna
+rješenja?} --- odnosno, kako doći do rješenja bez crtanja?
+
+\begin{napomena}[predznak funkcije $h$]
+Na slajdu 19 je $h(x) = 2 - x_1^2 - x_2^2$, a već na sljedećem slajdu 20 piše
+$\Feas = \{x \mid h(x) = x_1^2 + x_2^2 - 2 = 0\}$ --- dakle s obrnutim
+predznakom. To \textbf{nije greška}: slajd 25 izričito kaže da je smjer normale
+proizvoljan jer je $h(x) = 0$ ekvivalentno $-h(x) = 0$. Promjena predznaka mijenja
+samo \emph{predznak} multiplikatora $\lambda$, ne i rješenje $x^{*}$. U ovoj
+skripti slijedimo predznak sa slajda koji citiramo, i svaki put ga naznačimo.
+\end{napomena}
+
+\subsection{Izvod uvjeta}
+\str{20--22}
+
+Dozvoljeni skup: $\Feas = \{\, x \mid h(x) = x_1^2 + x_2^2 - 2 = 0 \,\}$.
+
+U točki $x \in \Feas$, ako je $d$ dozvoljeni smjer sa smanjenjem funkcije cilja,
+treba vrijediti:
+\begin{align}
+f(x + d) &\approx f(x) + \nabla f(x)\T d < f(x), \\
+h(x + d) &\approx h(x) + \nabla h(x)\T d = 0,
+\end{align}
+
+\textbf{Odakle te dvije relacije.} Obje su \textbf{linearizacije}
+(aproksimacija prvog reda, odjeljak~\ref{sec:gradijent}) za mali pomak $d$:
+
+\begin{itemize}
+  \item Prva: želimo da nova vrijednost cilja bude manja od stare.
+  \item Druga: želimo ostati na krivulji ograničenja, dakle nova vrijednost
+        $h$ mora i dalje biti nula.
+\end{itemize}
+
+\textbf{Pojednostavljenje} \str{21}\textbf{.} Takvi smjerovi $d$
+okarakterizirani su sljedećim svojstvima:
+\[
+\nabla f(x)\T d < 0 \qquad\text{i}\qquad \nabla h(x)\T d = 0
+\]
+
+\emph{Raspis prve:} iz $f(x) + \nabla f(x)\T d < f(x)$ oduzmemo $f(x)$ s obje
+strane $\Rightarrow$ $\nabla f(x)\T d < 0$.
+
+\emph{Raspis druge:} budući da je $x$ već dopustiv, vrijedi $h(x) = 0$, pa iz
+$h(x) + \nabla h(x)\T d = 0$ ostaje $\nabla h(x)\T d = 0$.
+
+\textbf{Zaključak} \str{22}\textbf{.} U točki $x \in \Feas$ skup svih
+dozvoljenih smjerova sa smanjenjem funkcije cilja je skup $P(x)$, gdje je
+\[
+P(x) = D(x) \cap S(x).
+\]
+
+\subsection{Geometrijska slika}
+\str{23--26}
+
+Slajdovi 23--26 grade jedan crtež u četiri koraka. Prikazana je kružnica
+$x_1^2+x_2^2 = 2$ (dozvoljeni skup), preko nje kose paralelne nivo krivulje
+funkcije $f = x_1+x_2$, i tri vrste strelica u točkama duž kružnice:
+
+\begin{center}
+\begin{tabular}{p{2.4cm}p{10.6cm}}
+\toprule
+\textbf{Boja} & \textbf{Značenje (doslovno sa slajdova)} \\
+\midrule
+\textcolor{zelena}{\textbf{zelene}} & $-\nabla f(x)$ \str{23} \\
+\textcolor{fsbcrvena}{\textbf{crvene}} & $\nabla h(x)$; \emph{normale (okomice)
+  na krivulju ograničenja dane su s $\nabla h(x)$} \str{24}. Smjer normale na
+  krivulju ograničenja jednakosti može se uzeti \textbf{proizvoljan} jer je
+  $h(x) = 0$ ekvivalentno $-h(x) = 0$ \str{25} \\
+\textcolor{tamnoplava}{\textbf{plave}} & dozvoljeni smjerovi $d$ $=$ okomice na
+  normale $\nabla h(x)$, tj.\ $\nabla h(x)\T d = 0$ \str{26} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Kako čitati sliku.} Zelene strelice pokazuju kamo bismo \emph{htjeli}
+ići (smjer najbržeg pada cilja); one su svugdje jednake, jer je $\nabla f$
+konstantan. Plave strelice pokazuju kamo \emph{smijemo} ići (tangencijalno na
+kružnicu). U većini točaka zelena ima komponentu duž plave --- tada se pomakom
+po kružnici cilj popravlja, pa ta točka nije optimum. Samo tamo gdje je zelena
+strelica \textbf{potpuno okomita} na plave (dakle kolinearna s crvenom) nema
+poboljšanja.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.74\textwidth]{03-jednakost-krug.png}
+\caption{Rekonstrukcija crteža sa slajda 26. U optimumu $x^\star=(-1,-1)$
+zelena strelica $-\nabla f$ poklapa se sa smjerom crvene $\nabla h$, pa nijedan
+plavi (dozvoljeni) smjer ne smanjuje cilj.}
+\end{figure}
+
+\subsection{Uvjet kolinearnosti gradijenata}
+\str{27--31}
+
+\textbf{Kandidati za minimizatore} \str{27}\textbf{:} za svaki $d$ tako da je
+$\nabla h(x)\T d = 0$, vrijedi $\nabla f(x)\T d = 0$.
+
+\emph{Zašto baš to:} ako bi za neki dozvoljeni $d$ bilo $\nabla f\T d \ne 0$,
+onda bi ili $d$ ili $-d$ (također dozvoljen, jer je i za njega
+$\nabla h\T(-d) = 0$) dao $\nabla f\T d < 0$, tj.\ pad cilja. Dakle nužno je
+$\nabla f\T d = 0$ za sve dozvoljene $d$.
+
+\textbf{Ključni korak} \str{29}\textbf{.} Promotrimo slučaj kada je
+\[
+\nabla f(x) = \lambda \nabla h(x)
+\]
+za neku vrijednost $\lambda \in \R$ (dakle, kad su $\nabla f(x)$ i
+$\nabla h(x)$ \textbf{kolinearni}).
+
+\begin{napomena}[kolinearni]
+Dva vektora su \textbf{kolinearna} (paralelna) ako je jedan skalarni višekratnik
+drugoga. Geometrijski leže na istom pravcu; mogu pokazivati u isti smjer
+($\lambda > 0$) ili u suprotan ($\lambda < 0$).
+\end{napomena}
+
+\textbf{Tada vrijedi} \str{30}:
+\[
+\big(\nabla f(x)\T - \lambda\nabla h(x)\T\big)d
+= \nabla f(x)\T d - \lambda\nabla h(x)\T d = 0
+\]
+što znači da za svaki $d$ kad je $\nabla h(x)\T d = 0$ tada vrijedi i da je
+$\nabla f(x)\T d = 0$.
+
+\emph{Raspis:} lijeva zagrada je nula po pretpostavci kolinearnosti, pa je i
+cijeli umnožak nula. Drugi član $\lambda\nabla h(x)\T d$ je također nula (jer je
+$d$ dozvoljen). Iz $\nabla f\T d - 0 = 0$ slijedi $\nabla f\T d = 0$.
+\checkmark
+
+\begin{teorem}[Nužan uvjet za optimum --- jedno ograničenje jednakosti \str{31}]
+Neka je $x^{*}$ lokalni minimizator. Tada vrijedi
+\[
+\nabla f(x^{*}) = \lambda\nabla h(x^{*}) \qquad\text{za neki } \lambda \in \R.
+\]
+\end{teorem}
+
+\textbf{Riječima:} u optimumu gradijent funkcije cilja mora biti \textbf{paralelan}
+gradijentu ograničenja. To je algebarski zapis onoga što smo očitali sa slike:
+nivo krivulja cilja \emph{dodiruje} (a ne siječe) krivulju ograničenja.
+
+\subsection{Provjera na primjeru}
+\str{32}
+
+Za naš primjer vrijedi:
+\[
+\nabla f(x) = \begin{pmatrix} 1 \\ 1 \end{pmatrix}, \qquad
+\nabla h(x) = \begin{pmatrix} -2x_1 \\ -2x_2 \end{pmatrix}.
+\]
+
+\emph{Raspis:} $f = x_1 + x_2$ daje $\partial f/\partial x_1 = 1$,
+$\partial f/\partial x_2 = 1$. Za $h = 2 - x_1^2 - x_2^2$ (predznak sa slajda
+19) je $\partial h/\partial x_1 = -2x_1$, $\partial h/\partial x_2 = -2x_2$.
+\checkmark
+
+Za $x^{*} = (-1, -1)$ tada imamo
+\[
+\begin{pmatrix} 1 \\ 1 \end{pmatrix}
+= \lambda^{*}\begin{pmatrix} 2 \\ 2 \end{pmatrix},
+\qquad\text{što vrijedi za } \lambda^{*} = \tfrac{1}{2}.
+\]
+
+\emph{Uvrštavanje:} $\nabla h(-1,-1) = (-2\cdot(-1),\, -2\cdot(-1)) = (2, 2)$.
+Iz $1 = 2\lambda^{*}$ slijedi $\lambda^{*} = 1/2$. Ista vrijednost izlazi i iz
+druge komponente --- što je dobar znak: da su komponente dale različite
+$\lambda$, vektori ne bi bili kolinearni. \checkmark
+
+\begin{napomena}[ključno upozorenje sa slajda 32]
+\textbf{Gornji uvjet je nužan ali ne i dovoljan!} I za točku $x = (1,1)$ imamo
+da je $\nabla f(x) = \lambda\nabla h(x)$, ali \textbf{to nije optimalna točka}.
+
+\emph{Provjera:} $\nabla h(1,1) = (-2,-2)$, pa iz $(1,1) = \lambda(-2,-2)$
+slijedi $\lambda = -1/2$. Uvjet je zadovoljen. Ali $f(1,1) = 2$, dok je
+$f(-1,-1) = -2$ --- točka $(1,1)$ je zapravo \textbf{maksimum} na kružnici.
+
+\textbf{Pouka:} uvjet kolinearnosti hvata \emph{sve} stacionarne točke na
+ograničenju --- i minimume i maksimume. Nakon rješavanja uvijek treba usporediti
+vrijednosti $f$ u svim kandidatima.
+\end{napomena}
+
+% =====================================================================
+\section{Lagrangeova funkcija}
+\label{sec:lagrange}
+\str{33--34}
+
+Uvjet kolinearnosti je koristan, ali nezgodan za rješavanje. Sljedeći alat
+pakira sve nužne uvjete u jednu funkciju.
+
+\textbf{Problem} \str{33}:
+\begin{equation}
+\label{eq:zvj}
+\min f(x) \quad\text{uz ograničenje}\quad h(x) = 0
+\tag{$*$}
+\end{equation}
+
+\begin{definicija}[Lagrangeova funkcija]
+Lagrangeova funkcija za optimizacijski problem \eqref{eq:zvj} definirana je na
+sljedeći način:
+\[
+L(x, \lambda) = f(x) + \lambda h(x)
+\]
+\end{definicija}
+
+\textbf{Zašto je Lagrangeova funkcija korisna?} \str{34} Ako je $x^{*}$ lokalni
+minimizator, tada vrijedi
+\begin{align}
+\nabla_x L(x^{*}, \lambda^{*})
+  &= \nabla f(x^{*}) + \lambda^{*}\nabla h(x^{*}) = 0
+  \qquad\text{za neki } \lambda^{*} \\
+\nabla_\lambda L(x^{*}, \lambda^{*}) &= h(x^{*}) = 0
+\end{align}
+
+\textbf{Dakle, nužni uvjeti za optimalnost mogu se izvesti iz Lagrangeove
+funkcije.}
+
+\textbf{Objašnjenje.}
+\begin{itemize}
+  \item $\nabla_x L$ znači „gradijent po varijablama $x$, uz $\lambda$ fiksan”.
+        Analogno $\nabla_\lambda L$ je derivacija po $\lambda$, uz $x$ fiksan.
+  \item Derivacija po $\lambda$ vraća točno $h(x)$, jer je $L$ linearna u
+        $\lambda$: $\partial(\lambda h(x))/\partial\lambda = h(x)$. Time uvjet
+        $\nabla_\lambda L = 0$ \emph{automatski} ponovno nameće ograničenje.
+  \item \textbf{Genijalnost trika:} problem \emph{s} ograničenjem sveden je na
+        traženje stacionarne točke jedne funkcije \emph{bez} ograničenja ---
+        samo u prostoru veće dimenzije ($x$ \emph{i} $\lambda$).
+\end{itemize}
+
+\begin{napomena}[predznak $\lambda$: slajd 31 vs.\ slajd 34]
+Na slajdu 31 uvjet glasi $\nabla f = \lambda\nabla h$, a iz Lagrangeove funkcije
+na slajdu 34 dobiva se $\nabla f + \lambda\nabla h = 0$, tj.\
+$\nabla f = -\lambda\nabla h$. \textbf{Radi se o istom uvjetu} --- razlikuje se
+samo \emph{predznak} multiplikatora ($\lambda_{\text{sl.34}} =
+-\lambda_{\text{sl.31}}$).
+
+Za ograničenja \emph{jednakosti} to je potpuno nevažno, jer $\lambda$ smije biti
+bilo kojeg predznaka. Kod ograničenja \emph{nejednakosti} predznak je bitan
+(vidi uvjet $\mu \ge 0$ u odjeljku~\ref{sec:nejednakost}), pa se ondje
+konzistentno koristi zapis s $+$, tj.\ $\nabla f + \mu\nabla g = 0$.
+\end{napomena}
+
+% =====================================================================
+\section{Više ograničenja jednakosti}
+\label{sec:vise-jednakosti}
+\str{35--40}
+
+\textbf{Problem} \str{35}:
+\begin{equation}
+\label{eq:zvj2}
+\min f(x) \quad\text{uz ograničenja}\quad h_i(x) = 0,\; i = 1\dots m
+\tag{$*$}
+\end{equation}
+
+\subsection{Regularna točka}
+\str{35}
+
+\begin{definicija}[Regularna točka kod ograničenja jednakosti]
+Točka $x^{*}$ koja ispunjava uvjete $h_i(x^{*}) = 0$, $i = 1,\dots,m$ je
+\textbf{regularna točka} ako su gradijenti $\nabla h_i(x^{*})$ \textbf{linearno
+nezavisni}.
+\end{definicija}
+
+\textbf{Objašnjenje sa slajda:} dakle, ako je točka $x^{*}$ regularna točka,
+tada nema paralelnih gradijenata $\nabla h_i(x^{*})$, niti nema gradijenata koji
+se mogu izraziti kao \textbf{linearna kombinacija} ostalih gradijenata.
+
+\begin{napomena}[linearna nezavisnost --- od nule]
+Vektori $v_1,\dots,v_k$ su \textbf{linearno nezavisni} ako se nijedan od njih ne
+može napisati kao kombinacija ostalih; formalno, ako iz
+$c_1v_1 + \dots + c_kv_k = 0$ nužno slijedi $c_1 = \dots = c_k = 0$.
+
+\emph{Zašto nam to treba:} ako su gradijenti ograničenja zavisni, ograničenja se
+u toj točki „preklapaju” i geometrija degenerira --- uvjeti optimalnosti tada
+mogu zakazati. Slajd 57 pokazuje upravo takav protuprimjer.
+\end{napomena}
+
+\subsection{Lagrangeova funkcija i nužni uvjeti}
+\str{36--37}
+
+\begin{definicija}[Lagrangeova funkcija, više jednakosti \str{36}]
+\[
+L(x, \lambda) = f(x) + \sum_{i=1}^{m}\lambda_i h_i(x)
+\]
+$\lambda_1, \lambda_2, \dots, \lambda_m$ zovu se \textbf{Lagrangeovi
+množitelji}.
+\end{definicija}
+
+Uz uvjet da je $x$ \textbf{regularna točka}, nužni uvjeti za optimalnost tada
+glase \str{36}:
+\begin{align}
+\frac{\partial L(x,\lambda)}{\partial x_i}
+  &= \frac{\partial f(x)}{\partial x_i}
+   + \sum_{j=1}^{m}\lambda_j\frac{\partial h_j(x)}{\partial x_i} = 0,
+  && i = 1,\dots,n \\
+\frac{\partial L(x,\lambda)}{\partial \lambda_i}
+  &= h_i(x) = 0, && i = 1,\dots,m
+\end{align}
+
+\textbf{Kompaktniji zapis} \str{37}\textbf{.} Za problem \eqref{eq:zvj2}, ako je
+$x$ regularna točka, nužni uvjeti za optimalnost mogu se zapisati u sljedećem
+obliku:
+\begin{align}
+h_i(x) &= 0, && i = 1,\dots,m \\
+\nabla f(x) + \sum_{i=1}^{m}\lambda_i\nabla h_i(x) &= 0
+\end{align}
+
+\textbf{Geometrijska interpretacija} \str{37--38}\textbf{:} u točki optimuma
+$x^{*}$, vektor $\nabla f(x^{*})$ je \textbf{linearna kombinacija} gradijenata
+funkcija ograničenja $\nabla h_i(x^{*})$ u toj točki.
+
+To je poopćenje uvjeta kolinearnosti: s jednim ograničenjem $\nabla f$ je morao
+biti \emph{paralelan} s $\nabla h$; s više ograničenja mora ležati u
+\emph{ravnini} (općenito potprostoru) koju razapinju gradijenti ograničenja.
+
+\subsection{Postupak traženja kandidata za optimum}
+\str{39}
+
+\begin{teorem}[Recept]
+Iz nužnih uvjeta optimalnosti
+\begin{align}
+\frac{\partial L(x,\lambda)}{\partial x_i}
+  &= \frac{\partial f(x)}{\partial x_i}
+   + \sum_{j=1}^{m}\lambda_j\frac{\partial h_j(x)}{\partial x_i} = 0,
+  && i = 1,\dots,n \\
+\frac{\partial L(x,\lambda)}{\partial \lambda_i}
+  &= h_i(x) = 0, && i = 1,\dots,m
+\end{align}
+odredimo $m + n$ nepoznanica $x_1,\dots,x_n,\ \lambda_1,\dots,\lambda_m$.
+
+Na ovaj način dobivamo točke kandidate za minimizatora. \textbf{(Ovo su samo
+nužni ali ne i dovoljni uvjeti!)}
+\end{teorem}
+
+\textbf{Zašto se brojevi poklapaju:} imamo $n$ jednadžbi iz derivacija po $x$ i
+$m$ jednadžbi iz derivacija po $\lambda$ --- ukupno $n+m$ jednadžbi za $n+m$
+nepoznanica. Sustav je time (općenito) određen.
+
+\subsection{Primjer: paralelepiped najvećeg volumena upisan u kuglu}
+\str{40}
+
+\textbf{Zadatak (doslovno sa slajda).} Odrediti paralelepiped maksimalnog
+volumena koji je sadržan u kugli polumjera $r$. Ishodište je u središtu kugle, a
+vrhovi paralelepipeda su na površini kugle.
+
+\textbf{Postavka geometrije (sa skice na slajdu).} Paralelepiped je postavljen
+simetrično oko ishodišta, sa stranicama paralelnim osima. Ako je jedan njegov
+vrh u točki $(x_1, x_2, x_3)$ (prvi oktant), onda su bridovi
+\[
+a = 2x_1, \qquad b = 2x_2, \qquad c = 2x_3
+\]
+
+\textbf{Funkcija cilja:}
+\[
+V = F(x) = 8x_1x_2x_3
+\]
+
+\emph{Odakle:} volumen kvadra je $a\cdot b\cdot c = 2x_1 \cdot 2x_2 \cdot 2x_3
+= 8x_1x_2x_3$. \checkmark
+
+\textbf{Nametnuta veza (ograničenje):}
+\[
+h(x) = x_1^2 + x_2^2 + x_3^2 - r^2 = 0
+\]
+
+\emph{Odakle:} vrh leži \emph{na} sferi polumjera $r$, a udaljenost vrha od
+ishodišta je $\sqrt{x_1^2+x_2^2+x_3^2}$; izjednačena s $r$ i kvadrirana daje
+gornji izraz.
+
+\textbf{Lagrangeova funkcija:}
+\[
+L(x,\lambda) = 8x_1x_2x_3 + \lambda\big(x_1^2 + x_2^2 + x_3^2 - r^2\big)
+\]
+
+\textbf{Slijedi (sa slajda):}
+\[
+\begin{aligned}
+\frac{\partial L}{\partial x_1} &= 8x_2x_3 + 2\lambda x_1 = 0
+  &&\big/\;\cdot\, x_1 \\
+\frac{\partial L}{\partial x_2} &= 8x_1x_3 + 2\lambda x_2 = 0
+  &&\big/\;\cdot\, x_2 \\
+\frac{\partial L}{\partial x_3} &= 8x_1x_2 + 2\lambda x_3 = 0
+  &&\big/\;\cdot\, x_3
+\end{aligned}
+\qquad (+)
+\]
+
+\emph{Provjera derivacija:} u $8x_1x_2x_3$ derivacija po $x_1$ je $8x_2x_3$
+(ostale varijable su konstante); u $\lambda(x_1^2+\dots)$ derivacija po $x_1$ je
+$2\lambda x_1$. \checkmark
+
+\textbf{Trik sa slajda:} svaka jednadžba se pomnoži naznačenom varijablom, pa se
+sve tri \textbf{zbroje} (oznaka $(+)$):
+\[
+24x_1x_2x_3 + 2\lambda\big(x_1^2 + x_2^2 + x_3^2\big) = 0
+\;\Longrightarrow\;
+\lambda = -\frac{24x_1x_2x_3}{2r^2} = -\frac{3V}{2r^2}
+\]
+
+\emph{Raspis zbrajanja:}
+\begin{align}
+x_1 \cdot (8x_2x_3 + 2\lambda x_1) &= 8x_1x_2x_3 + 2\lambda x_1^2 = 0 \\
+x_2 \cdot (8x_1x_3 + 2\lambda x_2) &= 8x_1x_2x_3 + 2\lambda x_2^2 = 0 \\
+x_3 \cdot (8x_1x_2 + 2\lambda x_3) &= 8x_1x_2x_3 + 2\lambda x_3^2 = 0
+\end{align}
+Zbroj: $3\cdot 8x_1x_2x_3 + 2\lambda(x_1^2+x_2^2+x_3^2) = 0$, tj.\
+$24x_1x_2x_3 + 2\lambda(x_1^2+x_2^2+x_3^2) = 0$. \checkmark
+
+\emph{Zatim} se iskoristi ograničenje $x_1^2+x_2^2+x_3^2 = r^2$:
+\[
+24x_1x_2x_3 + 2\lambda r^2 = 0
+\;\Longrightarrow\;
+\lambda = -\frac{24x_1x_2x_3}{2r^2}
+\]
+i uz $V = 8x_1x_2x_3$, brojnik je $3V$, pa je $\lambda = -\dfrac{3V}{2r^2}$.
+\checkmark
+
+\textbf{Uvrštenjem $\lambda$ u $\partial L/\partial x_1$ slijedi:}
+\[
+8x_2x_3\left(1 - \frac{3x_1^2}{r^2}\right) = 0
+\;\Longrightarrow\;
+x_1 = \pm\frac{r}{\sqrt3} = \frac{r}{\sqrt3},
+\quad\text{i analogno: } x_2 = x_3 = \frac{r}{\sqrt3}
+\]
+
+\emph{Raspis uvrštavanja:}
+\begin{align}
+8x_2x_3 + 2\lambda x_1
+&= 8x_2x_3 + 2\left(-\frac{24x_1x_2x_3}{2r^2}\right)x_1 \\
+&= 8x_2x_3 - \frac{24x_1^2x_2x_3}{r^2} \\
+&= 8x_2x_3\left(1 - \frac{3x_1^2}{r^2}\right)
+\end{align}
+Umnožak je nula ako je $x_2x_3 = 0$ (odbačeno --- tada je volumen nula) ili ako
+je zagrada nula:
+\[
+1 = \frac{3x_1^2}{r^2} \;\Longrightarrow\; x_1^2 = \frac{r^2}{3}
+\;\Longrightarrow\; x_1 = \pm\frac{r}{\sqrt3}
+\]
+Uzimamo pozitivni korijen jer je vrh u prvom oktantu. \checkmark
+
+\textbf{Volumen:}
+\[
+V_{\max} = \left(\frac{2r}{\sqrt3}\right)^{3}
+\]
+
+\emph{Provjera:} brid je $a = 2x_1 = 2r/\sqrt3$; ista vrijednost za $b$ i $c$,
+pa je $V = a^3 = (2r/\sqrt3)^3 = \dfrac{8r^3}{3\sqrt3}$. \checkmark
+
+\textbf{Zaključak:} optimalan paralelepiped je \textbf{kocka}. To je tipičan
+ishod simetričnih problema --- i lijep primjer kako Lagrangeova metoda riješi u
+tri retka ono što bi eliminacijom varijabli bilo mnogo dulje.
+
+\begin{napomena}[maksimizacija Lagrangeovom metodom]
+Ovaj je zadatak \emph{maksimizacija}, a nužni uvjeti su izvedeni za
+minimizaciju. To je u redu: uvjet $\nabla L = 0$ hvata \emph{sve} stacionarne
+točke --- i minimume i maksimume (usporedi napomenu uz slajd 32). Da je trebalo
+formalno slijediti standardnu formu, minimizirali bismo $-V$
+(trik iz odjeljka~\ref{sec:trikovi}); rješenje $x^\star$ bilo bi isto, a
+$\lambda$ bi promijenio predznak.
+\end{napomena}
+
+% =====================================================================
+\section{Problem s jednim ograničenjem nejednakosti}
+\label{sec:nejednakost}
+\str{41--51}
+
+\subsection{Postavka}
+\str{41}
+
+\begin{equation}
+\begin{aligned}
+\min \quad & f(x) := x_1 + x_2 \\
+\uzogr & g(x) := x_1^2 + x_2^2 - 2 \le 0
+\end{aligned}
+\end{equation}
+
+\textbf{Grafičkom metodom:} rješenje (minimizator) je $x^{*} = (-1,-1)$.
+
+Uočite: isti cilj i isti rub kao u odjeljku~\ref{sec:jedna-jednakost}, ali
+dozvoljeni skup je sada cijeli \textbf{disk} umjesto same kružnice. Rješenje je
+ispalo isto --- ali sada moramo objasniti \emph{zašto} optimum leži baš na rubu.
+
+\subsection{Izvod: dva slučaja}
+\str{42--45}
+
+Dozvoljeni skup: $\Feas = \{\, x \mid g(x) := x_1^2 + x_2^2 - 2 \le 0 \,\}$.
+
+U točki $x \in \Feas$, ako je $d$ dozvoljeni smjer sa smanjenjem funkcije cilja,
+treba vrijediti \str{42}:
+\begin{align}
+f(x+d) &\approx f(x) + \nabla f(x)\T d < f(x), \\
+g(x+d) &\approx g(x) + \nabla g(x)\T d \le 0.
+\end{align}
+
+Razlika u odnosu na jednakost: druga relacija sada ima $\le 0$ umjesto $= 0$, i
+$g(x)$ \textbf{ne} mora biti nula, pa se ne može jednostavno pokratiti. Zato
+uvodimo novi pojam:
+
+\begin{definicija}[Aktivno i neaktivno ograničenje \str{43}]
+Neka je $x \in \R^n$. Kažemo da je ograničenje $g(x) \le 0$ \textbf{aktivno} u
+$x$ ako vrijedi $g(x) = 0$. Ako pak vrijedi $g(x) < 0$, kažemo da je ograničenje
+$g(x) \le 0$ \textbf{neaktivno} u $x$.
+\end{definicija}
+
+\textbf{Slikovito:} aktivno ograničenje znači „stojimo točno na ogradi”, a
+neaktivno „ograda je negdje daleko, trenutno nas ne dodiruje”.
+
+\textbf{Slajd 44--45 razlikuje dva slučaja:}
+
+\textbf{1) Neaktivno ograničenje: $g(x) < 0$.}
+$d$ je dozvoljen smjer sa smanjenjem funkcije cilja u $x$ ako vrijedi
+\[
+g(x) + \nabla g(x)\T d \le 0, \qquad \nabla f(x)\T d < 0
+\]
+što je, u slučaju kad je $\|d\|$ uzet dovoljno malen\footnote{Fusnota sa slajda:
+za bilo koji smjer, uvjet $g(x) + \nabla g(x)\T d \le 0$ može se uvijek
+zadovoljiti ako je duljina vektora $d$ dovoljno malena, jer je $g(x) < 0$.},
+ekvivalentno uvjetu
+\[
+\nabla f(x)\T d < 0.
+\]
+
+\textbf{2) Aktivno ograničenje: $g(x) = 0$.}
+$d$ je dozvoljen smjer sa smanjenjem funkcije cilja u $x$ ako vrijedi
+\[
+\nabla g(x)\T d \le 0, \qquad \nabla f(x)\T d < 0
+\]
+
+\emph{Zašto je u slučaju 2 nestao $g(x)$:} jer je $g(x) = 0$, pa uvjet
+$g(x) + \nabla g(x)\T d \le 0$ postaje $\nabla g(x)\T d \le 0$.
+
+\subsection{Nužni uvjeti za oba slučaja}
+\str{46--48}
+
+\textbf{Osnovna ideja} \str{46}\textbf{:} kandidati za optimum su one točke
+$x^{*}$ za koje je skup dozvoljenih smjerova sa smanjenjem funkcije cilja
+\textbf{prazan skup}.
+
+\textbf{1) Neaktivno ograničenje u $x^{*}$: $g(x^{*}) < 0$.} Nužan uvjet za
+optimum je
+\[
+\nabla f(x^{*}) = 0
+\]
+jer je jedino tada skup $\{\, d \mid \nabla f(x)\T d < 0 \,\}$ nužno prazan.
+
+\emph{Zašto:} ako je $\nabla f \ne 0$, uvijek možemo uzeti $d = -\nabla f$ i
+dobiti $\nabla f\T d = -\|\nabla f\|^2 < 0$ --- dakle smjer pada postoji.
+Prazan skup dobivamo samo kad je gradijent nula. Ovo je zapravo poznati uvjet
+za probleme \emph{bez} ograničenja --- logično, jer nas ograničenje ovdje ni ne
+dodiruje.
+
+\textbf{2) Aktivno ograničenje u $x^{*}$: $g(x^{*}) = 0$} \str{47}\textbf{.}
+Nužan uvjet za optimum glasi: za sve $d$ za koje vrijedi
+$\nabla g(x)\T d \le 0$, mora nužno vrijediti i da je $\nabla f(x)\T d \ge 0$. U
+tom slučaju je naime skup dozvoljenih smjerova sa smanjenjem funkcije cilja
+prazan skup.
+
+\begin{napomena}[tipfeler na slajdu 47/48]
+Na slajdovima piše „$\nabla f(x)\T \ge 0$”; nedostaje $d$. Iz konteksta i iz
+izvoda na slajdu 48 jasno je da se misli na $\nabla f(x)\T d \ge 0$.
+\end{napomena}
+
+\textbf{Ključni korak} \str{48}\textbf{.} Promotrimo slučaj kad je
+\begin{equation}
+\label{eq:dvijezvj}
+\nabla f(x^{*}) + \mu^{*}\nabla g(x^{*}) = 0 \qquad\text{za neki }
+\mu^{*} \ge 0
+\tag{$**$}
+\end{equation}
+
+Tada vrijedi
+\[
+\big(\nabla f(x^{*})\T + \mu^{*}\nabla g(x^{*})\T\big)d = 0
+\qquad\text{odnosno}\qquad
+\nabla f(x^{*})\T d = -\mu^{*}\nabla g(x^{*})\T d
+\]
+
+Dakle, za sve $d$ za koje je $\nabla g(x^{*})\T d \le 0$, u tom slučaju nužno
+vrijedi da je $\nabla f(x^{*})\T d \ge 0$.
+
+\emph{Raspis zadnjeg zaključka --- pazite na dva predznaka:}
+\begin{itemize}
+  \item $\nabla g(x^{*})\T d \le 0$ (pretpostavka: $d$ je dozvoljen),
+  \item $\mu^{*} \ge 0$ (pretpostavka),
+  \item dakle $\mu^{*}\nabla g(x^{*})\T d \le 0$ (nenegativan puta nepozitivan),
+  \item dakle $-\mu^{*}\nabla g(x^{*})\T d \ge 0$ (množenje s $-1$ okreće),
+  \item a to je upravo $\nabla f(x^{*})\T d$. \checkmark
+\end{itemize}
+
+\textbf{Zaključak sa slajda:} uvjet \eqref{eq:dvijezvj} je nužan uvjet da bi
+skup dozvoljenih smjerova sa smanjenjem funkcije cilja bio prazan skup.
+
+\begin{napomena}[zašto baš $\mu \ge 0$, a $\lambda$ smije biti bilo koji]
+Kod \emph{jednakosti} dozvoljeni smjerovi zadovoljavaju $\nabla h\T d = 0$ ---
+simetrično, pa je predznak $\lambda$ nevažan.
+
+Kod \emph{nejednakosti} dozvoljeni smjerovi zadovoljavaju $\nabla g\T d \le 0$
+--- \emph{nesimetrično}. Gornji izvod prolazi samo ako je $\mu^{*} \ge 0$; s
+negativnim $\mu^{*}$ zaključak bi se okrenuo. Geometrijski: $-\nabla f$ mora
+pokazivati \emph{van} iz dozvoljenog skupa, u istom smjeru kao $\nabla g$.
+\end{napomena}
+
+\subsection{Teorem: uvjeti za jedno ograničenje nejednakosti}
+\str{49--50}
+
+\begin{teorem}[Nužni uvjeti, jedno ograničenje nejednakosti]
+Za problem $\min f(x)$ uz ograničenje $g(x) \le 0$: ako je $x^{*}$ lokalni
+minimizator, tada postoji $\mu^{*}$ tako da su sljedeći uvjeti zadovoljeni:
+\begin{align}
+\nabla f(x^{*}) + \mu^{*}\nabla g(x^{*}) &= 0 &&\text{(A1)} \\
+\mu^{*}g(x^{*}) &= 0 &&\text{(A2)} \\
+\mu^{*} &\ge 0 &&\text{(A3)}
+\end{align}
+\end{teorem}
+
+\textbf{Kako teorem pokriva oba slučaja} \str{50}\textbf{.} Uočimo da je:
+
+\begin{itemize}
+  \item za $g(x^{*}) < 0$ (neaktivno), zbog (A2) imamo da je $\mu^{*} = 0$, pa
+        (A1) postaje $\nabla f(x^{*}) = 0$;
+  \item za $g(x^{*}) = 0$ (aktivno), slijedi da je $\mu^{*} \ge 0$ i
+        $\nabla f(x^{*}) + \mu^{*}\nabla g(x^{*}) = 0$;
+\end{itemize}
+
+pa gornji teorem uključuje i slučaj aktivnog i slučaj neaktivnog ograničenja.
+
+\begin{definicija}[Uvjet komplementarnosti \str{50}]
+Uvjet (A2), $\mu^{*}g(x^{*}) = 0$, zove se \textbf{uvjet komplementarnosti}
+(engl.\ \emph{complementary slackness}).
+\end{definicija}
+
+\textbf{Kako čitati uvjet komplementarnosti.} Umnožak dvaju brojeva je nula samo
+ako je barem jedan od njih nula. Dakle u optimumu za svako ograničenje vrijedi
+\textbf{barem jedno} od:
+\begin{itemize}
+  \item $\mu^{*} = 0$ --- ograničenje je „bez cijene”, ne utječe na rješenje;
+  \item $g(x^{*}) = 0$ --- ograničenje je aktivno, „stojimo na ogradi”.
+\end{itemize}
+Ne mogu istovremeno biti $\mu^{*} > 0$ \emph{i} $g(x^{*}) < 0$. Ovo je
+\emph{najkorisniji} uvjet u praksi: on nam govori koje kombinacije aktivnih
+ograničenja uopće trebamo isprobavati.
+
+\subsection{Zapis preko Lagrangeove funkcije}
+\str{51}
+
+\begin{definicija}[Lagrangeova funkcija za nejednakost]
+Za problem $\min f(x)$ uz $g(x)\le 0$:
+\[
+L(x,\mu) = f(x) + \mu g(x)
+\]
+\end{definicija}
+
+Ako je $x^{*}$ lokalni minimizator, tada vrijedi:
+\begin{align}
+\nabla_x L(x^{*},\mu^{*}) &= \nabla f(x^{*}) + \mu^{*}\nabla g(x^{*}) = 0 \\
+g(x^{*}) &\le 0 \\
+\mu^{*}g(x^{*}) &= 0 \\
+\mu^{*} &\ge 0
+\end{align}
+
+\subsection{Rješavanje primjera sa slajda 41}
+
+Slajd 41 daje rješenje grafički; ovdje ga izvodimo iz gornjih uvjeta, jer je to
+postupak koji ćete koristiti na ispitu.
+
+\textbf{Zadano:} $f(x) = x_1+x_2$, $g(x) = x_1^2+x_2^2-2 \le 0$.
+
+\textbf{Gradijenti:}
+\[
+\nabla f(x) = \begin{pmatrix}1\\1\end{pmatrix}, \qquad
+\nabla g(x) = \begin{pmatrix}2x_1\\2x_2\end{pmatrix}
+\]
+
+\textbf{Slučaj A --- ograničenje neaktivno} ($\mu^{*} = 0$). Tada (A1) traži
+$\nabla f(x^{*}) = 0$, tj.\ $(1,1) = (0,0)$ --- \textbf{nemoguće}. Dakle
+ograničenje mora biti aktivno.
+
+\emph{Poanta:} to je algebarska potvrda geometrijske činjenice da linearna
+funkcija nema unutarnji minimum --- uvijek se „gura” do ruba.
+
+\textbf{Slučaj B --- ograničenje aktivno} ($g(x^{*}) = 0$). Sustav:
+\begin{align}
+1 + 2\mu^{*} x_1^{*} &= 0 \label{eq:kkt-b1}\\
+1 + 2\mu^{*} x_2^{*} &= 0 \label{eq:kkt-b2}\\
+(x_1^{*})^2 + (x_2^{*})^2 - 2 &= 0 \label{eq:kkt-b3}
+\end{align}
+
+\emph{Korak 1.} Iz \eqref{eq:kkt-b1} i \eqref{eq:kkt-b2} (uz $\mu^{*} \ne 0$,
+što slijedi jer $\mu^{*}=0$ vodi na $1 = 0$):
+\[
+x_1^{*} = -\frac{1}{2\mu^{*}}, \qquad x_2^{*} = -\frac{1}{2\mu^{*}}
+\]
+dakle $x_1^{*} = x_2^{*}$.
+
+\emph{Korak 2.} Uvrstimo u \eqref{eq:kkt-b3}:
+\[
+2(x_1^{*})^2 = 2 \;\Longrightarrow\; (x_1^{*})^2 = 1
+\;\Longrightarrow\; x_1^{*} = \pm 1
+\]
+
+\emph{Korak 3 --- izbor predznaka pomoću (A3).} Iz
+$x_1^{*} = -1/(2\mu^{*})$ i uvjeta $\mu^{*} \ge 0$ slijedi da $x_1^{*}$ mora
+biti \textbf{negativan}. Dakle $x_1^{*} = x_2^{*} = -1$.
+
+\emph{Korak 4 --- vrijednost multiplikatora.} Iz \eqref{eq:kkt-b1}:
+\[
+1 + 2\mu^{*}(-1) = 0 \;\Longrightarrow\; 2\mu^{*} = 1
+\;\Longrightarrow\; \mu^{*} = \tfrac12 \ge 0 \quad\checkmark
+\]
+
+\textbf{Rezultat:}
+\[
+x^{*} = (-1,-1), \qquad \mu^{*} = \tfrac12, \qquad f(x^{*}) = -2
+\]
+što se poklapa s grafičkim rješenjem sa slajda 41. \checkmark
+
+\begin{napomena}[usporedba s jednakošću]
+U odjeljku~\ref{sec:jedna-jednakost} isti je problem s \emph{jednakošću} dao dvije
+stacionarne točke: $(-1,-1)$ (minimum) i $(1,1)$ (maksimum). Ovdje je uvjet
+$\mu \ge 0$ \textbf{sam odbacio} točku $(1,1)$. To je praktična prednost
+nejednakosti: predznak multiplikatora nosi informaciju o smjeru, pa maksimumi
+otpadaju automatski.
+\end{napomena}
+
+\begin{crtanje}[KKT točka na disku]
+\textbf{Korak 1.} Nacrtajte osi $x_1, x_2$ od $-2{,}4$ do $2{,}4$, jednako
+mjerilo.
+
+\textbf{Korak 2 --- dozvoljeni skup.} Nacrtajte kružnicu polumjera
+$\sqrt2 \approx 1{,}41$ oko ishodišta. Testna točka $(0,0)$ daje
+$g = -2 \le 0$ \checkmark, dakle dopuštena je \textbf{unutrašnjost}; osjenčajte
+je.
+
+\textbf{Korak 3 --- nivo krivulje cilja.} $f = x_1+x_2 = c$ su paralelni pravci
+nagiba $-1$. Nacrtajte ih za $c = -3, -2, -1, 0, 1, 2$. Označite ih; uočite da
+$f$ pada kako se pomičemo prema \emph{dolje-lijevo}.
+
+\textbf{Korak 4 --- optimum.} „Gurajte” pravac prema dolje-lijevo dok još
+dodiruje disk. Zadnji dodir je u točki $(-1,-1)$; tu nacrtajte punu točku.
+Provjera: $-1-1 = -2$, dakle taj pravac je $c = -2$.
+
+\textbf{Korak 5 --- gradijent cilja.} Iz $(-1,-1)$ nacrtajte
+$\nabla f = (1,1)$: jedna jedinica desno, jedna gore --- dakle prema
+\emph{unutrašnjosti} diska. To je smjer rasta cilja.
+
+\textbf{Korak 6 --- gradijent ograničenja.} Iz iste točke nacrtajte
+$\nabla g = (2x_1, 2x_2) = (-2,-2)$: dvije jedinice lijevo, dvije dolje ---
+dakle prema \emph{van} iz diska, okomito na kružnicu.
+
+\textbf{Korak 7 --- provjera KKT-a okom.} Dvije strelice su
+\textbf{antiparalelne} (leže na istom pravcu, suprotnih smjerova). Baš to
+izražava (A1): $\nabla f = -\mu\nabla g$ uz $\mu = 1/2 > 0$. Duljina $\nabla f$
+je upravo pola duljine $\nabla g$ --- odatle $\mu = 1/2$.
+
+\textbf{Što graf znači.} U KKT točki nivo krivulja cilja \textbf{tangira} rub
+dozvoljenog skupa, a gradijenti su antiparalelni. Da nisu, mogli bismo kliznuti
+po rubu i smanjiti cilj. Uvjet $\mu \ge 0$ znači da $\nabla f$ pokazuje
+\emph{unutra}: cilj bi rastao kad bismo se vratili u unutrašnjost, pa je
+isplativo ostati priljubljen uz ogradu.
+\end{crtanje}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.70\textwidth]{03-nejednakost-krug.png}
+\caption{KKT točka za $\min x_1+x_2$ uz $x_1^2+x_2^2 \le 2$. U $x^\star=(-1,-1)$
+gradijenti $\nabla f$ (zeleno) i $\nabla g$ (crveno) su antiparalelni, uz
+$\mu^{*}=\tfrac12 \ge 0$.}
+\end{figure}
+
+% =====================================================================
+\section{Više ograničenja nejednakosti}
+\str{52--57}
+
+\textbf{Problem} \str{52}:
+\begin{equation}
+\label{eq:zvj3}
+\min f(x) \quad\text{uz ograničenja}\quad g_i(x) \le 0,\; i = 1,\dots,p
+\tag{$*$}
+\end{equation}
+
+\begin{definicija}[Lagrangeova funkcija \str{52}]
+\[
+L(x,\mu) = f(x) + \sum_{i=1}^{p}\mu_i g_i(x)
+\]
+Varijable $\mu = (\mu_1,\dots,\mu_p)$ zovu se \textbf{Lagrangeovi množitelji}.
+\end{definicija}
+
+\begin{definicija}[Regularna točka kod ograničenja nejednakosti \str{53}]
+Neka je skup $I$ skup indeksa svih ograničenja koja su \textbf{aktivna} u točki
+$x^{*}$, tj.\ neka je $I := \{\, i \mid g_i(x^{*}) = 0 \,\}$. Tada je $x^{*}$
+\textbf{regularna točka} ako su gradijenti $\nabla g_i(x^{*})$ linearno
+nezavisni za sve $i \in I$.
+\end{definicija}
+
+\textbf{Objašnjenje sa slajda:} dakle, ako je točka $x^{*}$ regularna točka, tada
+među svim \emph{aktivnim} ograničenjima nema paralelnih gradijenata
+$\nabla g_i(x^{*})$, niti nema gradijenata koji se mogu izraziti kao linearna
+kombinacija gradijenata ostalih aktivnih ograničenja.
+
+\begin{napomena}[samo aktivna ograničenja]
+Uočite da se u definiciju regularnosti \textbf{uključuju samo aktivna}
+ograničenja. Neaktivna ne igraju nikakvu ulogu --- ona ionako imaju $\mu_i = 0$
+i lokalno ne dodiruju rješenje.
+\end{napomena}
+
+\begin{teorem}[Nužni uvjeti, više nejednakosti \str{54}]
+Neka je $x^{*}$ regularna točka. Ako je $x^{*} \in \R^n$ lokalni minimizator,
+tada postoji $\mu^{*} = (\mu_1^{*},\dots,\mu_p^{*})$ tako da su sljedeći uvjeti
+zadovoljeni:
+\begin{align}
+\frac{\partial L}{\partial x_i}(x^{*},\mu^{*})
+  &= \frac{\partial f}{\partial x_i}(x^{*})
+   + \sum_{j=1}^{p}\mu_j^{*}\frac{\partial g_j}{\partial x_i}(x^{*}) = 0,
+  && i = 1,\dots,n \\
+g_j(x^{*}) &\le 0, && j = 1,\dots,p \\
+\mu_j^{*}g_j(x^{*}) &= 0, && j = 1,\dots,p \\
+\mu_j^{*} &\ge 0, && j = 1,\dots,p
+\end{align}
+\end{teorem}
+
+\textbf{Kompaktniji zapis} \str{55}\textbf{.} Isti teorem, prva jednadžba
+zapisana vektorski:
+\begin{align}
+\nabla f(x^{*}) + \sum_{j=1}^{p}\mu_j^{*}\nabla g_j(x^{*}) &= 0 \\
+g_j(x^{*}) &\le 0, && j = 1,\dots,p \\
+\mu_j^{*}g_j(x^{*}) &= 0, && j = 1,\dots,p \\
+\mu_j^{*} &\ge 0, && j = 1,\dots,p
+\end{align}
+
+\subsection{Geometrijska interpretacija}
+\str{56}
+
+Slajd 56 prikazuje crtež u ravnini $(x_1, x_2)$:
+
+\begin{itemize}
+  \item dvije podebljane krivulje označene $g_1$ i $g_2$ --- granice dvaju
+        ograničenja; ružičasto osjenčano područje između njih je dozvoljeni skup
+        $S$;
+  \item točka $x^{*}$ u kojoj se te dvije granice sijeku --- dakle \emph{oba}
+        ograničenja su ondje aktivna;
+  \item iz $x^{*}$ izlaze tri strelice: $\mu_1\nabla g_1$ (prema gore),
+        $\mu_2\nabla g_2$ (prema gore-lijevo) i $\nabla F$ (prema dolje-desno);
+  \item isprekidana krivulja $F(x^{*})$ --- nivo krivulja funkcije cilja kroz
+        $x^{*}$, koja u toj točki dodiruje kut dozvoljenog skupa;
+  \item zatvorena krivulja gore lijevo sa šrafiranom točkom u sredini ---
+        neograničeni minimum cilja, koji leži izvan dozvoljenog skupa.
+\end{itemize}
+
+\textbf{Poruka slike:} $\nabla F$ je uravnotežen zbrojem $\mu_1\nabla g_1 +
+\mu_2\nabla g_2$, uz $\mu_1,\mu_2 \ge 0$. Vektor $-\nabla F$ leži \emph{unutar
+stošca} razapetog gradijentima aktivnih ograničenja. To je geometrijski sadržaj
+prvog KKT uvjeta kad je aktivno više ograničenja.
+
+\subsection{Važna iznimka: neregularna točka}
+\str{57}
+
+\textbf{Tvrdnja sa slajda:} \emph{Uvjeti optimalnosti ne moraju biti zadovoljeni
+u neregularnoj točki.}
+
+Slajd prikazuje sličan crtež, ali sada su u točki $x^{*}$ gradijenti
+$\nabla g_1$ i $\nabla g_2$ \textbf{gotovo suprotni} (kolinearni), tj.\ linearno
+zavisni --- dozvoljeni skup $S$ ima ondje „šiljak”. Vektor $\nabla F$ pokazuje
+u smjeru koji se \emph{ne} može prikazati kao nenegativna kombinacija
+$\nabla g_1$ i $\nabla g_2$.
+
+\textbf{Zaključak:} $x^{*}$ jest optimum, ali KKT uvjeti u njemu \textbf{nemaju
+rješenje}. Zato u svim teoremima stoji pretpostavka regularnosti.
+
+\begin{napomena}[praktična važnost]
+Pretpostavka regularnosti (u literaturi: \emph{constraint qualification}) u
+praksi je gotovo uvijek ispunjena, pa se rijetko provjerava. Ali ako KKT sustav
+nema rješenje, a znate da optimum postoji --- provjerite je li kandidatna točka
+možda neregularna.
+\end{napomena}
+
+% =====================================================================
+\section{KKT uvjeti: općenit slučaj}
+\label{sec:kkt}
+\str{58--61}
+
+Sada spajamo sve: i jednakosti i nejednakosti.
+
+\textbf{Optimizacijski problem} \str{58}:
+\begin{equation}
+\begin{aligned}
+\minim & f(x) \\
+\uzogr & h_i(x) = 0, && i = 1,\dots,m \\
+       & g_j(x) \le 0, && j = 1,\dots,p
+\end{aligned}
+\end{equation}
+
+\begin{definicija}[Regularna točka --- opći slučaj \str{58}]
+Neka je $x^{*}$ točka koja zadovoljava sva ograničenja i neka je skup $J$ skup
+indeksa svih ograničenja nejednakosti koja su aktivna u $x^{*}$, tj.\ neka je
+$J := \{\, j \mid g_j(x^{*}) = 0 \,\}$. Tada je $x^{*}$ \textbf{regularna
+točka} ako su gradijenti $\nabla h_i(x^{*})$, $i = 1,\dots,m$, i
+$\nabla g_j(x^{*})$, $j \in J$, \textbf{linearno nezavisni}.
+\end{definicija}
+
+Dakle (sa slajda), ako je točka $x^{*}$ regularna točka, tada među svim
+ograničenjima jednakosti i \emph{aktivnim} ograničenjima nejednakosti nema
+paralelnih gradijenata niti gradijenata koji se mogu izraziti kao linearna
+kombinacija ostalih gradijenata iz tog skupa.
+
+\begin{teorem}[Karush-Kuhn-Tucker uvjeti \str{59}]
+Neka je $x^{*}$ regularna točka. Ako je $x^{*} \in \R^n$ lokalni minimizator,
+tada postoje Lagrangeovi množitelji $\lambda^{*} = (\lambda_1^{*},\dots,
+\lambda_m^{*})$ i $\mu^{*} = (\mu_1^{*},\dots,\mu_p^{*})$ tako da su sljedeći
+uvjeti zadovoljeni:
+\begin{align}
+\nabla f(x^{*}) + \sum_{i=1}^{m}\lambda_i^{*}\nabla h_i(x^{*})
+  + \sum_{j=1}^{p}\mu_j^{*}\nabla g_j(x^{*}) &= 0
+  &&\text{(stacionarnost)} \\
+h_i(x^{*}) &= 0, && i = 1,\dots,m \\
+g_j(x^{*}) &\le 0, && j = 1,\dots,p \\
+\mu_j^{*}g_j(x^{*}) &= 0, && j = 1,\dots,p \\
+\mu_j^{*} &\ge 0, && j = 1,\dots,p
+\end{align}
+Gornji uvjeti zovu se \textbf{Karush-Kuhn-Tucker nužni uvjeti optimalnosti} ili
+skraćeno \textbf{KKT uvjeti}.
+\end{teorem}
+
+\textbf{Imena pojedinih skupina uvjeta} (standardna terminologija, korisna za
+snalaženje u literaturi):
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Uvjet} & \textbf{Naziv} \\
+\midrule
+$\nabla f + \sum\lambda_i\nabla h_i + \sum\mu_j\nabla g_j = 0$
+  & stacionarnost ($\nabla_x L = 0$) \\
+$h_i(x^{*}) = 0$, $g_j(x^{*}) \le 0$ & primarna dopustivost \\
+$\mu_j^{*} \ge 0$ & dualna dopustivost \\
+$\mu_j^{*}g_j(x^{*}) = 0$ & komplementarnost \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{definicija}[Lagrangeova funkcija --- opći slučaj \str{60}]
+\[
+L(x,\lambda,\mu) = f(x) + \sum_{i=1}^{m}\lambda_ih_i(x)
+                        + \sum_{i=1}^{p}\mu_ig_i(x)
+\]
+Varijable $\lambda = (\lambda_1,\dots,\lambda_m)$ i
+$\mu = (\mu_1,\dots,\mu_p)$ zovu se \textbf{Lagrangeovi množitelji}.
+\end{definicija}
+
+\begin{napomena}[tipfeler na slajdu 60]
+Na slajdu piše $\lambda = (\lambda_1,\dots,\lambda_p)$; treba biti
+$(\lambda_1,\dots,\lambda_m)$, jer $\lambda$ pripada ograničenjima jednakosti
+kojih ima $m$ (usporedi slajd 59).
+\end{napomena}
+
+\textbf{KKT uvjeti izraženi preko $L$} \str{61}\textbf{.} Slajd 61 ponavlja
+teorem, ali svaki uvjet pridružuje odgovarajućoj derivaciji Lagrangeove
+funkcije:
+\begin{align}
+\nabla_x L(x^{*},\lambda^{*},\mu^{*}) = 0
+  &\;\Longrightarrow\; \nabla f(x^{*})
+    + \sum_{i=1}^{m}\lambda_i^{*}\nabla h_i(x^{*})
+    + \sum_{j=1}^{p}\mu_j^{*}\nabla g_j(x^{*}) = 0 \\
+\nabla_\lambda L(x^{*},\lambda^{*},\mu^{*}) = 0
+  &\;\Longrightarrow\; h_i(x^{*}) = 0, \quad i = 1,\dots,m \\
+\nabla_\mu L(x^{*},\lambda^{*},\mu^{*}) \le 0
+  &\;\Longrightarrow\; g_j(x^{*}) \le 0, \quad j = 1,\dots,p \\
+&\phantom{\;\Longrightarrow\;} \mu_j^{*}g_j(x^{*}) = 0, \quad j = 1,\dots,p \\
+&\phantom{\;\Longrightarrow\;} \mu_j^{*} \ge 0, \quad j = 1,\dots,p
+\end{align}
+
+\textbf{Praktični recept za rješavanje KKT sustava} (postupak koji slijedi iz
+gornjih uvjeta i koji ćemo koristiti u poglavlju~\ref{ch:dualnost}):
+
+\begin{enumerate}
+  \item Napiši $L(x,\lambda,\mu)$.
+  \item Izračunaj $\nabla_x L = 0$ --- to je $n$ jednadžbi.
+  \item Dodaj sve jednakosti $h_i(x) = 0$ --- $m$ jednadžbi.
+  \item \textbf{Pretpostavi koja su nejednakosna ograničenja aktivna.} Za svako
+        pretpostavljeno neaktivno stavi $\mu_j = 0$; za svako aktivno stavi
+        $g_j(x) = 0$. (Ovo je „pogađanje aktivnog skupa”; kod $p$ ograničenja
+        ima najviše $2^p$ kombinacija, ali većina se odmah odbaci.)
+  \item Riješi dobiveni sustav jednadžbi.
+  \item \textbf{Provjeri} preostale uvjete: jesu li svi $\mu_j \ge 0$ i jesu li
+        sva pretpostavljeno neaktivna ograničenja doista zadovoljena
+        ($g_j(x) < 0$)? Ako ne --- pretpostavka o aktivnom skupu je bila
+        pogrešna, vrati se na korak 4.
+  \item Usporedi $f$ u svim preživjelim kandidatima.
+\end{enumerate}
+
+\begin{napomena}[kada su KKT uvjeti i dovoljni]
+Za \textbf{konveksan} problem (odjeljak~\ref{sec:konveksni-problem}) KKT uvjeti
+nisu samo nužni nego i \textbf{dovoljni}: svaka točka koja ih zadovoljava je
+globalni optimum. To ćemo formalno vidjeti u poglavlju~\ref{ch:dualnost}
+\str{4:19--23}. Zato se u praksi problemi trude formulirati konveksno --- tada
+rješavanje KKT sustava daje \emph{konačan} odgovor, bez dodatne provjere.
+\end{napomena}
+
+% =====================================================================
+\section{Fizikalna interpretacija Lagrangeovih množitelja}
+\str{62--63}
+
+\textbf{Postavka} \str{62}\textbf{.} Čestica se giba po glatkoj površini zadanoj
+jednadžbom $h(x,y,z) = 0$, pod djelovanjem konzervativnog polja sila zadanog
+funkcijom $\Phi(x,y,z)$.
+
+\textbf{Sila potencijalnog polja:}
+\[
+F = \begin{pmatrix} F_x \\ F_y \\ F_z \end{pmatrix}
+  = \begin{pmatrix}
+    \frac{\partial \Phi}{\partial x} \\
+    \frac{\partial \Phi}{\partial y} \\
+    \frac{\partial \Phi}{\partial z}
+    \end{pmatrix} = \nabla\Phi
+\]
+
+\textbf{Reakcija veze} je u smjeru \textbf{normale} na površinu i proporcionalna
+je gradijentu veze:
+\[
+F_n = \begin{pmatrix} N_x \\ N_y \\ N_z \end{pmatrix} = \lambda\,\nabla h
+\]
+
+\textbf{Jednadžba gibanja} \str{63}\textbf{.} Jednadžba gibanja čestice je
+\[
+m\,a = F + F_n
+\]
+gdje je $m$ masa i $a = \begin{pmatrix}\ddot x & \ddot y & \ddot z\end{pmatrix}\T$
+akceleracija čestice, odnosno
+\[
+m\,a = \nabla\Phi + \lambda\nabla h, \qquad\text{uz ograničenje } g(x,y,z) = 0.
+\]
+
+\textbf{Za stacionarnu točku} je $a = 0$, odnosno
+\[
+\nabla\Phi + \lambda\nabla h = 0,
+\]
+\textbf{što predstavlja uvjet ravnoteže sila.} Faktor proporcionalnosti
+$\lambda$ je Lagrangeov množitelj za sljedeći optimizacijski problem:
+\[
+\min\ \Phi(x,y,z) \quad\text{uz ogr.}\quad h(x,y,z) = 0
+\]
+
+\begin{napomena}[što ovo znači --- i zašto je važno]
+Lagrangeov množitelj \textbf{nije puka matematička pomoćna varijabla}: on ima
+fizikalno značenje \textbf{sile reakcije veze}.
+
+\begin{itemize}
+  \item Ograničenje $h(x)=0$ je „podloga” koja tijelo drži.
+  \item $\lambda$ mjeri \textbf{koliko jako} ta podloga mora gurati da tijelo
+        ostane na njoj.
+  \item Ako je $\lambda$ velik, ograničenje „radi teško” --- njegovo popuštanje
+        donijelo bi veliku korist.
+\end{itemize}
+
+Ta se ideja u poglavlju~\ref{ch:dualnost} formalizira kao \textbf{analiza
+osjetljivosti}: $\lambda$ je derivacija optimalne vrijednosti po pomaku
+ograničenja. U ekonomiji se isti broj zove \emph{sjenska cijena}.
+\end{napomena}
+
+\textbf{Napomena o oznakama sa slajda 63:} u zadnjem retku piše ograničenje
+$g(x,y,z) = 0$ iako se u ostatku izvoda koristi $h$; radi se o istoj vezi.
+
+% =====================================================================
+\section{Ravnotežni položaj preko minimizacije potencijalne energije}
+\str{64--68}
+
+Slajdovi 64--68 daju niz primjera oznake „Primjer”. \textbf{Svi su prikazani
+isključivo kao slike (skice i grafovi), bez ispisanih formula} --- računi su
+očito rađeni na ploči. Zato ih ovdje opisujem točno onako kako izgledaju, uz
+naznaku kojim se aparatom iz ovog poglavlja rješavaju; formule ne izmišljam.
+
+\subsection{Primjer 1: uteg na opruzi \str{64}}
+
+Skica prikazuje: vodoravnu šrafiranu stropnu plohu s objesištem; koordinatni
+sustav $(x,y)$ s ishodištem u objesištu; oprugu koja visi prema dolje i na
+njezinu kraju kuglicu označenu $m = $ masa utega. Sa strane je strelica prema
+dolje označena $g$, gravitacija. Kotirana je duljina $L_0 = $ duljina
+neopterećene opruge.
+
+\textbf{Tip problema:} minimizacija potencijalne energije \textbf{bez}
+ograničenja --- uteg se slobodno spušta dok se sile ne izjednače. To je isti
+tip problema kao u odjeljku~1.6.5, samo s jednom oprugom.
+
+\subsection{Primjer 2: klizač na vertikalnoj vodilici \str{65}}
+
+Skica dodaje \textbf{vertikalnu vodilicu} (šrafirani stup) na udaljenosti $x_0$
+lijevo od objesišta. Masa se sada zove $m = $ masa klizača i može se gibati
+\emph{samo} po toj vodilici; kotirana je i visina $y_{\max}$. Opruga je
+razvučena ukoso, od objesišta do klizača.
+
+\textbf{Tip problema:} minimizacija potencijalne energije \textbf{uz ograničenje
+jednakosti} $x = -x_0$ (klizač mora ostati na vodilici) --- dakle točno
+Lagrangeova metoda iz odjeljka~\ref{sec:lagrange}. Lagrangeov množitelj je
+vodoravna sila kojom vodilica djeluje na klizač (fizikalna interpretacija iz
+prethodnog odjeljka).
+
+\subsection{Primjeri 3 i 4: nivo krivulje energije s gradijentima \str{66--67}}
+
+Slajdovi 66 i 67 pokraj iste skice prikazuju \textbf{konturni graf potencijalne
+energije} $V(x,y)$ u ravnini, s nivo krivuljama označenim brojevima
+($-13$, $-14$, $-10$, $-8$, $-5$, $-3$, $-2$, $-1$, $0$, $3$, $5$ \dots) i
+nekoliko obojenih strelica iz jedne točke:
+
+\begin{itemize}
+  \item \textbf{slajd 66:} plava okomita crta (vodilica, tj.\ ograničenje),
+        crvena vodoravna crta, te iz označene crvene točke vodoravne strelice u
+        oba smjera --- zelena udesno i plava ulijevo;
+  \item \textbf{slajd 67:} iz iste točke dodane su još dvije strelice --- plava
+        ukoso prema gore-lijevo i crvena prema dolje.
+\end{itemize}
+
+\textbf{Kako to čitati u jeziku ovog poglavlja.} Okomita plava crta je krivulja
+ograničenja (vodilica). Strelice su gradijenti: gradijent energije i gradijent
+ograničenja. Ravnotežni položaj je ondje gdje se te dvije strelice poravnaju,
+tj.\ gdje je $\nabla V = -\lambda\nabla h$ --- upravo uvjet sa slajda 31.
+Konturni graf pokazuje da nivo krivulja energije u toj točki \textbf{tangira}
+vodilicu.
+
+\subsection{Primjer 5: uteg na opruzi iznad kose podloge \str{68}}
+
+Zadnja skica prikazuje uteg obješen o oprugu (kao u Primjeru 1), ali ispod njega
+je \textbf{kosa šrafirana ploha} zadana pravcem $y = ax + b$. Uteg ima
+vodoravnu podlogu s označenim točkama $A$ i $B$, a $L_0$ je opet duljina
+neopterećene opruge.
+
+\textbf{Tip problema:} minimizacija potencijalne energije \textbf{uz ograničenje
+nejednakosti} --- uteg ne smije propasti kroz podlogu, dakle $y \ge ax+b$,
+odnosno u standardnoj formi $ax + b - y \le 0$. Ovo je točno situacija iz
+odjeljka~\ref{sec:nejednakost}, s dva moguća ishoda:
+
+\begin{itemize}
+  \item \textbf{ograničenje neaktivno} ($\mu = 0$): opruga je dovoljno kratka,
+        uteg visi u zraku iznad podloge i ravnoteža je ista kao u Primjeru 1;
+  \item \textbf{ograničenje aktivno} ($\mu > 0$): uteg leži na podlozi, a $\mu$
+        je \textbf{normalna reakcija podloge}.
+\end{itemize}
+
+Uvjet komplementarnosti $\mu\,g(x) = 0$ ovdje ima izravno fizikalno značenje:
+\emph{podloga gura samo ako je tijelo dodiruje}. Ako tijelo lebdi, reakcija je
+nula; ako je reakcija pozitivna, tijelo nužno leži na podlozi.
+
+% =====================================================================
+\section{Sažetak poglavlja}
+
+\textbf{Glavni rezultat --- KKT uvjeti.} Za problem
+$\min f(x)$ uz $h_i(x)=0$, $g_j(x)\le0$, u regularnom lokalnom minimizatoru
+$x^{*}$ postoje $\lambda^{*}$, $\mu^{*}$ takvi da:
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+$\nabla f(x^{*}) + \sum_i\lambda_i^{*}\nabla h_i(x^{*})
+  + \sum_j\mu_j^{*}\nabla g_j(x^{*}) = 0$ & stacionarnost \\
+$h_i(x^{*}) = 0$, \quad $g_j(x^{*}) \le 0$ & primarna dopustivost \\
+$\mu_j^{*} \ge 0$ & dualna dopustivost \\
+$\mu_j^{*}g_j(x^{*}) = 0$ & komplementarnost \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Logika izvoda, u pet koraka:}
+
+\begin{enumerate}
+  \item \textbf{Dozvoljeni smjer} $=$ smjer u kojem se smije napraviti mali
+        korak; \textbf{smjer pada} $=$ smjer u kojem cilj opada.
+  \item U optimumu ta dva skupa nemaju presjek:
+        $D(x^{*}) \cap S(x^{*}) = \emptyset$.
+  \item Za \textbf{jednakost}, dozvoljeni smjerovi su okomiti na $\nabla h$;
+        prazan presjek $\Rightarrow$ $\nabla f$ kolinearan s $\nabla h$.
+  \item Za \textbf{nejednakost}, dozvoljeni smjerovi su na jednoj strani od
+        $\nabla g$; prazan presjek $\Rightarrow$ $\nabla f = -\mu\nabla g$ uz
+        $\mu \ge 0$. Neaktivna ograničenja daju $\mu = 0$ --- odatle
+        komplementarnost.
+  \item \textbf{Lagrangeova funkcija} $L = f + \sum\lambda_ih_i +
+        \sum\mu_jg_j$ pakira sve to: uvjeti su derivacije od $L$.
+\end{enumerate}
+
+\textbf{Tri stvari koje se najlakše zaborave:}
+
+\begin{enumerate}
+  \item KKT su \textbf{nužni, ne dovoljni} uvjeti (osim kod konveksnih
+        problema). Uvijek usporedite $f$ u svim kandidatima.
+  \item $\mu_j \ge 0$ vrijedi samo za \textbf{nejednakosti}; $\lambda_i$ smije
+        biti bilo kojeg predznaka.
+  \item Vrijede samo u \textbf{regularnoj} točki (linearno nezavisni gradijenti
+        jednakosti i \emph{aktivnih} nejednakosti).
+\end{enumerate}
+
+\textbf{Terminologija (hrvatski $\leftrightarrow$ engleski):}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Hrvatski} & \textbf{Engleski} \\
+\midrule
+dozvoljeni smjer & feasible direction \\
+smjer pada & descent direction \\
+aktivno / neaktivno ograničenje & active / inactive constraint \\
+regularna točka & regular point (constraint qualification) \\
+Lagrangeov množitelj & Lagrange multiplier \\
+Lagrangeova funkcija & Lagrangian \\
+uvjet komplementarnosti & complementary slackness \\
+stacionarnost & stationarity \\
+primarna / dualna dopustivost & primal / dual feasibility \\
+reakcija veze & constraint reaction force \\
+\bottomrule
+\end{tabular}
+\end{center}

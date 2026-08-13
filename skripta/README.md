@@ -86,7 +86,7 @@ Legenda: ✅ obrađeno i zapisano · 🔄 u tijeku · ⬜ nije počelo
 |---|---|---|---|
 | `01_Uvod.pdf` | 1–79 | ✅ | cijelo predavanje, poglavlje 1 |
 | `02_Definicije_klasifikacija_konveksnost.pdf` | 1–72 | ✅ | cijelo predavanje, poglavlje 2 |
-| `03_Uvjeti_optimalnosti.pdf` | 1–68 | ⬜ | |
+| `03_Uvjeti_optimalnosti.pdf` | 1–68 | ✅ | cijelo predavanje, poglavlje 3 |
 | `04_Lagrangeova_dualnost.pdf` | 1–34 | ⬜ | |
 | `05_LP_QP.pdf` | 1–40 | ⬜ | |
 | `06_QCP_SDP.pdf` | 1–31 | ⬜ | |
@@ -174,6 +174,27 @@ Vježbe 2:
 > u skripti su riješeni isključivo pomoću definicija s istih vježbi, uz
 > izričitu oznaku. Zadaci 3 i 4 u izvorniku nemaju ni sliku na koju se
 > pozivaju, pa je uzet konkretan primjer istog tipa.
+
+### Detaljna evidencija — poglavlje 3
+
+| Str. izvora | Tema | Odjeljak skripte |
+|---|---|---|
+| 2 | postavka problema s ograničenjima | 3.1 |
+| 3–8 | dozvoljeni smjerovi, smjerovi pada, nužni uvjeti 1. reda | 3.2 |
+| 9–18 | primjer: sedlasta funkcija na disku (dva kandidata) | 3.3 |
+| 19–32 | jedno ograničenje jednakosti, kolinearnost gradijenata | 3.4 |
+| 33–34 | Lagrangeova funkcija | 3.5 |
+| 35–39 | više ograničenja jednakosti, regularna točka, recept | 3.6 |
+| 40 | primjer: paralelepiped upisan u kuglu | 3.6.4 |
+| 41–51 | jedno ograničenje nejednakosti, aktivnost, komplementarnost | 3.7 |
+| 52–57 | više ograničenja nejednakosti, geometrija, neregularna točka | 3.8 |
+| 58–61 | **KKT uvjeti — opći slučaj** | 3.9 |
+| 62–63 | fizikalna interpretacija množitelja (reakcija veze) | 3.10 |
+| 64–68 | ravnotežni položaj: pet primjera (samo slike u izvorniku) | 3.11 |
+
+> Slajdovi 64–68 u izvorniku nemaju ispisane formule (računi su rađeni na
+> ploči), pa su u skripti opisani točno onako kako izgledaju, uz naznaku kojim
+> se aparatom iz poglavlja rješavaju.
 
 ## Izvan opsega
 
