@@ -1,4 +1,1846 @@
 \chapter{Lagrangeova dualnost}
 \label{ch:dualnost}
 
-\emph{Poglavlje je u izradi.}
+\begin{izvor}
+\textbf{Izvori:} \texttt{04\_Lagrangeova\_dualnost.pdf} (str.\ 1--34) i
+\texttt{Vjezbe\_3.pdf} (str.\ 1--42) --- oboje obrađeno u cijelosti.
+
+Vježbe 3 imaju dva primjera. \textbf{Primjer 1} (tržište i formiranje cijena)
+je primjena dualne dekompozicije, pa stoji uz nju
+(odjeljak~\ref{sec:dekompozicija}). \textbf{Primjer 2} dodiruje više tema, pa je
+razlomljen po podzadacima: a) i b) uz ponovljene KKT uvjete
+(odjeljak~\ref{sec:kkt-opet}), c) i d) uz dualni problem
+(odjeljak~\ref{sec:primjer2-dual}), e) i f) uz analizu osjetljivosti
+(odjeljak~\ref{sec:osjetljivost}). Oznaka \str{V3:20} znači „Vježbe 3,
+stranica 20”.
+\end{izvor}
+
+\textbf{Što ovo poglavlje donosi.} U poglavlju~\ref{ch:uvjeti} Lagrangeova
+funkcija bila je samo \emph{tehnički trik} za izvod nužnih uvjeta. Ovdje ista
+funkcija dobiva dublje značenje: iz nje se gradi \textbf{drugi optimizacijski
+problem} (dualni), koji daje donju granicu na rješenje polaznog i --- pod
+određenim uvjetima --- \emph{istu} optimalnu vrijednost. To otvara tri stvari:
+
+\begin{enumerate}
+  \item \textbf{provjeru optimalnosti} („koliko sam daleko od optimuma?”),
+  \item \textbf{distribuirano rješavanje} (veliki problem rastavljen na male,
+        neovisne),
+  \item \textbf{analizu osjetljivosti} (koliko se optimum mijenja ako popustimo
+        ograničenje).
+\end{enumerate}
+
+% =====================================================================
+\section{Donje granice i dualna funkcija}
+\label{sec:donje-granice}
+\str{4--9}
+
+\textbf{Optimizacijski problem} \str{4}:
+\begin{equation}
+\begin{aligned}
+\minim & f(x) \\
+\uzogr & h_i(x) = 0, && i = 1,\dots,m \\
+       & g_j(x) \le 0, && j = 1,\dots,p
+\end{aligned}
+\end{equation}
+
+Neka je $p\opt$ \textbf{optimalna vrijednost} $f(x)$.
+
+\subsection{Ključno opažanje}
+\str{5}
+
+\begin{teorem}[Donje granice]
+Neka je $x$ u dozvoljenom skupu ($g(x) \le 0$, $h(x) = 0$). Za proizvoljan
+$\lambda \in \R^m$ i $\mu \in \R^p$ gdje je $\mu \ge 0$ imamo
+\begin{equation}
+\label{eq:donja-granica}
+L(x,\lambda,\mu) := f(x) + \sum_{i=1}^{m}\lambda_i h_i(x)
+                        + \sum_{j=1}^{p}\mu_j g_j(x) \;\le\; f(x).
+\end{equation}
+\end{teorem}
+
+\textbf{Zašto to vrijedi --- provjerite član po član:}
+
+\begin{itemize}
+  \item $\sum_i \lambda_i h_i(x)$: budući da je $x$ dopustiv, vrijedi
+        $h_i(x) = 0$ za svaki $i$, pa je cijela ta suma \textbf{jednaka nuli},
+        bez obzira na $\lambda$. Zato $\lambda$ smije biti bilo kojeg predznaka.
+  \item $\sum_j \mu_j g_j(x)$: dopustivost daje $g_j(x) \le 0$, a
+        pretpostavka daje $\mu_j \ge 0$. Umnožak nenegativnog i nepozitivnog
+        broja je \textbf{nepozitivan}, pa je i cijela suma $\le 0$.
+  \item Dakle $L = f + 0 + (\text{nešto} \le 0) \le f$. \checkmark
+\end{itemize}
+
+\begin{napomena}[ovdje se vidi odakle uvjet $\mu \ge 0$]
+Kad bi neki $\mu_j$ bio negativan, član $\mu_jg_j(x)$ mogao bi biti
+\emph{pozitivan} i cijela bi nejednakost pala. Zahtjev $\mu \ge 0$ je upravo
+ono što čini $L$ donjom ogradom za $f$ na dozvoljenom skupu.
+\end{napomena}
+
+\subsection{Infimizacija obiju strana}
+\str{6}
+
+Nakon infimizacije lijeve i desne strane \eqref{eq:donja-granica}:
+\begin{equation}
+\label{eq:lanac}
+\ell(\lambda,\mu) := \inf_x L(x,\lambda,\mu)
+\;\le\; \inf_{\{x \mid g(x)\le0,\,h(x)=0\}} L(x,\lambda,\mu)
+\;\le\; \inf_{\{x \mid g(x)\le0,\,h(x)=0\}} f(x) = p\opt
+\end{equation}
+
+\textbf{Objašnjenje svakog koraka u lancu} --- to je najvažniji izvod poglavlja:
+
+\begin{enumerate}
+  \item \textbf{Prva nejednakost.} Lijevo se infimum uzima po \emph{svim}
+        $x \in \R^n$, desno samo po \emph{dopustivim} $x$. Traženje minimuma po
+        \textbf{većem} skupu daje \textbf{manju ili jednaku} vrijednost --- jer
+        veći skup uključuje sve kandidate manjeg, i možda još bolje.
+  \item \textbf{Druga nejednakost.} Ovo je izravno \eqref{eq:donja-granica}
+        („$L \le f$ na dopustivim točkama”), primijenjeno pod istim infimumom.
+  \item \textbf{Zadnja jednakost.} Infimum od $f$ po dopustivim točkama je po
+        definiciji optimalna vrijednost $p\opt$.
+\end{enumerate}
+
+\textbf{Rezultat:} $\ell(\lambda,\mu) \le p\opt$ za \emph{svaki} par
+$(\lambda,\mu)$ s $\mu \ge 0$. Dobili smo \textbf{stroj za proizvodnju donjih
+granica}: uvrstite bilo koje dopušteno $(\lambda,\mu)$ i dobit ćete broj za
+koji sigurno znate da nije veći od pravog optimuma.
+
+\subsection{Najbolja donja granica}
+\str{9}
+
+Budući da su $\lambda$ i $\mu \ge 0$ proizvoljni, prirodno je tražiti
+\textbf{najbolju} (najveću) takvu granicu:
+\begin{equation}
+\label{eq:slaba-dualnost}
+d\opt = \max_{\{\lambda,\mu \mid \mu\ge0\}} \ell(\lambda,\mu)
+\;\le\; \inf_{\{x \mid g(x)\le0,\,h(x)=0\}} f(x) = p\opt
+\end{equation}
+
+% =====================================================================
+\section{Terminologija}
+\str{10}
+
+\begin{definicija}[Pojmovi dualnosti]
+\begin{itemize}
+  \item \textbf{Lagrangian} (Lagrangeova funkcija):
+        \[
+        L(x,\lambda,\mu) := f(x) + \sum_{i=1}^{m}\lambda_ih_i(x)
+                                 + \sum_{j=1}^{p}\mu_jg_j(x)
+        \]
+  \item \textbf{Lagrangeova dualna funkcija cilja:}
+        $\ell(\lambda,\mu) := \inf_x L(x,\lambda,\mu)$
+  \item \textbf{Lagrangeov dualni problem:}
+        $d\opt = \sup_{\{\lambda,\mu \mid \mu\ge0\}} \ell(\lambda,\mu)$
+  \item \textbf{Primarni problem:}
+        $p\opt = \inf_{\{x \mid g(x)\le0,\,h(x)=0\}} f(x)$
+  \item $\lambda_i$ je Lagrangeov množitelj (\textbf{dualna varijabla})
+        pridružen ograničenju $h_i(x) = 0$
+  \item $\mu_j$ je Lagrangeov množitelj (dualna varijabla) pridružen
+        ograničenju $g_j(x) \le 0$
+\end{itemize}
+\end{definicija}
+
+\begin{napomena}[dvije razine minimizacije --- ne pobrkati ih]
+\begin{itemize}
+  \item \textbf{Unutarnja} operacija je $\inf_x$: minimizira se po
+        \emph{primarnim} varijablama $x$, uz $(\lambda,\mu)$ \emph{fiksne}.
+        Rezultat je broj koji ovisi o $(\lambda,\mu)$ --- to je $\ell$.
+  \item \textbf{Vanjska} operacija je $\max$: maksimizira se po
+        \emph{dualnim} varijablama.
+\end{itemize}
+Dakle dualni problem je \emph{max-min}, dok je primarni obični \emph{min}.
+Uočite i da unutarnji $\inf_x$ ide po \textbf{cijelom} $\R^n$ --- ograničenja
+su „progutana” u $L$.
+\end{napomena}
+
+% =====================================================================
+\section{Slaba dualnost}
+\str{11}
+
+\begin{teorem}[Slaba dualnost --- donje granice]
+\[
+d\opt = \max_{\{\lambda,\mu \mid \mu\ge0\}} \ell(\lambda,\mu)
+\;\le\; \inf_{\{x \mid g(x)\le0,\,h(x)=0\}} f(x) = p\opt
+\]
+\textbf{Dualna optimalna vrijednost} $(d\opt)$ $\le$ \textbf{Primarna optimalna
+vrijednost} $(p\opt)$.
+
+\textbf{Slaba dualnost uvijek vrijedi!} (Bez obzira je li primarni problem
+konveksan ili ne.)
+\end{teorem}
+
+\textbf{Druga ključna tvrdnja sa slajda:} \textbf{Dualni problem je konkavan
+maksimizacijski problem.}
+
+\begin{napomena}[zašto je dualni problem uvijek konkavan]
+Za \emph{fiksan} $x$, funkcija $(\lambda,\mu) \mapsto L(x,\lambda,\mu)$ je
+\textbf{afina} u $(\lambda,\mu)$ --- multiplikatori ulaze samo linearno. Dualna
+funkcija $\ell$ je infimum \emph{cijele obitelji} takvih afinih funkcija (po
+svim $x$), a infimum afinih funkcija je uvijek \textbf{konkavna} funkcija.
+Ograničenje $\mu \ge 0$ je afino.
+
+\textbf{Posljedica:} dualni problem je \emph{uvijek} konveksan (maksimizacija
+konkavne funkcije), čak i kad je primarni problem grozno nekonveksan. Zato je
+dualnost tako moćna --- vidi Primjer 2 niže.
+\end{napomena}
+
+\textbf{Dualni jaz.} Razlika $p\opt - d\opt \ge 0$ zove se \textbf{dualni jaz}
+(engl.\ \emph{duality gap}). Slaba dualnost kaže da je uvijek nenegativan.
+Praktična korist: ako riješimo dualni problem i dobijemo $d\opt$, a imamo bilo
+koju dopustivu točku $\bar x$, onda znamo
+\[
+d\opt \le p\opt \le f(\bar x)
+\]
+--- dakle znamo \emph{koliko najviše} možemo još dobiti. To je „certifikat
+kvalitete” rješenja.
+
+% =====================================================================
+\section{Primjer 1: linearno programiranje u standardnoj formi}
+\label{sec:dual-lp}
+\str{12--13}
+
+\begin{equation}
+\begin{aligned}
+\minim & c\T x \\
+\uzogr & Ax - b = 0, \\
+       & x \ge 0 \qquad (-x \le 0)
+\end{aligned}
+\end{equation}
+
+\textbf{Lagrangian:}
+\[
+L(x,\lambda,\mu) = c\T x + \lambda\T(Ax-b) - \mu\T x
+= -b\T\lambda + (c + A\T\lambda - \mu)\T x
+\]
+
+\emph{Raspis preslagivanja (na slajdu nije prikazan):}
+\begin{align}
+L &= c\T x + \lambda\T Ax - \lambda\T b - \mu\T x \\
+  &= -\lambda\T b + \big(c\T + \lambda\T A - \mu\T\big)x \\
+  &= -b\T\lambda + \big(c + A\T\lambda - \mu\big)\T x
+\end{align}
+\emph{Međukoraci:} $\lambda\T b = b\T\lambda$ (skalar je jednak svom
+transponatu); $\lambda\T A = (A\T\lambda)\T$; skupljeni koeficijenti uz $x$ daju
+vektor $c + A\T\lambda - \mu$.
+
+\textbf{Uočite:} $L$ je \textbf{afina funkcija u $x$}. Stoga imamo
+\begin{equation}
+\ell(\lambda,\mu) = \inf_x L(x,\lambda,\mu) =
+\begin{cases}
+-b\T\lambda & \text{ako je } c + A\T\lambda - \mu = 0 \\
+-\infty & \text{u ostalim slučajevima}
+\end{cases}
+\end{equation}
+
+\begin{napomena}[zašto afina funkcija ima infimum $-\infty$]
+Afina funkcija $\alpha + \beta\T x$ nema donju granicu osim ako je
+$\beta = 0$: uzmemo li $x = -t\beta$ za veliki $t$, vrijednost ide u
+$-\infty$. Ako je pak $\beta = 0$, funkcija je konstanta $\alpha$ i infimum je
+upravo $\alpha$.
+
+Ovdje je $\beta = c + A\T\lambda - \mu$ i $\alpha = -b\T\lambda$ --- odatle
+gornji rezultat. Vrijednost $-\infty$ nije problem: takav $(\lambda,\mu)$ daje
+beskorisnu donju granicu, pa ga maksimizacija sama odbacuje.
+\end{napomena}
+
+\textbf{Donja granica:} $p\opt \ge -b\T\lambda$ za bilo koji $\lambda$ takav da
+je $A\T\lambda + c \ge 0$.
+
+\emph{Odakle taj uvjet:} iz $c + A\T\lambda - \mu = 0$ slijedi
+$\mu = c + A\T\lambda$; a budući da mora biti $\mu \ge 0$, dobivamo
+$A\T\lambda + c \ge 0$. Time je $\mu$ eliminiran iz zapisa.
+
+\textbf{Najviša (najbolja) donja granica:}
+\[
+p\opt \ge \max_\lambda\{\, -b\T\lambda \mid A\T\lambda + c \ge 0 \,\}
+\]
+
+\textbf{Poanta:} dual jednog LP-a je opet LP. To je klasična „dualnost LP-a”
+koju ćemo koristiti u poglavljima~\ref{ch:lpqp}~i~\ref{ch:robusno}.
+
+% =====================================================================
+\section{Primjer 2: optimalno particioniranje u dva skupa}
+\label{sec:particioniranje}
+\str{14--15}
+
+\textbf{Postavka} \str{14}\textbf{.} Neka je $W \in \R^{n\times n}$ simetrična
+matrica:
+\begin{equation}
+\begin{aligned}
+\minim & x\T W x \\
+\uzogr & x_i^2 = 1, \quad i = 1,\dots,n
+\end{aligned}
+\end{equation}
+
+\textbf{Interpretacija (sa slajda):} elemente indeksirane skupom
+$\{1,\dots,n\}$ potrebno je optimalno podijeliti u dva skupa koji su
+enkodirani s $x_i = 1$ i $x_i = -1$.
+
+\begin{itemize}
+  \item $W_{ij}$ (element matrice $W$ u $i$-tom retku i $j$-tom stupcu) je
+        \textbf{cijena stavljanja $i$ i $j$ u isti skup};
+  \item $-W_{ij}$ je cijena stavljanja tih elemenata u odvojene skupove.
+\end{itemize}
+
+\emph{Zašto to radi:} $x\T Wx = \sum_{i,j} W_{ij}x_ix_j$. Ako su $i$ i $j$ u
+istom skupu, $x_ix_j = +1$ i pribraja se $W_{ij}$; ako su u različitim,
+$x_ix_j = -1$ i pribraja se $-W_{ij}$. Uvjet $x_i^2 = 1$ znači točno
+$x_i \in \{-1, +1\}$.
+
+\textbf{Tvrdnja sa slajda:} \emph{Ovo je nekonveksan problem. Dozvoljeni skup
+sadrži $2^n$ diskretnih točaka.}
+
+\subsection{Dualna funkcija}
+\str{15}
+
+Uz definiciju $\mathbf{1} = \begin{pmatrix}1&1&\dots&1\end{pmatrix}\T$:
+\begin{align}
+\ell(\lambda)
+&= \inf_x\left(x\T Wx + \sum_{i=1}^{n}\lambda_i(x_i^2 - 1)\right) \\
+&= \inf_x\; x\T\big(W + \diag(\lambda)\big)x - \mathbf{1}\T\lambda
+\end{align}
+
+\emph{Raspis:} $\sum_i \lambda_i x_i^2 = x\T\diag(\lambda)x$, gdje je
+$\diag(\lambda)$ dijagonalna matrica s $\lambda_i$ na dijagonali. Preostali dio
+$-\sum_i\lambda_i = -\mathbf{1}\T\lambda$ ne ovisi o $x$, pa izlazi ispred
+infimuma. \checkmark
+
+\begin{equation}
+\ell(\lambda) =
+\begin{cases}
+-\mathbf{1}\T\lambda & \text{ako je } W + \diag(\lambda) \succeq 0 \\
+-\infty & \text{u ostalim slučajevima}
+\end{cases}
+\end{equation}
+
+\emph{Zašto:} kvadratna forma $x\T Mx$ ima infimum $0$ (postignut u $x = 0$)
+ako i samo ako je $M \succeq 0$; inače postoji smjer $x$ u kojem je forma
+negativna, pa skaliranjem $x \to tx$ ide u $-\infty$ (jer je forma kvadratna u
+$t$). Ovo je izravna primjena definicije pozitivne semidefinitnosti
+\str{2:46}.
+
+\textbf{Donja granica:} $p\opt \ge -\mathbf{1}\T\lambda$ za bilo koji $\lambda$
+takav da je $W + \diag(\lambda) \succeq 0$.
+
+\textbf{Najviša donja granica:}
+\[
+p\opt \ge \max_\lambda\{\, -\mathbf{1}\T\lambda \mid
+W + \diag(\lambda) \succeq 0 \,\}
+\qquad \textbf{konveksan opt.\ problem!}
+\]
+
+\begin{napomena}[zašto je ovaj primjer spektakularan]
+Polazni problem je \textbf{kombinatoran}: $2^n$ diskretnih točaka, dakle za
+$n = 100$ oko $10^{30}$ mogućnosti --- nerješivo iscrpnim pretraživanjem.
+
+Njegov \textbf{dual} je gladak konveksan problem s ograničenjem
+$W + \diag(\lambda) \succeq 0$, tzv.\ \textbf{linearnom matričnom
+nejednadžbom}. To je \emph{semidefinitni program} (SDP,
+poglavlje~\ref{ch:qcpsdp}), koji se rješava učinkovito.
+
+Nema jamstva da je $d\opt = p\opt$ (problem nije konveksan, pa jaka dualnost ne
+mora vrijediti), ali dobivamo \textbf{netrivijalnu donju granicu} za problem
+koji inače ne bismo mogli ni približno riješiti. Ovo je poznata SDP-relaksacija
+problema \emph{max-cut}.
+\end{napomena}
+
+% =====================================================================
+\section{Jaka dualnost i Slaterovi uvjeti}
+\label{sec:jaka-dualnost}
+\str{16--18}
+
+\begin{teorem}[Teorem Lagrangeove dualnosti \str{16}]
+\begin{itemize}
+  \item Slaba dualnost uvijek vrijedi: $d\opt \le p\opt$.
+  \item Kad je primarni problem \textbf{konveksan} i kad su zadovoljeni
+        \textbf{Slaterovi uvjeti}, vrijedi \textbf{jaka dualnost}:
+        $d\opt = p\opt$.
+\end{itemize}
+
+\textbf{Jaka dualnost u kompaktnoj formi:}
+\[
+\max_{\{\lambda,\mu \mid \mu\ge0\}}
+\left(\inf_x\; f(x) + \lambda\T h(x) + \mu\T g(x)\right)
+= \inf_{\{x \mid g(x)\le0,\,h(x)=0\}} f(x)
+\]
+\end{teorem}
+
+\textbf{Riječima:} kod konveksnog problema smijemo \textbf{zamijeniti redoslijed}
+operacija $\max$ i $\inf$ bez gubitka. To je vrlo netrivijalna tvrdnja ---
+općenito je uvijek $\max\inf \le \inf\max$, a jednakost je iznimka.
+
+\begin{definicija}[Slaterovi uvjeti (engl.\ \emph{Slater's constraint
+qualification}) \str{17}]
+Definirajmo skupove $I_n$, $I_a$: $i \in I_n$ ako je $g_i(\cdot)$
+\textbf{nelinearna} funkcija; $i \in I_a$ ako je $g_i(\cdot)$ \textbf{afina}
+funkcija.
+
+\textbf{Slaterovi uvjeti:} skup
+\[
+\{\, x \mid h(x) = 0,\; g_i(x) < 0 \text{ za } i \in I_n,\;
+g_i(x) \le 0 \text{ za } i \in I_a \,\}
+\]
+nije prazan skup.
+\end{definicija}
+
+\textbf{Kako to čitati.} Traži se postojanje barem jedne točke koja:
+
+\begin{itemize}
+  \item zadovoljava sve jednakosti \emph{točno};
+  \item zadovoljava sva \textbf{nelinearna} ograničenja nejednakosti
+        \textbf{strogo} (sa $<$, dakle \emph{s rezervom}, ne na samom rubu);
+  \item zadovoljava \textbf{afina} ograničenja obično (dovoljno $\le$).
+\end{itemize}
+
+Takva se točka zove \textbf{strogo dopustiva}. Uvjet neformalno kaže da
+dozvoljeni skup nije „spljošten” --- da ima nepraznu unutrašnjost u nelinearnim
+smjerovima.
+
+\begin{napomena}[praktično značenje]
+Slaterovi uvjeti gotovo su uvijek ispunjeni u inženjerskim problemima; obično se
+provjere jednom rečenicom („postoji točka koja strogo zadovoljava sva
+nelinearna ograničenja”). Ako su \emph{sva} ograničenja nejednakosti afina
+(npr.\ kod LP-a i QP-a s linearnim ograničenjima), uvjet se svodi na to da
+dozvoljeni skup nije prazan --- dakle praktički besplatno.
+\end{napomena}
+
+\subsection{Primjer: LP u standardnoj formi, sada s jakom dualnošću}
+\str{18}
+
+Za problem iz odjeljka~\ref{sec:dual-lp}, dualna funkcija je
+\[
+\ell(\lambda,\mu) = \inf_x L(x,\lambda,\mu) =
+\begin{cases}
+-b\T\lambda & c + A\T\lambda - \mu = 0 \\
+-\infty & \text{u ostalim slučajevima}
+\end{cases}
+\]
+
+Donja granica: $p\opt \ge -b\T\lambda$ za bilo koji $\lambda$ takav da je
+$A\T\lambda + c \ge 0$. \textbf{Zbog jake dualnosti:}
+\[
+p\opt = d\opt = \max_\lambda\{\, -b\T\lambda \mid A\T\lambda + c \ge 0 \,\}
+\]
+
+Nejednakost je postala \textbf{jednakost} --- LP je konveksan i (uz nepraznu
+dopustivost) zadovoljava Slaterove uvjete, pa dualni problem daje \emph{točno}
+istu vrijednost.
+
+% =====================================================================
+\section{KKT uvjeti (još jednom)}
+\label{sec:kkt-opet}
+\str{19--23}
+
+Sada iz dualnosti \emph{ponovno} izvodimo KKT uvjete --- ali ovaj put dobivamo i
+odgovor na pitanje kada su oni \textbf{dovoljni}.
+
+\subsection{Jaka dualnost i uvjeti komplementarnosti}
+\str{20--21}
+
+\textbf{Pretpostavimo da vrijedi jaka dualnost.} Neka je $x\opt$ optimalan za
+primarni problem, a $(\lambda\opt, \mu\opt)$ za dualni problem. Tada vrijedi:
+\begin{align}
+f(x\opt) = \ell(\lambda\opt,\mu\opt)
+&= \inf_x\left(f(x) + \sum_{i=1}^{m}\lambda_i\opt h_i(x)
+              + \sum_{j=1}^{p}\mu_j\opt g_j(x)\right)
+  \label{eq:kkt-lanac1}\\
+&\le f(x\opt) + \sum_{i=1}^{m}\lambda_i\opt h_i(x\opt)
+              + \sum_{j=1}^{p}\mu_j\opt g_j(x\opt)
+  \label{eq:kkt-lanac2}\\
+&\le f(x\opt)
+  \label{eq:kkt-lanac3}
+\end{align}
+
+\textbf{Objašnjenje svakog koraka:}
+
+\begin{itemize}
+  \item prva jednakost je \emph{jaka dualnost} ($p\opt = d\opt$) plus definicija
+        dualne funkcije;
+  \item \eqref{eq:kkt-lanac2}: infimum po \emph{svim} $x$ je $\le$ vrijednosti u
+        \emph{jednoj konkretnoj} točki $x\opt$;
+  \item \eqref{eq:kkt-lanac3}: to je nejednakost \eqref{eq:donja-granica} --- na
+        dopustivoj točki dodani članovi su $\le 0$.
+\end{itemize}
+
+\textbf{Zaključak sa slajda:} zadnje dvije nejednakosti u biti vrijede
+\textbf{sa znakom jednakosti} --- jer lanac počinje i završava istim brojem
+$f(x\opt)$, pa ništa „u sredini” ne smije biti strogo manje:
+\[
+f(x\opt) = \ell(\lambda\opt,\mu\opt)
+= \inf_x\Big(f(x) + \textstyle\sum_i\lambda_i\opt h_i(x)
+                  + \sum_j\mu_j\opt g_j(x)\Big)
+= f(x\opt) + \textstyle\sum_i\lambda_i\opt h_i(x\opt)
+           + \sum_j\mu_j\opt g_j(x\opt)
+\]
+
+\textbf{Iz toga slijede dvije stvari} \str{21}:
+
+\begin{enumerate}
+  \item \textbf{$x\opt$ minimizira $L(x,\lambda\opt,\mu\opt)$.}
+
+        \emph{Zašto:} jednakost u \eqref{eq:kkt-lanac2} znači da je infimum
+        Lagrangiana postignut baš u $x\opt$.
+  \item \textbf{$\mu_j\opt g_j(x\opt) = 0$} za sve $j = 1,\dots,p$ ---
+        \textbf{uvjeti komplementarnosti} (već smo ih susretali!):
+        \[
+        g_j(x\opt) < 0 \Rightarrow \mu_j\opt = 0, \qquad
+        \mu_j\opt > 0 \Rightarrow g_j(x\opt) = 0
+        \]
+
+        \emph{Zašto:} jednakost u \eqref{eq:kkt-lanac3} znači da je
+        $\sum_j\mu_j\opt g_j(x\opt) = 0$ (članovi s $h_i$ su ionako nula). Ali
+        to je zbroj \emph{nepozitivnih} članova; zbroj nepozitivnih brojeva je
+        nula samo ako je \emph{svaki} od njih nula. \checkmark
+\end{enumerate}
+
+\subsection{Teorem: KKT iz dualnosti}
+\str{22}
+
+\begin{teorem}[KKT uvjeti]
+Ako vrijedi jaka dualnost i $x\opt, \lambda\opt, \mu\opt$ su optimalni, oni
+zadovoljavaju KKT uvjete:
+\begin{align}
+\nabla_x L(x\opt,\lambda\opt,\mu\opt) = 0 \;\Longrightarrow\;
+\nabla f(x\opt) + \sum_{i=1}^{m}\lambda_i\opt\nabla h_i(x\opt)
+                + \sum_{j=1}^{p}\mu_j\opt\nabla g_j(x\opt) &= 0
+  && \text{(gradijentna jed.)} \notag\\
+h_i(x\opt) &= 0, && \text{(primarna ogr.)} \notag\\
+g_j(x\opt) &\le 0, && \text{(primarna ogr.)} \notag\\
+\mu_j\opt g_j(x\opt) &= 0, && \text{(komplementarnost)} \notag\\
+\mu_j\opt &\ge 0, && \text{(dualna ogr.)} \notag
+\end{align}
+\end{teorem}
+
+\emph{Odakle gradijentna jednadžba:} iz tvrdnje 1 gore, $x\opt$ minimizira
+glatku funkciju $L(\cdot,\lambda\opt,\mu\opt)$ \emph{bez ograničenja}, pa je u
+njoj gradijent nula --- uvjet iz odjeljka~\ref{sec:uvjeti-bez-ogr}.
+
+\subsection{KKT uvjeti za konveksne probleme --- sada i dovoljni}
+\str{23}
+
+\begin{teorem}[Dovoljnost]
+Ako $x\opt, \lambda\opt, \mu\opt$ zadovoljavaju KKT uvjete za \textbf{konveksan}
+problem, onda su \textbf{optimalni}.
+\end{teorem}
+
+\textbf{Dokaz (sa slajda, s dopunjenim objašnjenjima).} Pretpostavimo da
+$x\opt, \lambda\opt, \mu\opt$ zadovoljavaju KKT uvjete. Imamo da:
+
+\begin{itemize}
+  \item \textbf{iz komplementarnosti slijedi} $f(x\opt) =
+        L(x\opt,\lambda\opt,\mu\opt)$.
+
+        \emph{Zašto:} $L = f + \sum\lambda_ih_i + \sum\mu_jg_j$; prva suma je
+        nula jer je $h_i(x\opt) = 0$, druga je nula po komplementarnosti.
+  \item \textbf{iz gradijentne jednakosti i konveksnosti} ($f$, $h_i$ i $g_j$
+        su sve konveksne funkcije) \textbf{slijedi}
+        $\ell(\lambda\opt,\mu\opt) = L(x\opt,\lambda\opt,\mu\opt)$.
+
+        \emph{Zašto:} uz $\mu\opt \ge 0$ i konveksnost, funkcija
+        $x \mapsto L(x,\lambda\opt,\mu\opt)$ je konveksna (zbroj konveksnih uz
+        nenegativne težine). Kod konveksne funkcije stacionarna točka je
+        \emph{globalni} minimum (odjeljak~\ref{sec:svojstva-konv}), pa je
+        infimum postignut u $x\opt$ --- a taj infimum je po definiciji $\ell$.
+\end{itemize}
+
+pa zaključujemo da je $f(x\opt) = \ell(\lambda\opt,\mu\opt)$, a budući da
+$f(x\opt)$ ne može biti manji od $\ell(\lambda\opt,\mu\opt)$ (slaba dualnost),
+nalazimo se nužno u optimumu. $\blacksquare$
+
+\begin{teorem}[Karakterizacija optimuma \str{23}]
+Ako imamo konveksan optimizacijski problem sa zadovoljenim Slaterovim uvjetima,
+onda je $x\opt$ optimalan \textbf{ako i samo ako} postoje $\lambda\opt,
+\mu\opt$ koji zadovoljavaju KKT uvjete.
+\end{teorem}
+
+\begin{napomena}[ovo je centralni praktični rezultat kolegija]
+Za konveksan problem sa Slaterovim uvjetima, \textbf{rješavanje KKT sustava je
+ekvivalentno rješavanju problema}. Nema više „kandidata” koje treba dodatno
+provjeravati (usporedi upozorenja u poglavlju~\ref{ch:uvjeti}): svako rješenje
+KKT sustava \emph{jest} globalni optimum.
+\end{napomena}
+
+\subsection{Vježbe 3, Primjer 2, podzadaci a) i b)}
+\label{sec:primjer2-ab}
+
+\begin{zadatak}[Vježbe 3, Primjer 2: dualnost, KKT, osjetljivost]
+\label{zad:primjer2}
+\str{V3:20}
+
+\textbf{Postavka.}
+\[
+\begin{aligned}
+\text{minimiziraj}_x \quad & f(x) = (x_1-3)^2 + (x_2-2)^2 \\
+\text{uz ogr.} \quad
+& -x_1 \le 0 && (g_1) \\
+& x_1 - 2 \le 0 && (g_2) \\
+& -x_2 \le 0 && (g_3) \\
+& x_2 - 1 \le 0 && (g_4)
+\end{aligned}
+\]
+
+\textbf{Podzadaci:}
+\begin{enumerate}[label=\alph*)]
+  \item Je li ovo konveksan opt.\ problem?
+  \item Riješi opt.\ problem direktno rješavajući KKT uvjete.
+  \item Riješi problem u MATLAB-u (\texttt{quadprog} i/ili YALMIP) --- odredi
+        primarne i dualne varijable u optimumu.
+  \item Postavi i riješi dualni problem (koristite MATLAB za rješavanje).
+  \item Što možete reći o osjetljivosti optimalne vrijednosti ($p\opt =$ opt.\
+        vrijednost primarnog problema) na perturbacije u ograničenjima?
+  \item Ponovite (d) i (e), ali sad s promijenjenim ograničenjima $g_2$ i $g_4$
+        ($g_1$ i $g_3$ ostaju ista):
+        $g_2(x) = x_1 - 1{,}5 \le 0$, $g_4(x) = x_2 - 1{,}5 \le 0$.
+\end{enumerate}
+
+\medskip
+\textbf{Geometrija problema.} Funkcija cilja je kvadrat udaljenosti od točke
+$(3,2)$. Ograničenja definiraju \textbf{pravokutnik}
+$0 \le x_1 \le 2$, $0 \le x_2 \le 1$. Točka $(3,2)$ leži \emph{izvan} tog
+pravokutnika (gore desno), pa se traži točka pravokutnika najbliža njoj.
+
+\medskip
+\textbf{a) Je li ovo konveksan opt.\ problem?} \str{V3:21--22}
+
+\begin{itemize}
+  \item Funkcije ograničenja nejednakosti su konveksne (ovdje su one
+        \textbf{afine}, pa stoga i konveksne).
+  \item \textbf{Hessian:}
+        \[
+        H = \begin{bmatrix}
+        \frac{\partial^2 f}{\partial x_1^2} &
+        \frac{\partial^2 f}{\partial x_1\partial x_2} \\[4pt]
+        \frac{\partial^2 f}{\partial x_2\partial x_1} &
+        \frac{\partial^2 f}{\partial x_2^2}
+        \end{bmatrix}
+        = \begin{pmatrix} 2 & 0 \\ 0 & 2 \end{pmatrix} \succ 0
+        \]
+\end{itemize}
+
+\emph{Raspis Hessiana:} iz $f = (x_1-3)^2 + (x_2-2)^2$ slijedi
+$\partial f/\partial x_1 = 2(x_1-3)$, pa
+$\partial^2 f/\partial x_1^2 = 2$; mješovita derivacija je $0$ jer prvi član ne
+ovisi o $x_2$. Analogno za drugu varijablu. Matrica $2I$ ima obje svojstvene
+vrijednosti jednake $2 > 0$, dakle je pozitivno definitna. \checkmark
+
+\textbf{Zaključak sa slajda:} \emph{Konveksan optimizacijski problem sa
+zadovoljenim Slaterovim uvjetima} $\to$ \textbf{KKT uvjeti su nužni i dovoljni
+za optimalnost} $\to$ \textbf{vrijedi jaka dualnost}.
+
+\emph{Provjera Slatera:} sva su ograničenja afina, pa je dovoljno da dozvoljeni
+skup nije prazan --- npr.\ točka $(1;\ 0{,}5)$ zadovoljava sva četiri.
+\checkmark
+
+\medskip
+\textbf{b) Rješavanje KKT uvjeta} \str{V3:23--27}
+
+\textbf{Lagrangian:}
+\[
+L(x,\mu) = (x_1-3)^2 + (x_2-2)^2 + \mu_1(-x_1) + \mu_2(x_1-2)
+         + \mu_3(-x_2) + \mu_4(x_2-1)
+\]
+
+\textbf{KKT uvjeti:}
+\begin{align}
+\begin{pmatrix} 2x_1 - 6 \\ 2x_2 - 4 \end{pmatrix}
++ \begin{pmatrix} -1 \\ 0 \end{pmatrix}\mu_1
++ \begin{pmatrix} 1 \\ 0 \end{pmatrix}\mu_2
++ \begin{pmatrix} 0 \\ -1 \end{pmatrix}\mu_3
++ \begin{pmatrix} 0 \\ 1 \end{pmatrix}\mu_4 &= 0
+  && (\clubsuit) \\
+-x_1 \le 0,\quad x_1 - 2 \le 0,\quad -x_2 \le 0,\quad x_2 - 1 &\le 0
+  && (g_1)\text{--}(g_4) \\
+\mu_1(-x_1) = 0,\ \mu_2(x_1-2) = 0,\ \mu_3(-x_2) = 0,\ \mu_4(x_2-1) &= 0
+  && (\spadesuit) \\
+\mu_1 \ge 0,\quad \mu_2 \ge 0,\quad \mu_3 \ge 0,\quad \mu_4 &\ge 0
+  && (\heartsuit)
+\end{align}
+
+\emph{Provjera gradijenta:} $\nabla f = (2(x_1-3),\, 2(x_2-2)) =
+(2x_1-6,\, 2x_2-4)$ \checkmark; gradijenti ograničenja su konstantni vektori
+koje čitamo iz koeficijenata: $\nabla g_1 = (-1,0)$, $\nabla g_2 = (1,0)$,
+$\nabla g_3 = (0,-1)$, $\nabla g_4 = (0,1)$. \checkmark
+
+\textbf{Tablica svih kombinacija aktivnosti} \str{V3:24}\textbf{.} Zbog
+$(\spadesuit)$ svako ograničenje je ili aktivno ($g_i(x) = 0$) ili neaktivno
+($g_i(x) < 0$, uz $\mu_i = 0$). S četiri ograničenja to je
+$2^4 = 16$ slučajeva:
+
+\begin{center}
+\small
+\begin{tabular}{ccccc@{\qquad}ccccc}
+\toprule
+\textbf{sluč.} & $g_1$ & $g_2$ & $g_3$ & $g_4$ &
+\textbf{sluč.} & $g_1$ & $g_2$ & $g_3$ & $g_4$ \\
+\midrule
+1 & 0 & 0 & 0 & 0 & 9  & 1 & 0 & 0 & 0 \\
+2 & 0 & 0 & 0 & 1 & 10 & 1 & 0 & 0 & 1 \\
+3 & 0 & 0 & 1 & 0 & 11 & 1 & 0 & 1 & 0 \\
+4 & 0 & 0 & 1 & 1 & 12 & 1 & 0 & 1 & 1 \\
+5 & 0 & 1 & 0 & 0 & 13 & 1 & 1 & 0 & 0 \\
+\textbf{6} & \textbf{0} & \textbf{1} & \textbf{0} & \textbf{1}
+  & 14 & 1 & 1 & 0 & 1 \\
+7 & 0 & 1 & 1 & 0 & 15 & 1 & 1 & 1 & 0 \\
+8 & 0 & 1 & 1 & 1 & 16 & 1 & 1 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Legenda za tablicu (sa slajda):} \textbf{1} --- ograničenje je aktivno
+($g_i(x) = 0$); \textbf{0} --- ograničenje nije aktivno ($g_i(x) < 0$).
+
+\textbf{Primjer čitanja tablice --- slučaj br.\ 10} (zbog $(\spadesuit)$):
+\[
+\begin{aligned}
+g_1(x) = -x_1 = 0, &\qquad \mu_1 \ge 0 \\
+g_2(x) = x_1 - 2 < 0, &\qquad \mu_2 = 0 \\
+g_3(x) = -x_2 < 0, &\qquad \mu_3 = 0 \\
+g_4(x) = x_2 - 1 = 0, &\qquad \mu_4 \ge 0
+\end{aligned}
+\]
+
+\textbf{Provjera slučaja br.\ 10} \str{V3:25}\textbf{.} Prema pretpostavci,
+imamo $x_1 = 0$, $x_2 = 1$, $\mu_2 = 0$, $\mu_3 = 0$. Gradijentna jednadžba
+$(\clubsuit)$ tada postaje
+\[
+\begin{pmatrix} -6 - \mu_1 \\ -2 - \mu_3 \end{pmatrix} = 0
+\]
+odnosno imamo $\mu_1 = -6$ i $\mu_3 = -2$. Prema uvjetima $(\heartsuit)$ moramo
+imati $\mu_i \ge 0$, pa stoga točka optimuma sigurno \textbf{ne} zadovoljava
+pretpostavke iz slučaja br.\ 10.
+
+\emph{Raspis prve komponente:} $2x_1 - 6 - \mu_1 + \mu_2 = 2\cdot0 - 6 - \mu_1
++ 0 = -6 - \mu_1$; izjednačeno s nulom daje $\mu_1 = -6 < 0$ \textbf{--- pad}.
+
+\begin{napomena}[tipfeler na slajdu V3:25]
+U ispisu slučaja 10 na slajdu piše $g_3(x) = -x_1 < 0$; treba biti
+$g_3(x) = -x_2 < 0$ (usporedi definiciju $g_3$ na str.\ V3:20). Isto tako, u
+gradijentnoj jednadžbi druga komponenta bi trebala glasiti $-2 + \mu_4$ (jer je
+$\mu_3 = 0$, a $\mu_4$ je taj koji ulazi s $+1$); slajd piše $-2 - \mu_3$.
+Zaključak se time ne mijenja --- prva komponenta već sama daje $\mu_1 = -6 < 0$
+i ruši slučaj 10.
+\end{napomena}
+
+\textbf{Provjera slučaja br.\ 6} \str{V3:26}\textbf{.}
+\[
+\begin{aligned}
+g_1(x) = -x_1 < 0, &\qquad \mu_1 = 0 \\
+g_2(x) = x_1 - 2 = 0, &\qquad \mu_2 \ge 0 \\
+g_3(x) = -x_2 < 0, &\qquad \mu_3 = 0 \\
+g_4(x) = x_2 - 1 = 0, &\qquad \mu_4 \ge 0
+\end{aligned}
+\]
+
+Prema pretpostavci, imamo $x_1 = 2$, $x_2 = 1$, $\mu_1 = 0$, $\mu_3 = 0$.
+Gradijentna jednadžba $(\clubsuit)$ tada postaje
+\[
+\begin{pmatrix} -2 + \mu_2 \\ -2 + \mu_4 \end{pmatrix} = 0
+\]
+odnosno imamo $\mu_2 = 2$ i $\mu_4 = 2$.
+
+\emph{Raspis:} prva komponenta je $2x_1 - 6 - \mu_1 + \mu_2 =
+2\cdot 2 - 6 - 0 + \mu_2 = -2 + \mu_2$; druga je
+$2x_2 - 4 - \mu_3 + \mu_4 = 2\cdot 1 - 4 - 0 + \mu_4 = -2 + \mu_4$.
+\checkmark
+
+\textbf{Provjerimo još preostale KKT uvjete:} imamo $g_1(x) = -x_1 = -2 < 0$ i
+$g_3(x) = -x_2 = -1 < 0$. \textbf{Svi KKT uvjeti su zadovoljeni.} Zbog jake
+dualnosti, ovo ($x_1 = 2$, $x_2 = 1$) je rješenje primarnog problema.
+
+\textbf{Rješenje} \str{V3:27}:
+\[
+x = \begin{pmatrix} 2 \\ 1 \end{pmatrix}, \qquad
+\mu = \begin{pmatrix} 0 \\ 2 \\ 0 \\ 2 \end{pmatrix}
+\]
+
+\emph{Optimalna vrijednost:} $p\opt = (2-3)^2 + (1-2)^2 = 1 + 1 = 2$.
+
+\begin{napomena}[kako izbjeći ispitivanje svih 16 slučajeva]
+Geometrijski je odmah jasno da će optimum biti u \textbf{gornjem desnom vrhu}
+pravokutnika --- jer je ciljna točka $(3,2)$ gore desno. Aktivna će stoga biti
+gornja granica $x_1 \le 2$ i gornja granica $x_2 \le 1$, tj.\ slučaj 6.
+
+Tablica sa 16 slučajeva je \emph{sustavan} postupak koji radi i kad geometrija
+nije očita; u praksi se počne od najvjerojatnijeg slučaja. Uočite i da svaki
+neuspjeli pokušaj (kao slučaj 10) košta samo nekoliko redaka računa.
+\end{napomena}
+\end{zadatak}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.80\textwidth]{04-primjer2-kkt.png}
+\caption{Vježbe 3, Primjer 2. Dozvoljeni skup je pravokutnik, nivo krivulje su
+kružnice oko $(3,2)$, a optimum je vrh $(2,1)$ u kojem su aktivna ograničenja
+$g_2$ i $g_4$. Gradijent cilja (zeleno) uravnotežen je zbrojem
+$\mu_2\nabla g_2 + \mu_4\nabla g_4$ (crveno).}
+\end{figure}
+
+\begin{crtanje}[KKT točka u vrhu pravokutnika]
+\textbf{Korak 1.} Nacrtajte osi $x_1$ (od $-1$ do $4{,}5$) i $x_2$ (od $-1$ do
+$3{,}5$), jednakim mjerilom.
+
+\textbf{Korak 2 --- prvo ograničenje $g_1$: $-x_1 \le 0$, tj.\ $x_1 \ge 0$.}
+Granica je okomita os; dopušteno je \textbf{desno} od nje.
+
+\textbf{Korak 3 --- drugo ograničenje $g_2$: $x_1 \le 2$.} Granica je okomiti
+pravac kroz $x_1 = 2$; dopušteno je \textbf{lijevo}. Zajedno s korakom 2 imamo
+okomitu traku $0 \le x_1 \le 2$.
+
+\textbf{Korak 4 --- treće i četvrto ograničenje: $0 \le x_2 \le 1$.} Analogno,
+vodoravna traka. Presjek dviju traka je \textbf{pravokutnik}
+$[0,2]\times[0,1]$ --- osjenčajte ga. To je dozvoljeni skup (politop, usporedi
+odjeljak~\ref{sec:poliedar}).
+
+\textbf{Korak 5 --- ciljna točka.} Označite križićem točku $(3,2)$. Ona je
+\emph{izvan} pravokutnika --- gore desno.
+
+\textbf{Korak 6 --- nivo krivulje.} $f = (x_1-3)^2+(x_2-2)^2 = c$ su kružnice
+oko $(3,2)$ polumjera $\sqrt c$. Nacrtajte ih za $c = 0{,}5;\ 1;\ 2;\ 4$.
+Uočite da kružnica $c = 2$ (polumjer $\approx 1{,}41$) prva dodiruje
+pravokutnik.
+
+\textbf{Korak 7 --- optimum.} Dodirna točka je vrh $(2,1)$ --- označite je punom
+točkom. Provjera: udaljenost od $(3,2)$ do $(2,1)$ je $\sqrt{1+1}=\sqrt2$, pa
+je $f = 2$. \checkmark
+
+\textbf{Korak 8 --- gradijent cilja.} Iz $(2,1)$ nacrtajte
+$\nabla f = (-2,-2)$: dvije jedinice lijevo, dvije dolje --- dakle
+\emph{u} pravokutnik (prema unutra).
+
+\textbf{Korak 9 --- gradijenti aktivnih ograničenja.} Iz iste točke nacrtajte
+$\nabla g_2 = (1,0)$ (udesno) i $\nabla g_4 = (0,1)$ (gore). Skalirajte ih s
+$\mu_2 = 2$ odn.\ $\mu_4 = 2$, dakle po dvije jedinice.
+
+\textbf{Korak 10 --- provjera KKT-a okom.} Zbroj crvenih strelica je
+$(2,0) + (0,2) = (2,2)$, što je točno $-\nabla f$. Uvjet $(\clubsuit)$ kaže
+upravo to: $\nabla f + \mu_2\nabla g_2 + \mu_4\nabla g_4 = 0$.
+
+\textbf{Što graf znači.} U vrhu politopa aktivna su dva ograničenja, pa
+$-\nabla f$ mora ležati \emph{unutar} kuta razapetog njihovim gradijentima ---
+to je stožac iz odjeljka o geometrijskoj interpretaciji \str{3:56}. Da je ciljna
+točka bila npr.\ $(3;\ 0{,}5)$, aktivno bi bilo samo $g_2$, i optimum bi bio na
+stranici, a ne u vrhu.
+\end{crtanje}
+
+% =====================================================================
+\section{Numeričko rješavanje i dualni problem}
+\label{sec:primjer2-dual}
+
+Ovaj odjeljak nastavlja Zadatak~\ref{zad:primjer2} podzadacima c) i d).
+
+\subsection{c) Rješavanje u MATLAB-u}
+\str{V3:28--33}
+
+\textbf{Prevođenje u QP standardnu formu} \str{V3:28}\textbf{.} MATLAB-ova
+funkcija \texttt{quadprog} očekuje problem oblika
+$\min \tfrac12 x\T Q x + c\T x$ uz $Gx \le h$. Zato ciljnu funkciju treba
+raspisati:
+
+\[
+\text{minimiziraj}_x \quad
+\frac{1}{2}\begin{pmatrix}x_1\\x_2\end{pmatrix}\T
+\underbrace{\begin{pmatrix}2&0\\0&2\end{pmatrix}}_{Q}
+\begin{pmatrix}x_1\\x_2\end{pmatrix}
++ \underbrace{\begin{pmatrix}-6 & -4\end{pmatrix}}_{c\T}
+\begin{pmatrix}x_1\\x_2\end{pmatrix} + 13
+\]
+\[
+\text{uz ogr.}\quad
+\underbrace{\begin{pmatrix}
+-1 & 0 \\ 1 & 0 \\ 0 & -1 \\ 0 & 1
+\end{pmatrix}}_{G}
+\begin{pmatrix}x_1\\x_2\end{pmatrix}
+\le
+\underbrace{\begin{pmatrix}0\\2\\0\\1\end{pmatrix}}_{h}
+\]
+
+\emph{Provjera raspisa ciljne funkcije:}
+\begin{align}
+(x_1-3)^2 + (x_2-2)^2
+&= x_1^2 - 6x_1 + 9 + x_2^2 - 4x_2 + 4 \\
+&= \underbrace{x_1^2 + x_2^2}_{=\;\frac12(2x_1^2+2x_2^2)\;=\;\frac12 x\T Qx}
+ \;\underbrace{-\,6x_1 - 4x_2}_{=\;c\T x}\; + \;13
+\end{align}
+\checkmark \; Konstanta $13$ ne utječe na $\argmin$, pa je \texttt{quadprog} ne
+prima --- ali je treba \textbf{dodati natrag} na dobivenu optimalnu vrijednost.
+(To je odgovor na pitanje „zašto $+13$?” s komentara u kodu.)
+
+\textbf{Kod sa slajda} \str{V3:30}:
+
+\begin{verbatim}
+Q=[2, 0;  0, 2];
+c=[-6; -4];
+G=[-1,0;  1,0;  0,-1;  0,1];
+h=[0;2;0;1];
+
+[x_opt,f_opt,EXITFLAG,OUTPUT,mu_opt] = quadprog(Q,c,G,h);
+
+x_opt              % optimalne primarne varijable
+mu_opt.ineqlin     % optimalne dualne varijable
+
+f_opt+13           % vrijednost funkcije cilja u optimiumu (zasto +13 ?)
+\end{verbatim}
+
+\textbf{Ispis rezultata} \str{V3:31}:
+
+\begin{verbatim}
+>> x_opt
+x_opt =
+    2.0000
+    1.0000
+
+>> mu_opt.ineqlin
+ans =
+         0
+    2.0000
+         0
+    2.0000
+
+>> f_opt+13
+ans =
+    2.0000
+\end{verbatim}
+
+\textbf{Poklapanje s ručnim rješenjem:} $x\opt = (2,1)$,
+$\mu\opt = (0,2,0,2)$, $p\opt = 2$ --- točno kao u podzadatku b). \checkmark
+
+\textbf{Isti problem preko YALMIP-a} \str{V3:32}\textbf{.} YALMIP je
+„modelirajući sloj”: problem se piše prirodnim zapisom, a on ga sam prevede
+odabranom rješavaču (ovdje opet \texttt{quadprog}).
+
+\begin{verbatim}
+yalmip('clear')
+x=sdpvar(2,1);
+
+Con=[0<=x(1)<=2, 0<=x(2)<=1];
+
+Objective=(x(1)-3)^2+(x(2)-2)^2;
+
+% neke opcije YALMIP i "solver"
+options = sdpsettings('verbose',1,'solver','quadprog',...
+                      'quadprog.maxiter',100);
+
+% Poziv za rjesavanje
+sol = optimize(Con,Objective,options);
+
+% Analiza "error zastavica"
+if sol.problem == 0
+ % Definiraj i ispintaj rjesenje
+ x_opt = value(x)     % optimalne primarne
+ mu_opt=dual(Con)     % optimalne dualne varijable
+else
+ display('Nesto je krivo!');
+ sol.info
+ yalmiperror(sol.problem)
+end
+\end{verbatim}
+
+\textbf{Ispis} \str{V3:33}\textbf{:} \texttt{x\_opt = [2.0000; 1.0000]},
+\texttt{mu\_opt = [0; 2.0000; 0; 2.0000]} --- identično. \checkmark
+
+\begin{napomena}[quadprog vs.\ YALMIP]
+\texttt{quadprog} traži da problem \emph{ručno} prevedete u matrice
+$Q, c, G, h$ --- što je izvor grešaka, ali daje potpunu kontrolu. YALMIP
+prihvaća zapis blizak matematičkom (\texttt{0<=x(1)<=2}) i sam radi prijevod;
+zato je pogodniji za veće modele. Obratite pažnju da YALMIP dualne varijable
+vraća funkcijom \texttt{dual(Con)}, a \texttt{quadprog} u polju
+\texttt{mu\_opt.ineqlin}.
+\end{napomena}
+
+\subsection{d) Postavljanje i rješavanje dualnog problema}
+\str{V3:34--39}
+
+\textbf{Primarni problem} (u QP formi, bez konstante):
+\[
+\min_x \; \tfrac12 x\T Qx + c\T x \qquad\text{uz ogr.}\quad Gx - h \le 0
+\]
+
+\textbf{Uočimo} (sa slajda): $Q \succ 0$, pa stoga i $Q^{-1}$ postoji ($Q$ nema
+svojstvenu vrijednost jednaku nuli jer su sve striktno veće od nule).
+
+\textbf{Korak 1 --- Lagrangian:}
+\[
+L(x,\mu) = \tfrac12 x\T Qx + c\T x + \mu\T(Gx - h)
+         = \tfrac12 x\T Qx + (c\T + \mu\T G)x - \mu\T h
+\]
+
+\textbf{Korak 2 --- minimizacija po $x$} \str{V3:35}:
+\[
+\ell(\mu) = \inf_x L(x,\mu) \;\to\;
+\nabla_x L(x,\mu) = 0 \;\to\;
+Q\tilde x + c + G\T\mu = 0 \;\to\;
+\tilde x = -Q^{-1}(c + G\T\mu)
+\]
+
+\emph{Raspis gradijenta:} za kvadratnu formu vrijedi
+$\nabla_x(\tfrac12 x\T Qx) = Qx$ (uz simetričan $Q$), a
+$\nabla_x\big((c\T+\mu\T G)x\big) = c + G\T\mu$. Član $-\mu\T h$ ne ovisi o
+$x$. Izjednačavanjem s nulom i množenjem s $Q^{-1}$ slijeva dobivamo $\tilde x$.
+\checkmark
+
+\textbf{Korak 3 --- uvrštavanje natrag} \str{V3:36}:
+\begin{align}
+\ell(\mu) &= \tfrac12\tilde x\T Q\tilde x + (c\T + \mu\T G)\tilde x - \mu\T h \\
+&= -\tfrac12\mu\T GQ^{-1}G\T\mu
+   + \big(-c\T Q^{-1}G\T - h\T\big)\mu
+   - \tfrac12 c\T Q^{-1}c
+\end{align}
+
+\emph{Raspis (na slajdu nije prikazan).} Označimo $z := c + G\T\mu$, pa je
+$\tilde x = -Q^{-1}z$ i $(c\T+\mu\T G) = z\T$:
+\begin{align}
+\tfrac12\tilde x\T Q\tilde x
+  &= \tfrac12 z\T Q^{-1}QQ^{-1}z = \tfrac12 z\T Q^{-1}z \\
+z\T\tilde x &= -z\T Q^{-1}z \\
+\Rightarrow\quad \ell(\mu)
+  &= \tfrac12 z\T Q^{-1}z - z\T Q^{-1}z - \mu\T h
+   = -\tfrac12 z\T Q^{-1}z - \mu\T h
+\end{align}
+Sada raspišemo $z\T Q^{-1}z$:
+\[
+(c + G\T\mu)\T Q^{-1}(c + G\T\mu)
+= c\T Q^{-1}c + 2c\T Q^{-1}G\T\mu + \mu\T GQ^{-1}G\T\mu
+\]
+Uvrštavanjem:
+\[
+\ell(\mu) = -\tfrac12 c\T Q^{-1}c - c\T Q^{-1}G\T\mu
+            - \tfrac12\mu\T GQ^{-1}G\T\mu - h\T\mu
+\]
+što je točno izraz sa slajda nakon grupiranja linearnih članova. \checkmark
+
+\textbf{Dualni problem} \str{V3:37}:
+\[
+\max_{\mu \ge 0}\;
+-\tfrac12\mu\T GQ^{-1}G\T\mu + \big(-c\T Q^{-1}G\T - h\T\big)\mu
+- \tfrac12 c\T Q^{-1}c
+\]
+
+\textbf{Tvrdnja sa slajda:} budući da je $-GQ^{-1}G\T \prec 0$, dualni problem
+je problem maksimizacije konkavne funkcije s konveksnim ograničenjima
+$\to$ \textbf{konveksan optimizacijski problem}.
+
+\begin{napomena}[preciznije o toj tvrdnji]
+Općenito vrijedi $-GQ^{-1}G\T \preceq 0$ (negativno \emph{semi}definitno), jer
+je $\mu\T GQ^{-1}G\T\mu = (G\T\mu)\T Q^{-1}(G\T\mu) \ge 0$ uz $Q^{-1} \succ 0$
+--- ali je nula kad god je $G\T\mu = 0$.
+
+U ovom konkretnom primjeru $G$ ima $4$ retka, a samo $2$ stupca, pa $G\T$ ima
+netrivijalnu jezgru i matrica $GQ^{-1}G\T$ \emph{jest} singularna. Konkretno,
+uz $Q^{-1} = \tfrac12 I$:
+\[
+GQ^{-1}G\T = \tfrac12 GG\T = \tfrac12
+\begin{pmatrix}
+ 1 & -1 & 0 & 0 \\
+-1 & 1 & 0 & 0 \\
+ 0 & 0 & 1 & -1 \\
+ 0 & 0 & -1 & 1
+\end{pmatrix}
+\]
+čije su svojstvene vrijednosti $0, 0, 1, 1$. Dakle striktna negativna
+definitnost sa slajda je preoštra; ispravno je $\preceq 0$. \textbf{Zaključak
+ostaje isti} --- za konkavnost je dovoljna semidefinitnost, pa je dualni
+problem i dalje konveksan.
+\end{napomena}
+
+\textbf{Kod za rješavanje dualnog problema} \str{V3:38}:
+
+\begin{verbatim}
+Q=[2, 0;  0, 2];
+c=[-6; -4];
+G=[-1,0;  1,0;  0,-1;  0,1];
+h=[0;2;0;1];
+
+Q_dual=G*inv(Q)*G';
+c_dual=G*inv(Q)*c+h;
+G_dual=-eye(4);
+h_dual=zeros(4,1);
+
+[mu_opt_Dual,f_opt_Dual] = quadprog(Q_dual,c_dual,G_dual,h_dual);
+
+mu_opt_Dual   % optimalne dualne varijable
+
+x_opt_Dual=-inv(Q)*(c+G'*mu_opt_Dual)   % optimalne primarne varijable
+
+% vrijednost dualne funkcije cilja u optimiumu:
+f_opt_Dual=(-f_opt_Dual+13)-0.5*c'*inv(Q)*c
+\end{verbatim}
+
+\textbf{Kako je kod dobiven iz formule} --- vrijedi ga pročitati redak po redak:
+
+\begin{itemize}
+  \item \texttt{quadprog} \emph{minimizira}, a mi \emph{maksimiziramo}, pa se
+        koristi trik $\max \ell \Leftrightarrow \min(-\ell)$
+        (odjeljak~\ref{sec:trikovi}). Zato \texttt{Q\_dual} $= GQ^{-1}G\T$ (bez
+        minusa) i \texttt{c\_dual} $= GQ^{-1}c + h$.
+  \item Ograničenje $\mu \ge 0$ piše se u obliku $G_{\text{dual}}\mu \le
+        h_{\text{dual}}$ uz $G_{\text{dual}} = -I$ i $h_{\text{dual}} = 0$, tj.\
+        $-\mu \le 0$.
+  \item \texttt{x\_opt\_Dual} rekonstruira primarnu varijablu iz formule
+        $\tilde x = -Q^{-1}(c + G\T\mu)$ --- \textbf{primarno rješenje se dobiva
+        iz dualnog}, što je moguće upravo zbog jake dualnosti.
+  \item Zadnji redak vraća predznak i dodaje konstante: $+13$ (izbačena iz
+        cilja) i $-\tfrac12 c\T Q^{-1}c$ (član koji \texttt{quadprog} ne vidi).
+\end{itemize}
+
+\textbf{Ispis} \str{V3:39}:
+
+\begin{verbatim}
+mu_opt_Dual =        x_opt_Dual =        f_opt_Dual =
+    0.0000               2.0000              2.0000
+    2.0000               1.0000
+    0.0000
+    2.0000
+\end{verbatim}
+
+\textbf{Provjera jake dualnosti:} $d\opt = 2 = p\opt$. \checkmark Dualne
+varijable dobivene rješavanjem \emph{dualnog} problema identične su onima koje
+je \texttt{quadprog} vratio kao nusprodukt rješavanja \emph{primarnog} problema.
+
+% =====================================================================
+\section{Dualna dekompozicija: distribuirano rješavanje}
+\label{sec:dekompozicija}
+\str{24--27}
+
+\subsection{Strukturirani problem}
+\str{25}
+
+\begin{equation}
+\label{eq:strukturiran}
+\begin{aligned}
+\min_{x_1,x_2} \quad & f_1(x_1) + f_2(x_2) \\
+\text{uz ogr.} \quad & x_1 \in \Feas_1, \; x_2 \in \Feas_2 \\
+& h_1(x_1) + h_2(x_2) = 0 && (\spadesuit)
+\end{aligned}
+\end{equation}
+
+\textbf{Opažanje sa slajda:} kad ne bi bilo ograničenja $(\spadesuit)$ koje
+„povezuje” $x_1$ i $x_2$, ovaj optimizacijski problem bi se sveo na
+\textbf{dva neovisna} optimizacijska problema.
+
+\textbf{Struktura problema.} Funkcija cilja je \emph{separabilna} (zbroj
+članova, svaki ovisi o svojoj varijabli), lokalna ograničenja su odvojena, i
+samo \emph{jedno} ograničenje $(\spadesuit)$ spaja dva dijela. Takva se
+struktura pojavljuje svugdje gdje više jedinica dijeli zajednički resurs.
+
+\subsection{Dualni problem}
+\str{26}
+
+\begin{align}
+\max_\lambda\; \ell(\lambda)
+&= \inf_{x_1\in\Feas_1,\,x_2\in\Feas_2}
+   f_1(x_1) + f_2(x_2) + \lambda\T\big(h_1(x_1) + h_2(x_2)\big) \\
+&= \inf_{x_1\in\Feas_1}\Big(f_1(x_1) + \lambda\T h_1(x_1)\Big)
+ + \inf_{x_2\in\Feas_2}\Big(f_2(x_2) + \lambda\T h_2(x_2)\Big)
+\end{align}
+
+\emph{Zašto se infimum smije rastaviti:} nakon uvrštavanja $\lambda$ izraz se
+raspada na dva dijela, od kojih prvi ovisi \emph{samo} o $x_1$, a drugi
+\emph{samo} o $x_2$; varijable više nisu spojene nikakvim zajedničkim
+ograničenjem. Minimum zbroja neovisnih članova je zbroj minimuma.
+
+\textbf{Ključno opažanje sa slajda:} \emph{Uočite da smo dualizirali samo
+globalno ograničenje $(\spadesuit)$ dok su lokalna ograničenja
+$x_1 \in \Feas_1$, $x_2 \in \Feas_2$ ostavljena u definiciji od $\ell(\lambda)$.}
+
+\begin{napomena}[djelomična dualizacija]
+Nije nužno dualizirati \emph{sva} ograničenja. Bira se ono čije uklanjanje
+razbija strukturu problema --- ovdje globalno ograničenje. Lokalna ostaju kao
+ograničenja unutarnjih podproblema. To je bit tehnike.
+\end{napomena}
+
+\subsection{Algoritam}
+\str{27}
+
+Za zadani fiksni $\lambda$ imamo \textbf{dva neovisna podproblema} (mogu se
+rješavati odvojeno / paralelno):
+
+\begin{itemize}
+  \item \textbf{podproblem 1:}
+        $\inf_{x_1\in\Feas_1}\big(f_1(x_1) + \lambda\T h_1(x_1)\big)$,
+        koji ima opt.\ vrijednost $\ell_1(\lambda)$;
+  \item \textbf{podproblem 2:}
+        $\inf_{x_2\in\Feas_2}\big(f_2(x_2) + \lambda\T h_2(x_2)\big)$,
+        koji ima opt.\ vrijednost $\ell_2(\lambda)$.
+\end{itemize}
+
+\textbf{Dualni problem} (koji rješava i primarni, uz jaku dualnost):
+\[
+\max_\lambda\; \ell(\lambda) = \ell_1(\lambda) + \ell_2(\lambda)
+\]
+
+\textbf{Rješenje dualnog problema se postiže kad je $h_1(x_1) + h_2(x_2) = 0$.}
+
+\begin{napomena}[kako to izgleda kao algoritam]
+Postupak je iterativan i ima strukturu „koordinator + jedinice”:
+\begin{enumerate}
+  \item koordinator objavi trenutni $\lambda$;
+  \item svaka jedinica \emph{neovisno} riješi svoj mali problem i javi svoj
+        $h_i(x_i)$;
+  \item koordinator pogleda „neravnotežu” $h_1 + h_2$ i prilagodi $\lambda$
+        (poveća ga ako je zbroj pozitivan, smanji ako je negativan);
+  \item ponovi dok neravnoteža ne padne na nulu.
+\end{enumerate}
+Uočite koliko se malo informacija razmjenjuje: jedinice \textbf{ne moraju
+otkriti} svoje funkcije $f_i$, $h_i$ ni svoje skupove $\Feas_i$ --- samo jedan
+broj. To je ključno u primjeni koja slijedi.
+\end{napomena}
+
+% =====================================================================
+\section{Vježbe 3, Primjer 1: tržište i formiranje cijena}
+\label{sec:trziste}
+\str{V3:3--18}
+
+Ovo je izravna primjena dualne dekompozicije --- i objašnjenje najave iz
+poglavlja~\ref{ch:uvod} \str{1:34}: \emph{matematička formulacija tržišta i
+kreiranja tržišnih cijena je Lagrangeova dualnost}.
+
+\subsection{Postavka: maksimizacija društvene dobrobiti}
+\str{V3:4}
+
+\textbf{Oznake:}
+\begin{itemize}
+  \item Troškovi proizvodnje za $i$-tog proizvođača za proizvodnju $p_i$ [MWh]
+        energije: $C_i(p_i)$.
+  \item Funkcija benefita za $j$-tog potrošača kod potrošnje $d_j$ [MWh]
+        energije: $B_j(d_j)$.
+\end{itemize}
+
+\textbf{Maksimizacija društvene dobrobiti:}
+\begin{equation}
+\label{eq:trziste}
+\begin{aligned}
+\min_{p_1,\dots,p_n,\,d_1,\dots,d_m} \quad
+& \sum_{i=1}^{n}C_i(p_i) - \sum_{j=1}^{m}B_j(d_j)
+  && (=\ \max\ \text{društvena dobrobit}) \\
+\text{uz ogr.} \quad
+& p_i \in P_i, \; i = 1,\dots,n
+  && \text{(lokalna ograničenja proizvođača)} \\
+& d_j \in D_j, \; j = 1,\dots,m
+  && \text{(lokalna ograničenja potrošača)} \\
+& \sum_{i=1}^{n}p_i = \sum_{j=1}^{m}d_j
+  && \text{(balans potrošnje i proizvodnje)}
+\end{aligned}
+\end{equation}
+
+\textbf{Primjeri lokalnih ograničenja} (sa slajda):
+\[
+P_i := \{\, p \mid \underline{p_i} \le p \le \overline{p_i} \,\}, \qquad
+D_j := \{\, d \mid \underline{d_j} \le d \le \overline{d_j} \,\}
+\]
+--- dakle svaka elektrana ima minimalnu i maksimalnu snagu, svaki potrošač
+minimalnu i maksimalnu potrošnju.
+
+\textbf{Kako čitati funkciju cilja.} \emph{Društvena dobrobit} je ukupna korist
+potrošača umanjena za ukupni trošak proizvodnje,
+$\sum_j B_j(d_j) - \sum_i C_i(p_i)$. Nju želimo \emph{maksimizirati}, pa
+minimiziramo njezinu negaciju --- odatle poredak članova u
+\eqref{eq:trziste} (trik $\max f \Leftrightarrow \min(-f)$,
+odjeljak~\ref{sec:trikovi}).
+
+\textbf{Pretpostavka konveksnosti} \str{V3:6}\textbf{:} $C_i(\cdot)$ konveksne
+funkcije, $B_j(\cdot)$ \textbf{konkavne} funkcije, $P_i$, $D_j$ konveksni
+skupovi.
+
+\begin{napomena}[zašto baš takve pretpostavke]
+\begin{itemize}
+  \item $C_i$ konveksna: trošak proizvodnje raste \emph{sve brže} --- svaki
+        sljedeći MWh je skuplji (uključuju se sve skuplji agregati). To je
+        realistično.
+  \item $B_j$ konkavna: korist raste \emph{sve sporije} --- zakon opadajuće
+        granične korisnosti. Prvi MWh vrijedi mnogo, deseti mnogo manje.
+  \item Uz to je $-B_j$ konveksna, pa je \textbf{cijela funkcija cilja
+        konveksna} --- problem \eqref{eq:trziste} je konveksan i vrijedi jaka
+        dualnost.
+\end{itemize}
+\end{napomena}
+
+\subsection{Dualni problem}
+\str{V3:5--9}
+
+\textbf{Primarni problem} \str{V3:5}:
+\[
+\min_{p_i\in P_i,\,d_j\in D_j}\;
+\sum_{i=1}^{n}C_i(p_i) - \sum_{j=1}^{m}B_j(d_j)
+\qquad\text{uz ogr.}\quad \sum_{i=1}^{n}p_i = \sum_{j=1}^{m}d_j
+\]
+
+\textbf{Dualni problem} \str{V3:6}:
+\[
+\max_{\lambda\in\R}\; \ell(\lambda), \quad\text{gdje je}\quad
+\ell(\lambda) = \min_{p_i\in P_i,\,d_j\in D_j}
+\sum_{i=1}^{n}C_i(p_i) - \sum_{j=1}^{m}B_j(d_j)
++ \lambda\left(\sum_{j=1}^{m}d_j - \sum_{i=1}^{n}p_i\right)
+\]
+
+\textbf{Napomena sa slajda} \str{V3:7}\textbf{:} \emph{Uočite da smo dualizirali
+samo globalno ograničenje $\sum_j d_j - \sum_i p_i = 0$ dok su ostala lokalna
+ograničenja ostavljena u definiciji od $\ell(\lambda)$.}
+
+\textbf{Opažanje 1} \str{V3:8}\textbf{:} Lagrangeova dualna funkcija
+$\ell(\lambda)$ se za fiksan $\lambda$ može rastaviti u \textbf{$n + m$
+odvojenih minimizacijskih problema}.
+
+\textbf{Opažanje 2} \str{V3:9}\textbf{:} $\max_{\lambda\in\R}\ell(\lambda)$ se
+postiže kad je $\sum_{j=1}^{m}d_j = \sum_{i=1}^{n}p_i$ ((sub)gradijent od
+$\ell(\lambda)$ je nula).
+
+\subsection{Rastav na lokalne probleme}
+\str{V3:10}
+
+\begin{center}
+\begin{tabular}{p{6.4cm}p{6.4cm}}
+\toprule
+\textbf{Lokalna minimizacija proizvođača} &
+\textbf{Lokalna minimizacija potrošača} \\
+$\to$ maksimizacija svoje zarade &
+$\to$ maksimizacija svog benefita \\
+\midrule
+$\displaystyle\min_{p_1\in P_1} C_1(p_1) - \lambda p_1$ &
+$\displaystyle\min_{d_1\in D_1} \lambda d_1 - B_1(d_1)$ \\[6pt]
+$\displaystyle\min_{p_2\in P_2} C_2(p_2) - \lambda p_2$ &
+$\displaystyle\min_{d_2\in D_2} \lambda d_2 - B_2(d_2)$ \\[2pt]
+\quad$\vdots$ & \quad$\vdots$ \\[2pt]
+$\displaystyle\min_{p_n\in P_n} C_n(p_n) - \lambda p_n$ &
+$\displaystyle\min_{d_m\in D_m} \lambda d_m - B_m(d_m)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Interpretacija --- ovo je srce cijelog primjera:}
+
+\begin{itemize}
+  \item $C_i(p_i) - \lambda p_i$ je \textbf{negativna zarada} proizvođača:
+        $\lambda p_i$ je prihod od prodaje $p_i$ MWh po cijeni $\lambda$, a
+        $C_i(p_i)$ je trošak. Minimizacija tog izraza = maksimizacija profita.
+  \item $\lambda d_j - B_j(d_j)$ je \textbf{negativna korist} potrošača:
+        $\lambda d_j$ je ono što plaća, $B_j(d_j)$ je korist koju ima.
+  \item Dakle: \textbf{svaki sudionik gleda samo svoj interes}, koristeći samo
+        \emph{svoju} funkciju i \emph{jedan zajednički broj} $\lambda$.
+\end{itemize}
+
+\begin{napomena}[tipfeler na slajdovima V3:10--11]
+U stupcu potrošača na slajdu svugdje piše $B_1(\cdot)$, i za drugog i za
+$m$-tog potrošača. Ispravno je $B_2(d_2)$, \dots, $B_m(d_m)$ --- svaki potrošač
+ima svoju funkciju benefita.
+\end{napomena}
+
+\subsection{Uloga operatora tržišta}
+\str{V3:11}
+
+\begin{center}
+\begin{tabular}{p{13.0cm}}
+\toprule
+\textbf{Operator tržišta:} \quad
+$\displaystyle\max_{\lambda\in\R}\ell(\lambda)
+\quad\Longleftrightarrow\quad
+\text{odredi }\lambda:\; \sum_{j=1}^{m}d_j\opt = \sum_{i=1}^{n}p_i\opt$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Racionalno ponašanje sudionika} (max svoj benefit):
+\[
+p_i\opt = \argmin_{p_i\in P_i} C_i(p_i) - \lambda p_i, \qquad
+d_j\opt = \argmin_{d_j\in D_j} \lambda d_j - B_j(d_j)
+\]
+
+\begin{teorem}[Glavni rezultat \str{V3:11}]
+$\lambda\opt$ koji rješava ovaj problem $=$ \textbf{tržišna cijena energije}.
+\end{teorem}
+
+\textbf{Zašto je to fascinantno.} Dualna varijabla, uvedena kao čisto
+matematička pomoć, ispada \textbf{cijena}. Nitko ne mora znati tuđe troškove ni
+funkcije koristi; svatko optimira svoj interes uz objavljenu cijenu, a operator
+samo podešava cijenu dok se ponuda i potražnja ne izjednače. Rezultat je
+\textbf{globalno optimalna} raspodjela --- jer je to rješenje dualnog problema,
+a uz jaku dualnost i primarnog.
+
+Ovo je ujedno i matematički sadržaj metafore o „nevidljivoj ruci tržišta”.
+
+\subsection{Marginalni troškovi i tržišna cijena}
+\str{V3:12}
+
+\textbf{Tvrdnja.} Neka je $\lambda$ takav da je $p_i\opt \in$ unutrašnjost od
+$P_i$, $d_j\opt \in$ unutrašnjost od $D_j$; tada imamo
+\[
+\frac{\dd C_i(p_i\opt)}{\dd p_i} = \lambda, \qquad
+\frac{\dd B_j(d_j\opt)}{\dd d_j} = \lambda
+\]
+
+\emph{Odakle:} ako je optimum u \emph{unutrašnjosti} lokalnog skupa, lokalna
+ograničenja su neaktivna, pa vrijedi obični uvjet stacionarnosti
+(odjeljak~\ref{sec:uvjeti-bez-ogr}): derivacija cilja po varijabli je nula.
+Za proizvođača: $\dfrac{\dd}{\dd p_i}\big(C_i(p_i) - \lambda p_i\big)
+= C_i'(p_i) - \lambda = 0$. \checkmark Analogno za potrošača:
+$\lambda - B_j'(d_j) = 0$.
+
+\textbf{Zaključak sa slajda:} \emph{društvena dobrobit je maksimizirana kad svi
+potrošači i proizvođači postave nivo proizvodnje/potrošnje tako da su
+inkrementalni (marginalni) troškovi/benefiti jednaki tržišnoj cijeni $\lambda$.}
+
+\begin{napomena}[marginalni trošak]
+\textbf{Marginalni (inkrementalni) trošak} $\dd C/\dd p$ je trošak proizvodnje
+\emph{jednog dodatnog} MWh. Uvjet kaže: proizvodi sve dok te sljedeći MWh košta
+manje nego što za njega dobivaš; stani kad se izjednače. Isto vrijedi za
+potrošača s koristi. \textbf{U optimumu su svi marginalni troškovi i sve
+marginalne koristi jednaki --- i to baš cijeni $\lambda$.}
+\end{napomena}
+
+\subsection{Krivulje ponude i potražnje}
+\str{V3:13--14}
+
+Iz uvjeta marginalnosti dobivaju se \textbf{krivulje ponude i potražnje}:
+\[
+\frac{\dd C_i(p_i)}{\dd p_i} = \lambda
+\;\Leftrightarrow\; p_i = \gamma_i^p(\lambda)
+\;\Leftrightarrow\; \lambda = \beta_i^p(p_i)
+\]
+\[
+\frac{\dd B_j(d_j)}{\dd d_j} = \lambda
+\;\Leftrightarrow\; d_j = \gamma_j^d(\lambda)
+\;\Leftrightarrow\; \lambda = \beta_j^d(d_j)
+\]
+
+To je ista relacija napisana na tri načina: kao jednadžba, kao „koliko
+proizvodim pri cijeni $\lambda$” ($\gamma$), i kao „pri kojoj cijeni proizvodim
+$p_i$” ($\beta$) --- dakle inverzne funkcije jedna drugoj.
+
+\textbf{Određivanje tržišne cijene u praksi} \str{V3:14}\textbf{.} Cijena
+$\lambda\opt$ nalazi se na sjecištu \textbf{agregirane krivulje ponude}
+$\tilde\gamma^p(\lambda) := \sum_i\gamma_i^p(\lambda)$ s \textbf{agregiranom
+krivuljom potražnje} $\tilde\gamma^d(\lambda) := \sum_j\gamma_j^d(\lambda)$:
+\[
+\sum_{i=1}^{n}p_i\opt = \sum_{i=1}^{n}\gamma_i^p(\lambda\opt)
+= \tilde\gamma^p(\lambda\opt) = \tilde\gamma^d(\lambda\opt)
+= \sum_{j=1}^{m}\gamma_j^d(\lambda\opt) = \sum_{j=1}^{m}d_j\opt
+\]
+
+\textbf{Napomena sa slajda:} generalizacija na slučajeve kad ne vrijedi da je
+$p_i\opt \in$ unutrašnjost od $P_i$, $d_j\opt \in$ unutrašnjost od $D_j$ je
+moguća. Lokalna ograničenja mogu se uključiti u krivulje ponude/potražnje.
+
+\textbf{Slika sa slajda} \str{V3:15}\textbf{.} Prikazana su tri grafa:
+
+\begin{itemize}
+  \item gore lijevo „\emph{Supply}”: os $\lambda$ okomito, os $p$ vodoravno;
+        nekoliko stepenastih rastućih krivulja (po jedna za svakog
+        proizvođača);
+  \item gore desno „\emph{Demand}”: os $\lambda$ okomito, os $d$ vodoravno;
+        nekoliko stepenastih \emph{padajućih} krivulja;
+  \item dolje: dvije strelice vode prema trećem grafu, na kojem su
+        \textbf{agregirane} krivulje --- rastuća (ponuda) i padajuća
+        (potražnja). Njihovo sjecište označeno je crvenom točkom; na osi
+        $\lambda$ očitava se $\lambda^{*}$, a na vodoravnoj osi („\emph{power}”)
+        očitava se $\sum p_i^{*} = \sum d_j^{*}$.
+\end{itemize}
+
+\begin{crtanje}[određivanje tržišne cijene]
+\textbf{Korak 1.} Nacrtajte koordinatni sustav: vodoravno \emph{količina
+energije} (snaga), okomito \emph{cijena} $\lambda$.
+
+\textbf{Korak 2 --- krivulja ponude.} Poredajte proizvođače po marginalnom
+trošku, od najjeftinijeg prema najskupljem. Crtajte stepenice slijeva nadesno:
+širina stepenice je kapacitet tog proizvođača, visina njegov marginalni trošak.
+Dobivate \textbf{rastuću} stepenastu krivulju --- to je agregirana ponuda
+$\tilde\gamma^p$.
+
+\emph{Zašto raste:} prvo se uključuju najjeftiniji izvori; što više energije
+treba, to skuplje agregate moramo pokrenuti.
+
+\textbf{Korak 3 --- krivulja potražnje.} Isto, ali za potrošače poredane po
+marginalnoj koristi, od najviše prema najnižoj. Dobivate \textbf{padajuću}
+stepenastu krivulju $\tilde\gamma^d$.
+
+\emph{Zašto pada:} najprije se zadovoljavaju potrebe koje potrošač najviše
+cijeni; dodatna potrošnja vrijedi mu sve manje.
+
+\textbf{Korak 4 --- sjecište.} Dvije se krivulje sijeku u jednoj točki.
+Označite je. Iz nje povucite vodoravnu isprekidanu crtu do osi $\lambda$ ---
+tamo očitajte \textbf{tržišnu cijenu} $\lambda^{*}$. Povucite i okomitu
+isprekidanu crtu do vodoravne osi --- tamo očitajte \textbf{količinu}
+$\sum p_i^{*} = \sum d_j^{*}$.
+
+\textbf{Korak 5 --- što graf znači.} Lijevo od sjecišta ponuda je jeftinija od
+onoga što potrošači vrednuju --- svaka takva transakcija povećava društvenu
+dobrobit i \emph{treba} se dogoditi. Desno od sjecišta proizvodnja bi koštala
+više nego što vrijedi --- takve transakcije smanjuju dobrobit. Sjecište je
+točka gdje se to izjednači, dakle upravo optimum problema
+\eqref{eq:trziste}, a $\lambda^{*}$ je dualna varijabla balansnog ograničenja.
+\end{crtanje}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.74\textwidth]{04-ponuda-potraznja.png}
+\caption{Tržišna cijena $\lambda^\star$ kao sjecište agregirane krivulje ponude
+(rastuća) i potražnje (padajuća). Rekonstrukcija sheme s Vježbi 3, str.\ 15.}
+\end{figure}
+
+\textbf{Stvarni podaci sa slajdova} \str{V3:17--18}\textbf{.} Slajdovi
+prikazuju agregirane krivulje burze \textbf{APX} (Amsterdam Power Exchange) za
+dva termina istog dana:
+
+\begin{itemize}
+  \item \textbf{30.\ siječnja 2015., 2 h ujutro} --- noćni sat, niska
+        potražnja: krivulja potražnje je pomaknuta ulijevo, pa je sjecište
+        \emph{niže} na osi cijena;
+  \item \textbf{30.\ siječnja 2015., 19 h} --- večernji vršni sat, visoka
+        potražnja: krivulja potražnje je pomaknuta udesno, sjecište je na
+        \emph{strmom} dijelu krivulje ponude, pa je cijena znatno viša.
+\end{itemize}
+
+\textbf{Poruka:} teorija s prethodnih slajdova doslovno je mehanizam po kojem
+europske burze električne energije svakodnevno formiraju cijenu.
+
+% =====================================================================
+\section{Analiza osjetljivosti}
+\label{sec:osjetljivost}
+\str{28--34}
+
+Zadnja tema poglavlja odgovara na pitanje: \emph{koliko se optimum promijeni ako
+malo pomaknemo ograničenja?}
+
+\subsection{Perturbiran problem}
+\str{29--31}
+
+\textbf{Polazni par problema} \str{29}:
+
+\begin{center}
+\begin{tabular}{p{6.3cm}p{7.0cm}}
+\toprule
+\textbf{Primarni problem} & \textbf{Dualni problem} \\
+\midrule
+$\displaystyle\min_x f(x)$ &
+$\displaystyle\max_{\lambda,\mu}\;
+\ell(\lambda,\mu) := \inf_x\big(f(x) + \lambda\T h(x) + \mu\T g(x)\big)$ \\
+uz ogr.\ $h_i(x) = 0$, $i=1,\dots,m$ & uz ogr.\ $\mu \ge 0$ \\
+\phantom{uz ogr.\ }$g_j(x) \le 0$, $j=1,\dots,p$ & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Perturbiran optimizacijski problem} \str{30}:
+
+\begin{center}
+\begin{tabular}{p{6.3cm}p{7.0cm}}
+\toprule
+\textbf{Primarni problem} & \textbf{Dualni problem} \\
+\midrule
+$\displaystyle\min_x f(x)$ &
+$\displaystyle\max_{\lambda,\mu}\;
+\ell(\lambda,\mu) - \lambda\T u - \mu\T v$ \\
+uz ogr.\ $h_i(x) = u_i$, $i=1,\dots,m$ & uz ogr.\ $\mu \ge 0$ \\
+\phantom{uz ogr.\ }$g_j(x) \le v_j$, $j=1,\dots,p$ & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+gdje su $u = [u_1 \dots u_m]\T$, $v = [v_1 \dots v_p]\T$
+\textbf{perturbacijski parametri}.
+
+\emph{Odakle dualni oblik:} Lagrangian perturbiranog problema je
+$f(x) + \lambda\T(h(x) - u) + \mu\T(g(x) - v)
+= L(x,\lambda,\mu) - \lambda\T u - \mu\T v$. Zadnja dva člana ne ovise o $x$, pa
+prolaze kroz $\inf_x$ i ostaju u dualnoj funkciji. \checkmark
+
+\textbf{Značenje parametara.}
+\begin{itemize}
+  \item $v_j > 0$ znači \textbf{relaksaciju} $j$-tog ograničenja (dopuštamo
+        više), $v_j < 0$ znači \textbf{pooštravanje};
+  \item $u_i$ pomiče ciljanu vrijednost jednakosti.
+\end{itemize}
+
+Neka je $p\opt(u,v)$ opt.\ vrijednost primarnog problema, kao funkcija od $u$ i
+$v$; $p\opt(0,0)$ je optimalna vrijednost \textbf{neperturbiranog} primarnog
+problema.
+
+\subsection{Globalna osjetljivost}
+\str{32--33}
+
+\textbf{Pretpostavimo jaku dualnost} za neperturbiran problem i neka su
+$\lambda\opt, \mu\opt$ optimalne dualne varijable primarnog problema (stoga je
+nužno $\mu\opt \ge 0$).
+
+\textbf{Izvod (sa slajda 32, korak po korak):}
+
+\begin{enumerate}
+  \item Ako primijenimo \emph{slabu} dualnost na \emph{perturbiran} problem,
+        imamo
+        \[
+        p\opt(u,v) \ge \ell(\lambda\opt,\mu\opt)
+                     - (\lambda\opt)\T u - (\mu\opt)\T v
+        \]
+        jer je desna strana Lagrangeova dualna funkcija za perturbiran problem
+        (vidjeti prethodni slajd), izračunata u jednom konkretnom dopuštenom
+        paru $(\lambda\opt,\mu\opt)$ --- a svaka takva vrijednost je donja
+        granica.
+  \item Zbog \emph{jake} dualnosti za neperturbiran problem i iz definicije
+        $\lambda\opt,\mu\opt$ imamo da je
+        $\ell(\lambda\opt,\mu\opt) = p\opt(0,0)$, pa gornja nejednakost implicira
+\end{enumerate}
+
+\begin{teorem}[Globalna nejednakost osjetljivosti \str{33}]
+\begin{equation}
+\label{eq:globalna-osjetljivost}
+p\opt(u,v) \ge p\opt(0,0) - (\lambda\opt)\T u - (\mu\opt)\T v
+\end{equation}
+\end{teorem}
+
+\textbf{Implikacije (sve doslovno sa slajda 33):}
+
+\begin{itemize}
+  \item ako je $\mu_j\opt$ \textbf{velik}: $p\opt$ \textbf{znatno raste} ako
+        „stisnemo” ograničenje $g_j(x)\le0$ na $g_j(x)\le v_j$ gdje je
+        $v_j < 0$;
+  \item ako je $\mu_j\opt$ \textbf{malen}: $p\opt$ \textbf{se ne smanjuje
+        znatno} ako „relaksiramo” ograničenje $g_j(x)\le0$ na $g_j(x)\le v_j$
+        gdje je $v_j > 0$;
+  \item ako je $\lambda_i\opt$ \textbf{velik i pozitivan}: $p\opt$ raste znatno
+        ako umjesto $h_i(x)=0$ imamo $h_i(x)=u_i$ gdje je $u_i < 0$;
+  \item ako je $\lambda_i\opt$ \textbf{velik i negativan}: $p\opt$ raste znatno
+        ako umjesto $h_i(x)=0$ imamo $h_i(x)=u_i$ gdje je $u_i > 0$;
+  \item ako je $\lambda_i\opt$ \textbf{malen i pozitivan}: $p\opt$ se ne
+        smanjuje znatno ako umjesto $h_i(x)=0$ imamo $h_i(x)=u_i$ gdje je
+        $u_i > 0$;
+  \item ako je $\lambda_i\opt$ \textbf{malen i negativan}: $p\opt$ se ne
+        smanjuje znatno ako umjesto $h_i(x)=0$ imamo $h_i(x)=u_i$ gdje je
+        $u_i < 0$.
+\end{itemize}
+
+\begin{napomena}[kako zapamtiti smjer]
+Pogledajte \eqref{eq:globalna-osjetljivost}: član $-(\mu\opt)\T v$ ulazi s
+\emph{minusom}. Dakle relaksacija ($v_j > 0$) \textbf{spušta} donju granicu za
+$p\opt$ --- optimum se smije poboljšati (smanjiti), i to najviše za
+$\mu_j\opt v_j$. Pooštravanje ($v_j < 0$) \textbf{diže} granicu --- optimum se
+\emph{nužno} pogorša barem za $|\mu_j\opt v_j|$.
+
+Uočite asimetriju: kod pooštravanja \eqref{eq:globalna-osjetljivost} daje
+\textbf{jamstvo} (donja granica je čvrsta), a kod relaksacije samo
+\emph{gornju ocjenu} mogućeg poboljšanja. Zato je gornja tablica formulirana s
+„raste znatno” u jednom, a „ne smanjuje se znatno” u drugom smjeru.
+\end{napomena}
+
+\subsection{Lokalna osjetljivost}
+\str{34}
+
+\begin{teorem}[Lokalna osjetljivost]
+Pretpostavimo jaku dualnost za neperturbiran problem i neka su
+$\lambda\opt, \mu\opt$ optimalne dualne varijable primarnog problema.
+
+Ako je $p\opt(u,v)$ diferencijabilno u $(0,0)$, tada vrijedi
+\begin{equation}
+\label{eq:lokalna-osjetljivost}
+\lambda_i\opt = -\frac{\partial p\opt(0,0)}{\partial u_i}, \qquad
+\mu_i\opt = -\frac{\partial p\opt(0,0)}{\partial v_i}
+\end{equation}
+\end{teorem}
+
+\textbf{Ovo je najkorisnija formula poglavlja.} Ona kaže da Lagrangeov
+množitelj \emph{jest} derivacija optimalne vrijednosti po pomaku ograničenja
+--- dakle broj s izravnim inženjerskim i ekonomskim značenjem:
+
+\begin{itemize}
+  \item $\mu_j\opt$ mjeri \textbf{koliko bi se $p\opt$ popravio} kad bismo
+        $j$-to ograničenje popustili za jednu jedinicu;
+  \item ograničenja s $\mu_j\opt = 0$ su \textbf{neaktivna} --- njihovo
+        popuštanje ne donosi ništa (usporedi uvjet komplementarnosti);
+  \item u ekonomiji se $\mu_j\opt$ zove \textbf{sjenska cijena} (engl.\
+        \emph{shadow price}) resursa: najviše što bismo bili spremni platiti za
+        dodatnu jedinicu tog resursa.
+\end{itemize}
+
+Time se zatvara krug s fizikalnom interpretacijom iz
+poglavlja~\ref{ch:uvjeti} \str{3:62--63}: množitelj je \emph{reakcija veze} ---
+mjera koliko ograničenje „gura”.
+
+\subsection{Vježbe 3, Primjer 2, podzadaci e) i f)}
+
+\begin{zadatak}[Nastavak Zadatka~\ref{zad:primjer2}: osjetljivost]
+\str{V3:40--42}
+
+\textbf{e) Što možete reći o osjetljivosti optimalne vrijednosti na
+perturbacije u ograničenjima?}
+
+\textbf{Perturbirani problem} \str{V3:40}:
+\[
+\text{minimiziraj}_x \quad
+\frac{1}{2}\begin{pmatrix}x_1\\x_2\end{pmatrix}\T
+\underbrace{\begin{pmatrix}2&0\\0&2\end{pmatrix}}_{Q}
+\begin{pmatrix}x_1\\x_2\end{pmatrix}
++ \underbrace{\begin{pmatrix}-6&-4\end{pmatrix}}_{c\T}
+\begin{pmatrix}x_1\\x_2\end{pmatrix} + 13
+\]
+\[
+\text{uz ogr.}\quad
+\underbrace{\begin{pmatrix}
+-1 & 0 \\ 1 & 0 \\ 0 & -1 \\ 0 & 1
+\end{pmatrix}}_{G}
+\begin{pmatrix}x_1\\x_2\end{pmatrix}
+- \underbrace{\begin{pmatrix}0\\2\\0\\1\end{pmatrix}}_{h}
+\le \begin{pmatrix}v_1\\v_2\\v_3\\v_4\end{pmatrix}
+\]
+Optimalno rješenje: $p\opt(v_1,v_2,v_3,v_4)$.
+
+\textbf{Rješenje} \str{V3:41}\textbf{.} Budući da je
+$\mu\opt = \begin{pmatrix}0 & 2 & 0 & 2\end{pmatrix}\T$, imamo (primjenom
+\eqref{eq:lokalna-osjetljivost}):
+\[
+\frac{\partial p\opt(0,0,0,0)}{\partial v_1} = 0, \qquad
+\frac{\partial p\opt(0,0,0,0)}{\partial v_2} = -2,
+\]
+\[
+\frac{\partial p\opt(0,0,0,0)}{\partial v_3} = 0, \qquad
+\frac{\partial p\opt(0,0,0,0)}{\partial v_4} = -2
+\]
+
+\textbf{Čitanje rezultata:}
+
+\begin{itemize}
+  \item $v_1$ i $v_3$ pripadaju \emph{neaktivnim} ograničenjima
+        ($x_1 \ge 0$, $x_2 \ge 0$); njihove derivacije su \textbf{nula} ---
+        pomicanje tih granica ne mijenja ništa. Logično: optimum $(2,1)$ je
+        daleko od njih.
+  \item $v_2$ i $v_4$ pripadaju \emph{aktivnim} ograničenjima ($x_1 \le 2$,
+        $x_2 \le 1$); derivacije su $-2$. Popuštanje bilo kojeg od njih za
+        malu vrijednost $\varepsilon$ smanjuje $p\opt$ za približno
+        $2\varepsilon$.
+\end{itemize}
+
+\emph{Brza provjera zdravim razumom.} Ako gornju granicu na $x_1$ pomaknemo s
+$2$ na $2 + \varepsilon$, novi optimum je $(2+\varepsilon,\ 1)$, pa
+\[
+p\opt(\varepsilon) = (2+\varepsilon-3)^2 + (1-2)^2
+= (\varepsilon - 1)^2 + 1 = 2 - 2\varepsilon + \varepsilon^2
+\]
+Derivacija u $\varepsilon = 0$ je $-2$. \checkmark Poklapa se s
+$\mu_2\opt = 2$ i formulom $\partial p\opt/\partial v_2 = -\mu_2\opt$.
+
+\medskip
+\textbf{f) Ponovite (d) i (e) s promijenjenim ograničenjima} $g_2$ i $g_4$
+($g_1$ i $g_3$ ostaju ista): $g_2(x) = x_1 - 1{,}5 \le 0$,
+$g_4(x) = x_2 - 1{,}5 \le 0$. \str{V3:42}
+
+\textbf{Rezultat sa slajda:} imamo da je
+$\mu\opt = \begin{pmatrix}0 & 3 & 0 & 1\end{pmatrix}\T$, pa je stoga
+\[
+\frac{\partial p\opt(0,0,0,0)}{\partial v_1} = 0, \qquad
+\frac{\partial p\opt(0,0,0,0)}{\partial v_2} = -3,
+\]
+\[
+\frac{\partial p\opt(0,0,0,0)}{\partial v_3} = 0, \qquad
+\frac{\partial p\opt(0,0,0,0)}{\partial v_4} = -1
+\]
+
+\textbf{Provjera rezultata KKT-om} (slajd daje samo brojke; izvod niže slijedi
+postupak iz podzadatka b):
+
+\emph{Korak 1 --- novi dozvoljeni skup.} Sada je
+$0 \le x_1 \le 1{,}5$, $0 \le x_2 \le 1{,}5$ --- kvadrat stranice $1{,}5$.
+Ciljna točka $(3,2)$ je i dalje gore desno izvan njega, pa je najbliža točka
+opet gornji desni vrh: $x\opt = (1{,}5;\ 1{,}5)$.
+
+\emph{Korak 2 --- gradijent cilja u optimumu:}
+\[
+\nabla f(x\opt) = \begin{pmatrix}2\cdot1{,}5 - 6\\ 2\cdot1{,}5 - 4\end{pmatrix}
+= \begin{pmatrix}-3\\-1\end{pmatrix}
+\]
+
+\emph{Korak 3 --- KKT jednadžba} (aktivni su $g_2$ i $g_4$, pa je
+$\mu_1 = \mu_3 = 0$):
+\[
+\begin{pmatrix}-3\\-1\end{pmatrix}
++ \mu_2\begin{pmatrix}1\\0\end{pmatrix}
++ \mu_4\begin{pmatrix}0\\1\end{pmatrix} = 0
+\;\Longrightarrow\;
+\mu_2 = 3, \quad \mu_4 = 1
+\]
+Oba su $\ge 0$, dakle KKT uvjeti su zadovoljeni i
+$\mu\opt = (0,3,0,1)$. \checkmark
+
+\emph{Korak 4 --- optimalna vrijednost:}
+$p\opt = (1{,}5-3)^2 + (1{,}5-2)^2 = 2{,}25 + 0{,}25 = 2{,}5$.
+
+\textbf{Usporedba dvaju slučajeva --- što se naučilo:}
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+& \textbf{e)} $x_1\le2$, $x_2\le1$ & \textbf{f)} $x_1\le1{,}5$, $x_2\le1{,}5$ \\
+\midrule
+$x\opt$ & $(2;\ 1)$ & $(1{,}5;\ 1{,}5)$ \\
+$p\opt$ & $2$ & $2{,}5$ \\
+$\mu_2\opt$ (uz $x_1$) & $2$ & $3$ \\
+$\mu_4\opt$ (uz $x_2$) & $2$ & $1$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+  \item U slučaju f) ograničenje na $x_1$ je \emph{pooštreno} (s $2$ na
+        $1{,}5$), pa je njegova sjenska cijena \textbf{porasla} s $2$ na $3$ ---
+        ono sada „boli” više.
+  \item Ograničenje na $x_2$ je \emph{popušteno} (s $1$ na $1{,}5$), pa je
+        njegova sjenska cijena \textbf{pala} s $2$ na $1$.
+  \item Ukupno je $p\opt$ porastao s $2$ na $2{,}5$: gubitak zbog stiskanja
+        $x_1$ nadjačao je dobitak od popuštanja $x_2$.
+  \item \textbf{Praktična pouka:} ako imate ograničen budžet za popuštanje
+        ograničenja, uložite ga u ono s \textbf{najvećim} $\mu\opt$. Množitelji
+        vam izravno rangiraju ograničenja po tome koliko se isplati na njima
+        raditi.
+\end{itemize}
+\end{zadatak}
+
+% =====================================================================
+\section{Sažetak poglavlja}
+
+\textbf{Lanac ideja:}
+
+\begin{enumerate}
+  \item Za dopustiv $x$ i $\mu \ge 0$ vrijedi $L(x,\lambda,\mu) \le f(x)$ ---
+        Lagrangian je \textbf{donja ograda}.
+  \item Infimizacijom po $x$ dobiva se \textbf{dualna funkcija}
+        $\ell(\lambda,\mu) = \inf_x L$, koja je uvijek $\le p\opt$.
+  \item Maksimizacija po $(\lambda,\mu \ge 0)$ daje \textbf{dualni problem} s
+        vrijednošću $d\opt$. \textbf{Slaba dualnost:} $d\opt \le p\opt$, uvijek.
+  \item Dualni problem je \textbf{uvijek konveksan}, bez obzira na primarni.
+  \item \textbf{Jaka dualnost} ($d\opt = p\opt$) vrijedi ako je primarni problem
+        konveksan i zadovoljeni su \textbf{Slaterovi uvjeti}.
+  \item Iz jake dualnosti slijede \textbf{KKT uvjeti}, i --- za konveksne
+        probleme --- oni su i \textbf{dovoljni}.
+  \item \textbf{Dualna dekompozicija:} dualiziranjem samo „spojnog” ograničenja
+        problem se raspada na neovisne podprobleme. Primjena: formiranje
+        tržišnih cijena.
+  \item \textbf{Osjetljivost:} $\mu_j\opt = -\partial p\opt/\partial v_j$ ---
+        množitelj je sjenska cijena ograničenja.
+\end{enumerate}
+
+\textbf{Tri stvari koje se najčešće miješaju:}
+
+\begin{enumerate}
+  \item $\ell(\lambda,\mu)$ nastaje minimizacijom po $x$ \emph{bez ograničenja}
+        --- ograničenja su „ugrađena” u Lagrangian.
+  \item Slaba dualnost vrijedi uvijek; \textbf{jaka} traži konveksnost
+        \emph{plus} Slatera.
+  \item Predznak u osjetljivosti: $\mu\opt = -\partial p\opt/\partial v$
+        (s minusom), jer relaksacija ($v>0$) \emph{smanjuje} $p\opt$.
+\end{enumerate}
+
+\textbf{Terminologija (hrvatski $\leftrightarrow$ engleski):}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Hrvatski} & \textbf{Engleski} \\
+\midrule
+primarni / dualni problem & primal / dual problem \\
+dualna funkcija cilja & dual function \\
+dualna varijabla & dual variable \\
+slaba / jaka dualnost & weak / strong duality \\
+dualni jaz & duality gap \\
+Slaterovi uvjeti & Slater's constraint qualification \\
+dualna dekompozicija & dual decomposition \\
+analiza osjetljivosti & sensitivity analysis \\
+sjenska cijena & shadow price \\
+marginalni (inkrementalni) trošak & marginal (incremental) cost \\
+\bottomrule
+\end{tabular}
+\end{center}

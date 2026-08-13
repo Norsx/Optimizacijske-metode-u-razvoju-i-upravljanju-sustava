@@ -87,7 +87,7 @@ Legenda: ✅ obrađeno i zapisano · 🔄 u tijeku · ⬜ nije počelo
 | `01_Uvod.pdf` | 1–79 | ✅ | cijelo predavanje, poglavlje 1 |
 | `02_Definicije_klasifikacija_konveksnost.pdf` | 1–72 | ✅ | cijelo predavanje, poglavlje 2 |
 | `03_Uvjeti_optimalnosti.pdf` | 1–68 | ✅ | cijelo predavanje, poglavlje 3 |
-| `04_Lagrangeova_dualnost.pdf` | 1–34 | ⬜ | |
+| `04_Lagrangeova_dualnost.pdf` | 1–34 | ✅ | cijelo predavanje, poglavlje 4 |
 | `05_LP_QP.pdf` | 1–40 | ⬜ | |
 | `06_QCP_SDP.pdf` | 1–31 | ⬜ | |
 | `07_Dinamicki_sustavi_Ljapunov_disipativnost.pdf` | 1–55 | ⬜ | |
@@ -99,7 +99,7 @@ Legenda: ✅ obrađeno i zapisano · 🔄 u tijeku · ⬜ nije počelo
 |---|---|---|---|
 | `Vjezbe_1.pdf` | 1–34 | ✅ | ugrađeno inline u poglavlje 2 (zadaci 1–4) |
 | `Vjezbe_2.pdf` | 1–11 | ✅ | ugrađeno inline u poglavlje 2 (Primjer 1 + norme) |
-| `Vjezbe_3.pdf` | 1–42 | ⬜ | |
+| `Vjezbe_3.pdf` | 1–42 | ✅ | ugrađeno inline u poglavlje 4 (Primjer 1 + Primjer 2 a–f) |
 | `Vjezbe_4.pdf` | 1–41 | ⬜ | |
 | `Vjezbe_5.pdf` | 1–7 | ⬜ | |
 
@@ -195,6 +195,36 @@ Vježbe 2:
 > Slajdovi 64–68 u izvorniku nemaju ispisane formule (računi su rađeni na
 > ploči), pa su u skripti opisani točno onako kako izgledaju, uz naznaku kojim
 > se aparatom iz poglavlja rješavaju.
+
+### Detaljna evidencija — poglavlje 4
+
+Predavanje 04:
+
+| Str. izvora | Tema | Odjeljak skripte |
+|---|---|---|
+| 4–9 | donje granice, dualna funkcija, lanac nejednakosti | 4.1 |
+| 10 | terminologija dualnosti | 4.2 |
+| 11 | slaba dualnost, konkavnost duala | 4.3 |
+| 12–13 | Primjer 1: dual LP-a u standardnoj formi | 4.4 |
+| 14–15 | Primjer 2: optimalno particioniranje (SDP relaksacija) | 4.5 |
+| 16–18 | jaka dualnost, Slaterovi uvjeti, LP s jakom dualnošću | 4.6 |
+| 19–23 | KKT iz dualnosti; dovoljnost za konveksne probleme | 4.7 |
+| 24–27 | dualna dekompozicija | 4.9 |
+| 28–34 | analiza osjetljivosti (globalna i lokalna) | 4.11 |
+
+Vježbe 3:
+
+| Str. izvora | Tema | Odjeljak skripte |
+|---|---|---|
+| 4–14 | **Primjer 1** — tržište i formiranje cijena | 4.10 |
+| 15–18 | krivulje ponude/potražnje, APX podaci | 4.10.6 |
+| 20 | **Primjer 2** — postavka i podzadaci a)–f) | 4.7.4 |
+| 21–22 | a) konveksnost problema | 4.7.4 |
+| 23–27 | b) rješavanje KKT uvjeta (tablica 16 slučajeva) | 4.7.4 |
+| 28–33 | c) MATLAB: `quadprog` i YALMIP | 4.8.1 |
+| 34–39 | d) postavljanje i rješavanje dualnog problema | 4.8.2 |
+| 40–41 | e) osjetljivost | 4.11.4 |
+| 42 | f) ponovljeno s promijenjenim ograničenjima | 4.11.4 |
 
 ## Izvan opsega
 
