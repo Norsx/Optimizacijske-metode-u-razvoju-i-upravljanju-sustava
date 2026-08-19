@@ -498,12 +498,12 @@ f(x\opt) = \ell(\lambda\opt,\mu\opt)
 
 \begin{teorem}[KKT uvjeti]
 Ako vrijedi jaka dualnost i $x\opt, \lambda\opt, \mu\opt$ su optimalni, oni
-zadovoljavaju KKT uvjete:
+zadovoljavaju KKT uvjete. Prvi od njih je stacionarnost Lagrangeove funkcije,
+$\nabla_x L(x\opt,\lambda\opt,\mu\opt) = 0$, raspisana po članovima:
 \begin{align}
-\nabla_x L(x\opt,\lambda\opt,\mu\opt) = 0 \;\Longrightarrow\;
 \nabla f(x\opt) + \sum_{i=1}^{m}\lambda_i\opt\nabla h_i(x\opt)
                 + \sum_{j=1}^{p}\mu_j\opt\nabla g_j(x\opt) &= 0
-  && \text{(gradijentna jed.)} \notag\\
+  && \text{(grad.\ jed.)} \notag\\
 h_i(x\opt) &= 0, && \text{(primarna ogr.)} \notag\\
 g_j(x\opt) &\le 0, && \text{(primarna ogr.)} \notag\\
 \mu_j\opt g_j(x\opt) &= 0, && \text{(komplementarnost)} \notag\\
@@ -1288,7 +1288,7 @@ $\ell(\lambda)$ je nula).
 \str{V3:10}
 
 \begin{center}
-\begin{tabular}{p{6.4cm}p{6.4cm}}
+\begin{tabular}{P{6.4cm}P{6.4cm}}
 \toprule
 \textbf{Lokalna minimizacija proizvođača} &
 \textbf{Lokalna minimizacija potrošača} \\
@@ -1328,7 +1328,7 @@ ima svoju funkciju benefita.
 \str{V3:11}
 
 \begin{center}
-\begin{tabular}{p{13.0cm}}
+\begin{tabular}{P{13.0cm}}
 \toprule
 \textbf{Operator tržišta:} \quad
 $\displaystyle\max_{\lambda\in\R}\ell(\lambda)
@@ -1505,7 +1505,7 @@ malo pomaknemo ograničenja?}
 \textbf{Polazni par problema} \str{29}:
 
 \begin{center}
-\begin{tabular}{p{6.3cm}p{7.0cm}}
+\begin{tabular}{P{6.3cm}P{7.0cm}}
 \toprule
 \textbf{Primarni problem} & \textbf{Dualni problem} \\
 \midrule
@@ -1521,7 +1521,7 @@ uz ogr.\ $h_i(x) = 0$, $i=1,\dots,m$ & uz ogr.\ $\mu \ge 0$ \\
 \textbf{Perturbiran optimizacijski problem} \str{30}:
 
 \begin{center}
-\begin{tabular}{p{6.3cm}p{7.0cm}}
+\begin{tabular}{P{6.3cm}P{7.0cm}}
 \toprule
 \textbf{Primarni problem} & \textbf{Dualni problem} \\
 \midrule

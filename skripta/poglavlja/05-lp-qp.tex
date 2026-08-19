@@ -102,7 +102,7 @@ dobiva se ekvivalentan problem:
 \subsection{Primjer: problem proizvodnje i distribucije robe}
 \str{6--7}
 
-Slajdovi 6 i 7 ponavljaju primjer iz odjeljka~1.7 (dvije tvornice, sedam
+Slajdovi 6 i 7 ponavljaju primjer iz odjeljka~\ref{sec:proizvodnja-distribucija} (dvije tvornice, sedam
 trgovina):
 \begin{equation}
 \begin{aligned}
@@ -633,7 +633,7 @@ zapamtite ga.
 \]
 
 \textbf{Zašto to radi.} Isti trik kao kod $\infty$-norme
-(odjeljak~2.20.2) i kod problema dopustivosti \eqref{eq:dopustivost}: uvodimo
+(odjeljak~\ref{sec:norme-reformulacije}) i kod problema dopustivosti \eqref{eq:dopustivost}: uvodimo
 pomoćnu skalarnu varijablu $t$ koja mora biti \emph{gornja ograda} za sve
 $a_i\T x + b_i$, dakle $t \ge \max_i(a_i\T x + b_i) = f(x)$. Minimiziranjem $t$
 ta se ograda spušta točno na $f(x)$.
@@ -642,6 +642,7 @@ Rezultat: cilj je linearan ($t$), sva ograničenja su linearna --- dakle
 \textbf{LP} u $n+1$ varijabli.
 
 \subsection{Primjer 2: Chebyshevljev centar poliedra}
+\label{sec:chebyshev}
 \str{28--29}
 
 \begin{definicija}[Chebyshevljev centar]
@@ -656,10 +657,12 @@ Slajd prikazuje mnogokut s upisanom najvećom kružnicom i označenim središtem
 
 \textbf{Uvjet da kugla stane u poliedar} \str{29}\textbf{:}
 \[
-a_i\T x \le b_i \text{ za sve } x \in B,
-\quad\text{ako i samo ako}\quad
-\sup_u \{\, a_i\T(x_c + u) \mid \|u\|_2 \le r \,\} \le b_i
-\quad\text{za sve } i = 1,\dots,m
+a_i\T x \le b_i \text{ za sve } x \in B
+\quad\Longleftrightarrow\quad
+\sup_u \{\, a_i\T(x_c + u) \mid \|u\|_2 \le r \,\} \le b_i ,
+\]
+\[
+\text{i to za sve } i = 1,\dots,m .
 \]
 
 \emph{Čitanje:} da bi \emph{cijela} kugla zadovoljavala $i$-to ograničenje,
@@ -850,7 +853,7 @@ pa množenjem s $(A\T A)^{-1}$ slijeva dobivamo \eqref{eq:normalne-jednadzbe}.
 postoji.
 
 \begin{napomena}[povezivanje s ranijim gradivom]
-Ovo je isti rezultat do kojeg smo došli u odjeljku~2.20.2 (reformulacija
+Ovo je isti rezultat do kojeg smo došli u odjeljku~\ref{sec:norme-reformulacije} (reformulacija
 2-norme): $Q = A\T A \succeq 0$, a uz $\rank A = n$ čak $Q \succ 0$. Problem
 najmanjih kvadrata je dakle QP \emph{bez ograničenja}, i jedini je iz cijelog
 kolegija koji ima \textbf{zatvorenu formulu} za rješenje.
@@ -884,7 +887,7 @@ duljine $2n$. Cilj $\|x_1-x_2\|_2^2$ je kvadratna forma tog vektora (uz
 $Q = 2\begin{psmallmatrix} I & -I \\ -I & I\end{psmallmatrix}$, što je
 $\succeq 0$), a oba ograničenja su linearna. \checkmark
 
-Kvadriranje norme je opet trik iz odjeljka~2.20.2: uklanja korijen, ne mijenja
+Kvadriranje norme je opet trik iz odjeljka~\ref{sec:norme-reformulacije}: uklanja korijen, ne mijenja
 minimizator.
 
 \subsection{Primjer 3: LP s funkcijom cilja kao slučajnom varijablom}
@@ -993,7 +996,7 @@ točno rješenje (\emph{preodređen} sustav). Zato tražimo $x$ koji ga rješava
 \str{V4:5}
 
 \begin{center}
-\begin{tabular}{p{2.2cm}p{10.8cm}}
+\begin{tabular}{P{2.2cm}P{10.8cm}}
 \toprule
 \textbf{Norma} & \textbf{Naziv i formulacija} \\
 \midrule
@@ -1023,7 +1026,7 @@ $\|\cdot\|_1$
 \end{tabular}
 \end{center}
 
-Ovo su točno reformulacije koje smo izveli u odjeljku~2.20.2 --- vratite se
+Ovo su točno reformulacije koje smo izveli u odjeljku~\ref{sec:norme-reformulacije} --- vratite se
 tamo ako vam nije jasno \emph{zašto} rade.
 
 \begin{napomena}[praktična razlika između triju normi]
@@ -1206,7 +1209,7 @@ plot(x,yApprox_norm1,'k')
 \textbf{Razlika u odnosu na $\infty$-normu:} umjesto \emph{jedne} varijable $t$
 imamo \emph{vektor} $z$ duljine $n$ (po jedna ograda za svaki rezidual), a cilj
 je \textbf{zbroj} $\mathbf{1}\T z$ umjesto samog $t$. Točno kako je izvedeno u
-odjeljku~2.20.2.
+odjeljku~\ref{sec:norme-reformulacije}.
 
 \subsection{Aproksimacije s ograničenjima}
 \str{V4:14}
@@ -1393,7 +1396,7 @@ y(t) = \sum_{\tau=0}^{t} h(\tau)\,u(t-\tau), \qquad t = 1,\dots,N
 funkcije cilja:
 
 \begin{center}
-\begin{tabular}{p{4.6cm}p{8.4cm}}
+\begin{tabular}{P{4.6cm}P{8.4cm}}
 \toprule
 \textbf{Kriterij} & \textbf{Izraz} \\
 \midrule
@@ -1449,7 +1452,7 @@ $y$ eliminira uvrštavanjem).
 $u(t)$, dolje izlaz $y(t)$ s referencom) za tri kombinacije parametara:
 
 \begin{center}
-\begin{tabular}{lll}
+\begin{tabular}{llP{6.6cm}}
 \toprule
 \textbf{Slajd} & \textbf{Parametri} & \textbf{Karakter rješenja} \\
 \midrule
@@ -1557,7 +1560,7 @@ Ispravno je dakle
 
 \begin{napomena}[zašto inverz uvijek postoji]
 Matrica $D\T D$ je pozitivno semidefinitna (isti argument kao za $A\T A$ u
-odjeljku~2.20.2), pa su joj svojstvene vrijednosti $\ge 0$. Tada
+odjeljku~\ref{sec:norme-reformulacije}), pa su joj svojstvene vrijednosti $\ge 0$. Tada
 $I + \delta D\T D$ ima svojstvene vrijednosti $\ge 1 > 0$ za $\delta \ge 0$,
 dakle je pozitivno definitna i regularna. Rekonstrukcija je uvijek dobro
 definirana.
@@ -1835,7 +1838,7 @@ porastao da potražnja u tom vrhu poraste za jednu jedinicu.
 \textbf{Dvije klase problema:}
 
 \begin{center}
-\begin{tabular}{p{3.0cm}p{4.8cm}p{5.0cm}}
+\begin{tabular}{P{3.0cm}P{4.8cm}P{5.0cm}}
 \toprule
 & \textbf{LP} & \textbf{QP} \\
 \midrule
@@ -1861,7 +1864,7 @@ uvjet konveksnosti & automatski & $Q \succeq 0$ (za jedinstvenost $\succ 0$) \\
 \textbf{Katalog formulacija koje treba prepoznati:}
 
 \begin{center}
-\begin{tabular}{p{6.6cm}p{2.0cm}p{4.2cm}}
+\begin{tabular}{P{6.6cm}P{2.0cm}P{4.2cm}}
 \toprule
 \textbf{Problem} & \textbf{Klasa} & \textbf{Trik} \\
 \midrule

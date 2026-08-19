@@ -634,9 +634,9 @@ $\theta = \pi$, a koeficijent $c$ iznosi
 c = \frac{1}{I(M+m) + Mml^2}
 \]
 
-\emph{Izvor modela (naveden na slajdu):}
-\texttt{https://ctms.engin.umich.edu/CTMS/index.php?example=}
-\texttt{InvertedPendulum\&section=SystemModeling}
+\emph{Izvor modela (naveden na slajdu):}\\
+{\small\texttt{https://ctms.engin.umich.edu/CTMS/index.php?}\\
+\texttt{example=InvertedPendulum\&section=SystemModeling}}
 
 \textbf{Zadatak} \str{V5:7}\textbf{.} Potrebno je odrediti matricu $K$
 statičkog regulatora oblika
@@ -661,12 +661,12 @@ m/s\textsuperscript{2} (slajd ga ne navodi brojčano).
 
 \subsection*{Korak 1 --- brojčane vrijednosti}
 
-\[
-c = \frac{1}{I(M+m) + Mml^2}
-= \frac{1}{0{,}006\cdot0{,}7 + 0{,}5\cdot0{,}2\cdot0{,}09}
-= \frac{1}{0{,}0042 + 0{,}009}
-= \frac{1}{0{,}0132} = 75{,}7576
-\]
+\begin{align*}
+c &= \frac{1}{I(M+m) + Mml^2}
+   = \frac{1}{0{,}006\cdot0{,}7 + 0{,}5\cdot0{,}2\cdot0{,}09} \\
+  &= \frac{1}{0{,}0042 + 0{,}009}
+   = \frac{1}{0{,}0132} = 75{,}7576
+\end{align*}
 
 Pomoćne veličine:
 \[
@@ -740,8 +740,9 @@ definitan. \checkmark
 
 Rješavanjem \eqref{eq:pendulum-lmi} (uz normalizaciju $Q \succeq I$) dobiva se
 \[
-Y = \begin{pmatrix}-3855{,}30 & -1464{,}99 & -4184{,}35 & 4691{,}11\end{pmatrix},
-\qquad
+Y = \begin{pmatrix}-3855{,}30 & -1464{,}99 & -4184{,}35 & 4691{,}11\end{pmatrix}
+\]
+\[
 P = Q^{-1} = \begin{pmatrix}
 0{,}00033 & 0{,}00019 & -0{,}00082 & -0{,}00021 \\
 0{,}00019 & 0{,}00062 & -0{,}00169 & -0{,}00048 \\
@@ -1229,8 +1230,12 @@ s(u(t),y(t)) = u_0^{*}
 \begin{pmatrix}Q & S\\ S\T & R\end{pmatrix}
 \begin{pmatrix}I\\ G(i\omega)\end{pmatrix} u_0
 \]
-koja je \textbf{konstantna za sve $t$}. Integracijom funkcije dobave preko
-perioda oscilacija, $\int_{t_1}^{t_1+k2\pi/\omega}s(u(t),y(t))\dd t$, dobivamo
+koja je \textbf{konstantna za sve $t$}. Integriramo funkciju dobave preko
+$k$ perioda oscilacije,
+\[
+\int_{t_1}^{\,t_1 + k\,2\pi/\omega} s\big(u(t),y(t)\big)\,\dd t ,
+\]
+i dobivamo
 \begin{equation}
 \label{eq:frekvencijska}
 \begin{pmatrix}I\\ G(i\omega)\end{pmatrix}^{*}
@@ -1346,7 +1351,7 @@ $i\omega \in \lambda(A)$ --- jer takvih točaka po pretpostavci nema.
 \textbf{Glavni rezultati u jednoj tablici:}
 
 \begin{center}
-\begin{tabular}{p{4.4cm}p{8.6cm}}
+\begin{tabular}{P{4.4cm}P{8.6cm}}
 \toprule
 \textbf{Pitanje} & \textbf{LMI odgovor} \\
 \midrule

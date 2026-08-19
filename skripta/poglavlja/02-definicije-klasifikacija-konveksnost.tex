@@ -160,7 +160,7 @@ i on je razlog zašto su linearni modeli u inženjerstvu toliko moćni.
 linearne?}
 
 \begin{center}
-\begin{tabular}{p{8.6cm}p{4.4cm}}
+\begin{tabular}{P{8.6cm}P{4.4cm}}
 \toprule
 \textbf{Funkcija} & \textbf{Linearna?} \\
 \midrule
@@ -193,7 +193,7 @@ f : \R^3 \to \R^3, \; f(x) = \begin{pmatrix}
 \]
 
 \begin{center}
-\begin{tabular}{p{8.6cm}p{4.4cm}}
+\begin{tabular}{P{8.6cm}P{4.4cm}}
 \toprule
 \textbf{Funkcija} & \textbf{Linearna?} \\
 \midrule
@@ -438,16 +438,18 @@ nivoi daju samo pomaknute kopije istog pravca.
 \textbf{Korak 4 --- konkretni pravci.} Uvrstimo nekoliko vrijednosti $c$:
 
 \begin{center}
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{lccccc}
 \toprule
 $c$ & $-4$ & $-2$ & $0$ & $2$ & $4$ \\
 \midrule
-jednadžba & $x_2 = -4-2x_1$ & $x_2 = -2-2x_1$ & $x_2 = -2x_1$
-          & $x_2 = 2-2x_1$ & $x_2 = 4-2x_1$ \\
+jednadžba & \small$x_2 = -4-2x_1$ & \small$x_2 = -2-2x_1$ & \small$x_2 = -2x_1$
+          & \small$x_2 = 2-2x_1$ & \small$x_2 = 4-2x_1$ \\
 sjecište s osi $x_2$ & $-4$ & $-2$ & $0$ & $2$ & $4$ \\
 sjecište s osi $x_1$ & $-2$ & $-1$ & $0$ & $1$ & $2$ \\
 \bottomrule
 \end{tabular}
+\setlength{\tabcolsep}{6pt}
 \end{center}
 
 \emph{Provjera jednog retka:} za $c = 2$, sjecište s osi $x_1$ dobiva se za
@@ -2305,7 +2307,7 @@ Konkavna funkcija je dakle „obrnuta zdjela” --- kupola. Njezin graf nikad ni
 \str{63}
 
 \begin{center}
-\begin{tabular}{p{6.2cm}p{6.6cm}}
+\begin{tabular}{P{6.2cm}P{6.6cm}}
 \toprule
 \textbf{Konveksne funkcije} & \textbf{Nekonveksne funkcije} \\
 \midrule
@@ -2756,7 +2758,7 @@ Slajdovi V2:6--8 prikazuju svaku od tri norme dvaput: kao 3D plohu nad
 ravninom $(x_1,x_2)$ i kao nivo krivulje u toj ravnini.
 
 \begin{center}
-\begin{tabular}{p{3.3cm}p{4.6cm}p{4.8cm}}
+\begin{tabular}{P{3.3cm}P{4.6cm}P{4.8cm}}
 \toprule
 \textbf{Funkcija} & \textbf{3D ploha} & \textbf{Nivo krivulje} \\
 \midrule
@@ -2778,6 +2780,7 @@ ishodištu --- vizualna potvrda konveksnosti. Nivo krivulje su upravo kugle iz
 odjeljka~\ref{sec:norme}, samo skalirane.
 
 \subsection{Minimizacija norme kao konveksan optimizacijski problem}
+\label{sec:norme-reformulacije}
 \str{V2:9--11}
 
 Ovo su tri vrlo korisne \textbf{reformulacije}: problem s normom u funkciji
@@ -2844,13 +2847,18 @@ onoliko komponenata koliko ih ima rezidual $Ax + b$, tj.\ koliko $A$ ima
 \uzogr & h_i(x) = 0 \\
 & g_j(x) \le 0
 \end{aligned}
-\quad\Longleftrightarrow\quad
+\qquad\Longleftrightarrow\qquad
 \begin{aligned}
-\min_x \quad & (Ax+b)\T(Ax+b)
-  = x\T \underbrace{A\T A}_{Q} x + 2b\T Ax + b\T b \\
+\min_x \quad & (Ax+b)\T(Ax+b) \\
 \uzogr & h_i(x) = 0 \\
 & g_j(x) \le 0
 \end{aligned}
+\]
+
+pri čemu se funkcija cilja desnog problema raspisuje kao kvadratna forma
+\[
+(Ax+b)\T(Ax+b)
+= x\T \underbrace{A\T A}_{Q} x + 2b\T Ax + b\T b
 \]
 
 Budući da je matrica $Q = A\T A$ nužno pozitivno semidefinitna, funkcija cilja
@@ -2861,7 +2869,7 @@ je konveksna.
   \item \textbf{Uklanjanje korijena:} $\|r\|_2 = \sqrt{r\T r}$, a kvadriranje
         je strogo rastuća transformacija na nenegativnim brojevima, pa
         \emph{ne mijenja položaj} minimuma (isti trik kao u
-        odjeljku~1.8.3). Zato minimiziramo $\|r\|_2^2 = r\T r$.
+        odjeljku~\ref{sec:klasicni-primjeri}). Zato minimiziramo $\|r\|_2^2 = r\T r$.
   \item \textbf{Raspis kvadratne forme:}
         \begin{align}
         (Ax+b)\T(Ax+b)

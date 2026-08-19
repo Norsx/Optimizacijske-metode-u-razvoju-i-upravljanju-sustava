@@ -544,7 +544,7 @@ poglavlje~\ref{ch:robusno}.
 Sa slajda, sa svrstavanjem svake stavke u element standardne forme:
 
 \begin{center}
-\begin{tabular}{p{7.4cm}p{6.0cm}}
+\begin{tabular}{P{7.4cm}P{6.0cm}}
 \toprule
 \textbf{Sa slajda} & \textbf{Element opt.\ problema} \\
 \midrule
@@ -696,6 +696,7 @@ kvalitetu optimuma.
 
 % =====================================================================
 \section{Primjer: problem proizvodnje i distribucije robe}
+\label{sec:proizvodnja-distribucija}
 \str{44--45}
 
 Ovo je prvi potpuno formuliran „inženjersko-poslovni” problem u kolegiju i
@@ -771,6 +772,7 @@ varijabli $x_{ij}$. To je definicija linearnog programa
 
 % =====================================================================
 \section{Klasični primjeri optimiranja s potpunim rješenjima}
+\label{sec:klasicni-primjeri}
 \str{46--52}
 
 Slajdovi 46--52 rješavaju šest školskih ekstremalnih problema. Svi se rješavaju
@@ -1320,13 +1322,15 @@ A = \frac{1}{2}a\,r\cos\frac{\varphi}{2}\cdot\frac{n}{2}
 
 \[
 A = \frac{500^2}{2 \cdot 8 \cdot \tan\frac{\pi}{8}} = 37\,722{,}1\,\text{m}^2
-\qquad \left(\text{za } n \to \infty, \;
+\]
+\[
+\left(\text{za } n \to \infty \text{ je }
 \lim_{n\to\infty}\left(n\cdot\tan\frac{\pi}{n}\right) = \pi\right)
 \]
 
 \emph{Provjera brojki:} $\tan(\pi/8) = \tan 22{,}5^\circ = 0{,}41421$, pa je
-$2 \cdot 8 \cdot 0{,}41421 = 6{,}6274$ i
-$A = 250\,000/6{,}6274 = 37\,722$ m\textsuperscript{2} \checkmark
+$2 \cdot 8 \cdot 0{,}41421 = 6{,}6274$, a odatle
+$A = 250\,000/6{,}6274 = 37\,722$~m$^2$. \checkmark
 
 \emph{Značenje granice:} kad $n \to \infty$, $n\tan(\pi/n) \to \pi$, pa formula
 za mnogokut prelazi u $A \to L^2/(2\pi)$ --- točno rezultat polukruga b).
@@ -1488,10 +1492,10 @@ mijenjaju}, a mogu se podijeliti na dvije vrste:
 \toprule
 \textbf{PROJEKTNI PARAMETRI} \\
 \midrule
-\begin{tabular}{p{5.0cm}|p{7.0cm}}
+\begin{tabular}{P{5.0cm}|P{7.0cm}}
 \centering \textbf{PROJEKTNE VARIJABLE} & \centering\textbf{PROJEKTNE KONSTANTE} \tabularnewline
 \centering $x$ & \centering $y,\; z$ \tabularnewline
- & \begin{tabular}{p{3.0cm}p{3.0cm}}
+ & \begin{tabular}{P{3.0cm}P{3.0cm}}
    \textbf{TEHNIČKI} $y$ & \textbf{TAKTIČKI} $z$ \\
    (odabrani od projektanta) & (zadani projektnim zadatkom)
    \end{tabular}

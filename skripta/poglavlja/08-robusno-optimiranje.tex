@@ -83,13 +83,15 @@ slučaja”.
 \textbf{Korak 1 --- prebacivanje na najgori slučaj} \str{4}\textbf{.}
 \[
 \begin{aligned}
-\min_x c\T x \\
-\uzogr a_i\T x \le b_i \text{ za sve } a_i \in \mathcal{P}_i
+\min_x \; & c\T x \\
+\uzogr & a_i\T x \le b_i \\
+& \text{za sve } a_i \in \mathcal{P}_i
 \end{aligned}
 \qquad\Updownarrow\qquad
 \begin{aligned}
-\min_x c\T x \\
-\uzogr \sup_{a\in\mathcal{P}_i} a\T x \le b_i, \quad i = 1,\dots,m
+\min_x \; & c\T x \\
+\uzogr & \sup_{a\in\mathcal{P}_i} a\T x \le b_i, \\
+& i = 1,\dots,m
 \end{aligned}
 \]
 
@@ -175,7 +177,11 @@ Opt.\ problem s „nominalnim vrijednostima” koeficijenata:
 & a_3\T x = \begin{pmatrix}1 & 1\end{pmatrix}x \le 30 \\
 & a_4\T x = \begin{pmatrix}-1 & 1\end{pmatrix}x \le 10
 \end{aligned}
-\qquad\text{tj.}\qquad
+\]
+
+odnosno, u matričnom zapisu,
+
+\[
 \begin{aligned}
 \min_x \; & c\T x \\
 \uzogr & \underbrace{\begin{pmatrix}
@@ -430,8 +436,8 @@ ljuska od (generatora / vrhova) $\Delta_1,\Delta_2,\Delta_3,\Delta_4$.
 \begin{aligned}
 \min_x \; & c\T x \\
 \uzogr & A(I+\Delta)x \le b \\
-& \text{za sve } \Delta \in \boldsymbol\Delta
-   = \operatorname{co}(\Delta_1,\dots,\Delta_k)
+& \text{za sve } \Delta \in \boldsymbol\Delta, \\
+& \boldsymbol\Delta = \operatorname{co}(\Delta_1,\dots,\Delta_k)
 \end{aligned}
 \qquad\Updownarrow\qquad
 \begin{aligned}
@@ -519,7 +525,7 @@ Ukupno $4 \times 4 = 16$ linearnih nejednakosti --- običan LP.
 \str{17--19}
 
 \begin{center}
-\begin{tabular}{p{5.4cm}p{3.6cm}p{3.4cm}}
+\begin{tabular}{P{5.4cm}P{3.6cm}P{3.4cm}}
 \toprule
 \textbf{Slučaj} & \textbf{Minimizator} & \textbf{Slajd} \\
 \midrule
@@ -622,7 +628,7 @@ odjeljku~\ref{sec:robusni-lp-cqp} \str{6:15}; ondje su i svi međukoraci
 
 \begin{napomena}[poliedarska vs.\ elipsoidna nesigurnost --- kako birati]
 \begin{center}
-\begin{tabular}{p{3.0cm}p{4.6cm}p{4.8cm}}
+\begin{tabular}{P{3.0cm}P{4.6cm}P{4.8cm}}
 \toprule
 & \textbf{poliedarska} $\mathcal{P}_i$ & \textbf{elipsoidna} $\mathcal{E}_i$ \\
 \midrule
@@ -651,7 +657,7 @@ i zatim taj \emph{supremum} izračunaj u zatvorenom obliku ili dualiziraj.
 \textbf{Tri načina, ovisno o obliku skupa nesigurnosti $\mathcal{U}$:}
 
 \begin{center}
-\begin{tabular}{p{3.6cm}p{4.4cm}p{4.6cm}}
+\begin{tabular}{P{3.6cm}P{4.4cm}P{4.6cm}}
 \toprule
 \textbf{Skup $\mathcal{U}$} & \textbf{Tehnika} & \textbf{Rezultat} \\
 \midrule
