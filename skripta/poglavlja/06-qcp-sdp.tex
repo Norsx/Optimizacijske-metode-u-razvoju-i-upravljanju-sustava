@@ -210,6 +210,46 @@ x_n \ge \sqrt{x_1^2 + \dots + x_{n-1}^2} \,\Big\}
 skup iznad plašta kružnog stošca s vrhom u ishodištu, otvorenog prema gore. U
 literaturi se zove i \emph{ice-cream cone} ili \emph{Lorentzov konus}.
 
+\begin{crtanje}[konus drugog stupnja u $\R^3$]
+\textbf{Korak 1 --- osi.} Nacrtajte prostorni koordinatni sustav: os $x_3$
+\textbf{uspravno}, a osi $x_1$ i $x_2$ koso, kao vodoravnu ravninu. Uspravna os
+je ovdje posebna --- na njoj stoji ona jedna izdvojena komponenta iz definicije.
+
+\textbf{Korak 2 --- vrh.} Stavite točku u ishodište. To je jedina točka konusa
+na visini $x_3 = 0$: uvjet $0 \ge \sqrt{x_1^2+x_2^2}$ traži $x_1 = x_2 = 0$.
+Konus je „šiljat” točno ondje.
+
+\textbf{Korak 3 --- vodoravni presjeci.} Presjecite konus ravninom
+$x_3 = h$ za nekoliko visina, npr.\ $h = 1, 2, 3$. Uvjet postaje
+$\sqrt{x_1^2 + x_2^2} \le h$, dakle \textbf{krug polumjera $h$}. Nacrtajte tri
+elipse (krugovi u perspektivi) sve većeg polumjera, jednu iznad druge, i to
+tako da polumjer raste \textbf{točno jednako brzo kao visina}.
+
+\textbf{Korak 4 --- plašt.} Spojite vrh s rubovima krugova dvjema pravcima ---
+lijevom i desnom izvodnicom. Kut je pod $45^\circ$ prema uspravnoj osi, upravo
+zato što je polumjer $=$ visina.
+
+\textbf{Korak 5 --- što je unutra.} Osjenčajte \textbf{unutrašnjost} stošca.
+Točke iznutra zadovoljavaju $x_3 \ge \sqrt{x_1^2+x_2^2}$; točke izvan ne. Uočite
+da je konus \textbf{pun}, ne samo ploha.
+
+\textbf{Provjera dviju točaka:} $(0,0,1)$ je unutra ($1 \ge 0$ \checkmark);
+$(1,1,1)$ je \textbf{vani} ($1 \ge \sqrt2 \approx 1{,}41$ ne vrijedi);
+$(1,1,2)$ je unutra
+($2 \ge 1{,}41$ \checkmark).
+
+\textbf{Korak 6 --- provjera konveksnosti okom.} Uzmite dvije točke u konusu i
+spojite ih. Spojnica ostaje unutra --- konus je konveksan skup. To je razlog
+zašto je CQP \emph{konveksan} problem i zašto se rješava jednako pouzdano kao LP.
+
+\textbf{Što graf znači.} CQP ograničenje
+$\|A_ix + b_i\|_2 \le c_i\T x + d_i$ kaže točno: „vektor sastavljen od lijeve i
+desne strane mora ležati \textbf{u ovom stošcu}”. Radijalni dio je norma
+(zaobljeni dio), uspravni dio je afini izraz. Kad je konus zamijenjen s
+$\R^n_+$, dobivate LP; kad je zamijenjen konusom pozitivno semidefinitnih
+matrica, dobivate SDP --- ista teorija, drugi stožac.
+\end{crtanje}
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.56\textwidth]{06-konus.png}
@@ -359,6 +399,55 @@ $\bar a_i\T x$. Ispravno je kako je napisano gore.
 koliko moramo „ostaviti mjesta” da bi ograničenje vrijedilo i za najgori
 mogući $a_i$. Što je elipsoid nesigurnosti veći (veći $P_i$), to je rezerva
 veća i rješenje konzervativnije.
+
+\begin{crtanje}[elipsoid nesigurnosti i najgori koeficijent]
+Ovaj crtež nije u prostoru varijabli $x$, nego u \textbf{prostoru koeficijenata
+$a$} --- to je prva stvar koju treba imati na umu, inače slika nema smisla.
+
+\textbf{Korak 1 --- nominalna vrijednost.} Nacrtajte osi (komponente vektora
+$a$) i u sredinu stavite točku $\bar a_i$ --- koeficijent kakav
+\emph{mislimo} da jest.
+
+\textbf{Korak 2 --- skup nesigurnosti.} Oko te točke nacrtajte
+\textbf{elipsu}. To je skup $\{\bar a_i + P_iu \mid \|u\|_2 \le 1\}$: uzmete
+jediničnu kružnicu (sve $u$ s $\|u\|_2 \le 1$), rastegnete je matricom $P_i$ i
+pomaknete u $\bar a_i$. Ako je $P_i = rI$, dobijete kružnicu polumjera $r$; opći
+$P_i$ daje elipsu zaokrenutu i različito rastegnutu po osima. \textbf{Stvarni
+koeficijent može biti bilo gdje unutar te elipse.}
+
+\textbf{Korak 3 --- smjer $x$.} Iz $\bar a_i$ nacrtajte strelicu $x$ --- to je
+kandidat za rješenje, a ovdje ga tretiramo kao \emph{fiksan zadani smjer}.
+
+\textbf{Korak 4 --- traženje najgore točke.} Ograničenje je $a_i\T x \le b_i$;
+najgori $a_i$ je onaj koji \textbf{maksimizira} $a_i\T x$, dakle onaj koji je
+najdalje pomaknut \emph{u smjeru} $x$. Nacrtajte pravac okomit na $x$ i klizite
+ga u smjeru $x$ dok ne izađe iz elipse. \textbf{Zadnja dodirna točka je najgori
+$a_i$} --- označite je $a_i^{\text{najgori}}$. Uočite: ondje pravac
+\emph{tangira} elipsu, isto pravilo tangentnosti kao kod svakog optimuma u ovoj
+skripti.
+
+\textbf{Korak 5 --- rezerva.} Izmjerite razmak od $\bar a_i$ do tog tangentnog
+pravca, mjeren duž $x$. Taj je razmak točno $\|P_i\T x\|_2$. Označite ga
+zagradom i napišite „sigurnosna rezerva”.
+
+\textbf{Korak 6 --- čitanje formule sa slike.} Sada se cijelo ograničenje
+\eqref{eq:robusni-lp-cqp} čita izravno:
+\[
+\underbrace{\bar a_i\T x}_{\text{nominalni doprinos}}
++ \underbrace{\|P_i\T x\|_2}_{\text{rezerva iz Koraka 5}} \le b_i
+\]
+
+\textbf{Provjera razumijevanja.} Povećajte elipsu (veći $P_i$): rezerva raste,
+pa ograničenje postaje strože i $x$ se mora povući --- rješenje je
+\textbf{konzervativnije}. Smanjite elipsu na točku ($P_i = 0$): rezerva je nula
+i vraćate se na obični LP. Slika time pokazuje da robusnost i optimalnost stoje
+na suprotnim stranama iste vage.
+
+\textbf{Što graf znači.} Ovo je geometrijski razlog zašto robusni LP s
+elipsoidnom nesigurnošću \emph{nije} više LP nego \textbf{CQP}: dodani član
+$\|P_i\T x\|_2$ je norma, a norma $\le$ afini izraz upravo je konusno
+ograničenje iz odjeljka~\ref{sec:cqp}.
+\end{crtanje}
 
 \begin{figure}[H]
 \centering

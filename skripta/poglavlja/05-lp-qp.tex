@@ -544,6 +544,59 @@ $\ge 0$ $\Rightarrow$ \textbf{BDR}. Točka $B = (3,1)$, $c\T x = -11$.
 \textbf{Provjera dopustivosti optimuma:} $4 + 0 = 4 \le 4$ \checkmark
 (aktivno); $4 + 0 = 4 \le 6$ \checkmark (neaktivno); $x \ge 0$ \checkmark.
 
+\begin{crtanje}[dozvoljeni četverokut i njegova četiri vrha]
+\textbf{Korak 1 --- osi i skala.} Nacrtajte osi $x_1$ (od $0$ do $7$) i $x_2$
+(od $0$ do $3$). Zbog uvjeta $x_1, x_2 \ge 0$ radimo \textbf{samo u prvom
+kvadrantu} --- to su već dvije od četiri stranice budućeg četverokuta.
+
+\textbf{Korak 2 --- prvo ograničenje.} $x_1 + x_2 \le 4$. Granicu $x_1+x_2=4$
+crtate kroz dvije točke koje je najlakše naći: stavite $x_1=0 \Rightarrow
+x_2=4$, pa $x_2=0 \Rightarrow x_1=4$. Povucite pravac kroz $(0,4)$ i $(4,0)$.
+Koja je strana dozvoljena? Uvrstite ishodište: $0+0=0 \le 4$ \checkmark --- dakle
+strana prema ishodištu. Nacrtajte kratke crtice s te strane pravca.
+
+\textbf{Korak 3 --- drugo ograničenje.} $x_1 + 3x_2 \le 6$. Isti trik:
+$x_1=0 \Rightarrow x_2=2$; $x_2=0 \Rightarrow x_1=6$. Pravac kroz $(0,2)$ i
+$(6,0)$. Ishodište: $0 \le 6$ \checkmark, opet strana prema ishodištu.
+
+\textbf{Korak 4 --- dozvoljeni skup.} Presjek svega osjenčajte. Dobit ćete
+\textbf{četverokut}. Uočite da drugi pravac „odsijeca” vrh $(0,4)$ prvoga ---
+zato skup nije trokut.
+
+\textbf{Korak 5 --- označite vrhove.} Ima ih točno četiri, i svaki nastaje kao
+sjecište dvaju od četiri pravca:
+\begin{itemize}
+  \item $O = (0,0)$ --- sjecište obiju osi;
+  \item $A = (4,0)$ --- os $x_2 = 0$ i pravac $x_1+x_2=4$;
+  \item $B = (3,1)$ --- sjecište dvaju kosih pravaca (izračunali smo ga
+        u Koraku 3 gore);
+  \item $C = (0,2)$ --- os $x_1 = 0$ i pravac $x_1+3x_2=6$.
+\end{itemize}
+Napišite slova uz točke. \textbf{Ovo su ekstremne točke} --- i, po teoremu
+ET $=$ BDR, upravo četiri bazna dozvoljena rješenja iz tablice.
+
+\textbf{Korak 6 --- nivo krivulje cilja.} Cilj je $c\T x = -3x_1 - 2x_2$. Nivo
+krivulja $-3x_1-2x_2 = c$ je pravac nagiba $-3/2$. Nacrtajte tri-četiri takva
+paralelna pravca isprekidano, npr.\ kroz $O$ (razina $0$), kroz $C$ (razina
+$-4$), kroz $B$ (razina $-11$) i kroz $A$ (razina $-12$). Uz svaki napišite
+razinu.
+
+\textbf{Korak 7 --- klizanje do optimuma.} Zamislite da isprekidani pravac
+pomičete paralelno u smjeru pada (prema gore-desno, jer su svi koeficijenti
+cilja negativni). \textbf{Zadnja točka dozvoljenog skupa koju dotakne prije nego
+ga napusti jest optimum.} Ovdje je to vrh $A = (4,0)$, s vrijednošću $-12$.
+Zaokružite ga.
+
+\textbf{Provjera okom:} pravac razine $-11$ prolazi kroz $B$ i još uvijek siječe
+skup, pa $B$ nije optimum; pravac razine $-12$ dodiruje skup samo u $A$.
+\checkmark
+
+\textbf{Što graf znači.} Slika je vizualni dokaz dvaju teorema odjednom:
+(1) dozvoljeni skup LP-a je poliedar, a njegovi vrhovi su bazna dozvoljena
+rješenja; (2) optimum LP-a uvijek se postiže u vrhu, pa je dovoljno provjeriti
+\emph{konačno mnogo} točaka. Na tome počiva simpleks metoda.
+\end{crtanje}
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.68\textwidth]{05-ekstremne-tocke.png}
@@ -1041,6 +1094,46 @@ tamo ako vam nije jasno \emph{zašto} rade.
         stršeće vrijednosti je manje pomiču.
 \end{itemize}
 \end{napomena}
+
+\begin{crtanje}[tri norme na istim podacima]
+Ovu sliku možete skicirati bez ijednog računa --- dovoljno je znati \emph{što
+koja norma kažnjava}.
+
+\textbf{Korak 1 --- podaci.} Nacrtajte osi i ubacite desetak točaka koje
+otprilike leže na rastućem pravcu. Zatim namjerno \textbf{podignite dvije
+točke} daleko iznad ostalih --- to su stršeće vrijednosti (outlieri). Bez njih
+sve tri norme daju gotovo isti pravac i slika ne pokazuje ništa.
+
+\textbf{Korak 2 --- pravac 2-norme (najmanji kvadrati).} Povucite pravac „kroz
+sredinu oblaka”, ali \textbf{malo nagnut prema outlierima}. Razlog: 2-norma
+kažnjava $r_i^2$, pa pogreška od 10 boli 100 puta više nego pogreška od 1 ---
+velike pogreške dominiraju i vuku pravac k sebi.
+
+\textbf{Korak 3 --- pravac $\infty$-norme (minimaks).} Ovaj pravac gleda
+\textbf{isključivo najveću} pogrešku, pa ga crtate ovako: nađite najvišu i
+najnižu točku i položite pravac tako da bude \emph{približno jednako udaljen} od
+obiju. Rezultat: pravac jako povučen prema outlierima --- vizualno najgore
+prati glavninu podataka. Nacrtajte ga najviše nagnutog od svih triju.
+
+\textbf{Korak 4 --- pravac 1-norme.} Ova norma kažnjava $|r_i|$, dakle
+\textbf{linearno} --- outlier od 10 boli tek 10 puta više nego pogreška od 1.
+Zato pravac gotovo ignorira dvije podignute točke i prati glavninu. Nacrtajte ga
+\textbf{najbliže oblaku}, ispod druga dva.
+
+\textbf{Korak 5 --- reziduali.} Iz svake točke povucite okomitu crticu do
+svakog pravca. Vidjet ćete izvor cijele razlike: kod $\infty$-norme sve su
+crtice sličnih duljina (jer se minimizira najdulja), kod 1-norme većina je
+crtica vrlo kratka, a dvije su vrlo duge.
+
+\textbf{Provjera da ste dobro nacrtali:} redoslijed nagiba mora biti
+$1\text{-norma} <$ $2\text{-norma} <$ $\infty\text{-norma}$, gledano po tome
+koliko je pravac „povučen” prema outlierima.
+
+\textbf{Što graf znači.} Izbor norme \textbf{nije} kozmetika --- to je
+inženjerska odluka o tome kako želite biti kažnjeni za pogrešku. Trebate li
+jamstvo „nijedno odstupanje nije veće od $\varepsilon$”, uzimate
+$\infty$-normu; imate li nepouzdana mjerenja, uzimate 1-normu.
+\end{crtanje}
 
 \begin{figure}[H]
 \centering
@@ -1572,6 +1665,47 @@ vrijednosti $\delta$, čime se vidi prijelaz od „premalo izglađen” (ostaje 
 preko dobrog kompromisa do „previše izglađen” (gube se stvarne značajke
 signala).
 
+\begin{crtanje}[učinak parametra $\delta$ na rekonstrukciju]
+Slika ima tri panela jedan ispod drugoga, sa \emph{zajedničkom} vodoravnom osi
+(vrijeme / indeks uzorka $i = 1,\dots,n$). Crtajte ovako:
+
+\textbf{Korak 1 --- pravi signal.} Na sva tri panela lagano (npr.\ sivo)
+nacrtajte isti „pravi” signal: neka ima dva-tri \textbf{ravna odsječka} i
+\textbf{jedan oštar skok} između njih. Skok je ključan --- on je ono što se
+kasnije gubi.
+
+\textbf{Korak 2 --- korumpirani signal.} Preko njega nacrtajte $x_{\text{cor}}$:
+isti oblik, ali s \textbf{sitnim brzim titranjem} gore-dolje oko svake točke.
+To je šum. Nacrtajte ga na sva tri panela jednako.
+
+\textbf{Korak 3 --- panel 1, $\delta$ premalen.} Rekonstrukcija $\hat x^\star$
+gotovo se \textbf{poklapa} s korumpiranim signalom --- prepišite ga s jedva
+zaglađenim titranjem. Razlog iz formule: uz $\delta \approx 0$ je
+$(I + \delta D\T D)^{-1} \approx I$, dakle $\hat x^\star \approx x_{\text{cor}}$.
+Šum ostaje.
+
+\textbf{Korak 4 --- panel 2, $\delta$ dobar.} Nacrtajte glatku krivulju koja
+prati pravi signal: titranje je nestalo, ali je \textbf{skok još uvijek jasno
+vidljiv}, tek malo zaobljen. To je traženi kompromis.
+
+\textbf{Korak 5 --- panel 3, $\delta$ prevelik.} Nacrtajte krivulju koja je
+\emph{previše} glatka: šuma nema, ali je oštri skok razvučen u blagu kosinu, a
+ravni odsječci su se povukli jedan prema drugome. Za jako velik $\delta$
+krivulja teži vodoravnom pravcu. Razlog: član $\delta\|D\hat x\|_2^2$ kažnjava
+\textbf{razlike susjednih uzoraka}, pa ga za velik $\delta$ isplati potisnuti
+na nulu --- a signal bez razlika je konstanta.
+
+\textbf{Korak 6 --- oznake.} Uz svaki panel napišite njegov $\delta$ i jednom
+riječju ishod: „ostaje šum” / „kompromis” / „gubi skokove”.
+
+\textbf{Što graf znači.} $\delta$ nije tehnički parametar nego \textbf{ručica
+kompromisa} između dvaju suprotstavljenih ciljeva iz funkcije cilja: vjernosti
+podacima $\|\hat x - x_{\text{cor}}\|_2^2$ i glatkoće $\|D\hat x\|_2^2$. Skup
+svih ishoda za sve $\delta$ upravo je \textbf{Pareto fronta} iz
+odjeljka~\ref{sec:regularizacija}. Nijedan $\delta$ nije „točan” --- bira ga
+inženjer prema tome što ga u primjeni više boli.
+\end{crtanje}
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.86\textwidth]{05-rekonstrukcija.png}
@@ -1741,6 +1875,61 @@ U optimumu: $C_1'(21{,}25) = 23{,}25$ i $C_2'(28{,}75) = 22{,}25$. Nisu
 zasićeni, pa preraspodjela nije moguća bez dodatnog troška transporta. Da mreža
 nema ograničenja, marginalni troškovi bi se izjednačili, točno kao kod tržišnog
 primjera iz poglavlja~\ref{ch:dualnost}.
+
+\begin{crtanje}[mreža s optimalnim tokovima]
+Ovo je jedini graf u skripti koji nije nivo krivulja nego \textbf{dijagram
+mreže}. Crtanje je jednostavno, ali redoslijed je bitan --- ne crtajte brojeve
+prije nego što provjerite bilancu.
+
+\textbf{Korak 1 --- vrhovi.} Rasporedite šest kružića slijeva nadesno, po
+„slojevima” kako gorivo teče:
+\begin{itemize}
+  \item lijevo, jedan iznad drugoga: \textbf{1} i \textbf{2} (proizvođači);
+  \item u sredini: \textbf{3} (gore) i \textbf{4} (dolje);
+  \item desno: \textbf{5} (gore) i \textbf{6} (dolje) --- potrošači.
+\end{itemize}
+Uz 5 napišite $d_5 = 30$, uz 6 napišite $d_6 = 20$; uz 1 i 2 napišite $p_1$ i
+$p_2$. Takav raspored čini da nijedan brid ne ide „unatrag”, pa se slika ne
+zapetlja.
+
+\textbf{Korak 2 --- bridovi sa strelicama.} Povucite devet strelica, točno onih
+iz popisa: $(1,3)$, $(1,4)$, $(2,3)$, $(2,4)$, $(3,4)$, $(3,5)$, $(4,5)$,
+$(4,6)$, $(5,6)$. \textbf{Strelica je bitna} --- tok je moguć samo u njezinu
+smjeru, pa je svaka varijabla $f_{uv} \ge 0$.
+
+\textbf{Korak 3 --- oznake kapaciteta.} Uz svaki brid napišite par
+\emph{cijena / kapacitet} iz tablice, npr.\ uz $(1,3)$ napišite „$1 / 15$”.
+Radite to \emph{prije} rješavanja --- kapacitet je ono što se kasnije uspoređuje
+s tokom.
+
+\textbf{Korak 4 --- ucrtavanje rješenja.} Uz svaki brid dopišite izračunati tok
+$f_{uv}^\star$, podebljano. Debljinu crte možete uzeti proporcionalnu toku ---
+tako se odmah vidi kuda gorivo zaista ide, a koji je brid prazan (ovdje
+$(3,4)$, s tokom $0$).
+
+\textbf{Korak 5 --- označite zasićene bridove.} Prođite brid po brid i
+usporedite tok s kapacitetom. Gdje je \textbf{tok $=$ kapacitet}, obojite brid
+crveno. To su „uska grla” mreže. Provjerite: crveni su oni bridovi kojima je
+u tablici tok jednak gornjoj granici.
+
+\textbf{Korak 6 --- provjera bilance u svakom vrhu.} Za svaki vrh zbrojite
+tokove koji ulaze i one koji izlaze:
+\begin{itemize}
+  \item vrhovi 1 i 2: izlaz $=$ $p_i$ (ono što proizvedu);
+  \item vrhovi 3 i 4 (prijelazni): \textbf{ulaz $=$ izlaz}, ništa se ne
+        zadržava;
+  \item vrhovi 5 i 6: ulaz $-$ izlaz $=$ potražnja $d_i$.
+\end{itemize}
+Ako se ijedan vrh ne zatvori, negdje ste prepisali krivi broj. To su upravo
+ograničenja jednakosti iz Koraka 3 rješenja.
+
+\textbf{Što graf znači.} Crveni bridovi odgovaraju \textbf{aktivnim}
+ograničenjima kapaciteta, dakle jedinima s $\mu^\star > 0$. Po analizi
+osjetljivosti (odjeljak~\ref{sec:osjetljivost}) samo oni mogu imati vrijednost
+za investiciju --- povećanje kapaciteta bridu koji ionako nije pun ne mijenja
+ništa, jer je ondje $\mu^\star = 0$. Time slika \textbf{izravno odgovara na
+pitanje b)}, i to prije nego što se pogleda ijedan broj.
+\end{crtanje}
 
 \begin{figure}[H]
 \centering

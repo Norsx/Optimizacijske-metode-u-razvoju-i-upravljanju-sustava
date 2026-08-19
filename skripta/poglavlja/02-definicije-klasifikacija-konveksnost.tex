@@ -2432,6 +2432,52 @@ Svi ti oblici su \textbf{konveksni skupovi} --- što je slikoviti dokaz da je
 svaka norma konveksna funkcija (nivo skupovi konveksne funkcije su konveksni,
 vidi odjeljak~\ref{sec:svojstva-konv}).
 
+\begin{crtanje}[jedinične kugle $p$-normi]
+\textbf{Korak 1 --- okvir.} Nacrtajte osi $x_1$ i $x_2$, obje od $-1{,}2$ do
+$1{,}2$. Označite četiri točke na osima: $(1,0)$, $(0,1)$, $(-1,0)$, $(0,-1)$.
+\textbf{Kroz te četiri točke prolaze sve krivulje, bez iznimke} --- jer za
+$x = (1,0)$ svaka $p$-norma daje $\sqrt[p]{1^p + 0^p} = 1$. To je vaša
+kontrolna točka.
+
+\textbf{Korak 2 --- $p = 1$ (romb, unutarnja granica).} Spojite te četiri točke
+\emph{ravnim} crtama. Dobili ste romb. U prvom kvadrantu njegova je stranica
+pravac $x_1 + x_2 = 1$ --- upravo definicija $\|x\|_1 = 1$ kad su obje
+komponente pozitivne.
+
+\textbf{Korak 3 --- $p = \infty$ (kvadrat, vanjska granica).} Nacrtajte kvadrat
+sa stranicama $x_1 = \pm1$ i $x_2 = \pm1$. Vrhovi su mu $(\pm1,\pm1)$. Provjera
+u vrhu: $\max(|1|,|1|) = 1$ \checkmark. Sve ostale krivulje leže
+\textbf{između} romba i kvadrata.
+
+\textbf{Korak 4 --- $p = 2$ (kružnica, sredina).} Šestarom nacrtajte kružnicu
+polumjera 1 iz ishodišta. Prolazi kroz iste četiri točke, a u smjeru dijagonale
+dopire do $(0{,}707;\ 0{,}707)$ --- dakle između romba (koji ondje ima
+$(0{,}5;\ 0{,}5)$) i kvadrata (koji ima $(1;\ 1)$).
+
+\textbf{Korak 5 --- međuslučajevi.} Za $p = 1{,}5$ nacrtajte krivulju između
+romba i kružnice; za $p = 3$ i $p = 6$ krivulje između kružnice i kvadrata, sve
+bliže kvadratu kako $p$ raste. Jednostavno pravilo: \textbf{što je $p$ veći, to
+je oblik napuhaniji prema van.} Dovoljna je jedna dodatna točka po krivulji ---
+ona na dijagonali, gdje je $x_1 = x_2 = 2^{-1/p}$:
+\[
+p=1{,}5 \to 0{,}63; \qquad p=2 \to 0{,}71; \qquad
+p=3 \to 0{,}79; \qquad p=6 \to 0{,}89
+\]
+Ucrtajte tu točku i provucite glatku krivulju kroz nju i kroz četiri točke s
+osi.
+
+\textbf{Korak 6 --- provjera konveksnosti okom.} Uzmite bilo koje dvije točke
+na istoj krivulji i spojite ih ravnom crtom. Ta crta nikad ne izlazi izvan
+krivulje --- skup je konveksan. To je i cijela poanta slike.
+
+\textbf{Što graf znači.} Svaka je od tih krivulja \textbf{nivo krivulja}
+funkcije $x \mapsto \|x\|_p$ na razini 1. Kad u optimizaciji minimizirate normu,
+vi „napuhujete” taj oblik iz ishodišta dok prvi put ne dodirne dozvoljeni skup
+--- i \emph{oblik} kugle odlučuje \emph{gdje} će dodirnuti. Zato izbor norme
+mijenja rješenje: šiljati romb 1-norme dodiruje najčešće u vrhu (rješenje s
+mnogo nula), a glatka kružnica 2-norme bilo gdje.
+\end{crtanje}
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.56\textwidth]{02-norme-jedinicne-kugle.png}

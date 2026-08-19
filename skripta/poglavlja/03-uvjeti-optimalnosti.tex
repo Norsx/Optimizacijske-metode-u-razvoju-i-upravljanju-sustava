@@ -381,6 +381,60 @@ po kružnici cilj popravlja, pa ta točka nije optimum. Samo tamo gdje je zelena
 strelica \textbf{potpuno okomita} na plave (dakle kolinearna s crvenom) nema
 poboljšanja.
 
+\begin{crtanje}[kružnica, nivo krivulje i tri vrste strelica]
+Ovo je crtež koji slajdovi 23--26 grade u četiri poteza. Radite istim
+redoslijedom --- svaki korak dodaje točno jednu vrstu informacije.
+
+\textbf{Korak 1 --- dozvoljeni skup.} Nacrtajte osi od $-2$ do $2$. Šestarom
+nacrtajte kružnicu sa središtem u ishodištu i polumjerom $\sqrt2 \approx 1{,}41$.
+To je ograničenje $h(x) = x_1^2 + x_2^2 - 2 = 0$. Pazite: dozvoljena je
+\textbf{samo sama kružnica}, ne i njezina unutrašnjost --- ograničenje je
+jednakost. Podebljajte je.
+
+\textbf{Korak 2 --- nivo krivulje cilja.} Cilj je $f = x_1 + x_2$. Nivo krivulja
+$f = c$ je pravac $x_2 = c - x_1$, dakle \textbf{pravac nagiba $-1$}. Nacrtajte
+ih nekoliko, paralelnih, npr.\ za $c = -2, -1, 0, 1, 2$; sve idu iz gornjeg
+lijevog u donji desni kut. Uz svaku napišite njezin $c$. \emph{Smjer pada je
+prema dolje-lijevo} (prema manjem $c$) --- označite ga malom strelicom sa strane.
+
+\textbf{Korak 3 --- \textcolor{zelena}{zelene} strelice $-\nabla f$
+\str{23}.} Gradijent je $\nabla f = (1,1)\T$, pa je $-\nabla f = (-1,-1)\T$.
+Odaberite četiri-pet točaka razmještenih po kružnici i iz svake nacrtajte
+\textbf{istu} zelenu strelicu: jednu jedinicu lijevo i jednu dolje. Sve su
+zelene strelice \emph{jednake i paralelne}, jer je $f$ linearna --- to je prva
+stvar koju slika mora pokazati.
+
+\textbf{Korak 4 --- \textcolor{fsbcrvena}{crvene} strelice $\nabla h$
+\str{24--25}.} U istim točkama nacrtajte $\nabla h(x) = (2x_1,\ 2x_2)\T$. To je
+uvijek \textbf{radijalni} smjer: strelica ide iz središta kroz točku, prema van.
+Praktično: povucite polumjer do točke i produžite ga. Smjer smijete uzeti i
+prema unutra --- $h = 0$ i $-h = 0$ isti su uvjet \str{25}.
+
+\textbf{Korak 5 --- \textcolor{tamnoplava}{plave} strelice, dozvoljeni smjerovi
+\str{26}.} U istim točkama nacrtajte smjerove \textbf{okomite na crvenu}, dakle
+\textbf{tangente na kružnicu}, i to u \emph{oba} smjera. To su smjerovi $d$ za
+koje vrijedi $\nabla h\T d = 0$ --- jedini kojima se smijete pomaknuti, a da ne
+siđete s kružnice.
+
+\textbf{Korak 6 --- pronalaženje optimuma okom.} Prođite točku po točku i
+pitajte se: \emph{ima li zelena strelica komponentu duž ijedne plave?} Ako ima,
+pomak u tom smjeru smanjuje cilj, pa točka \textbf{nije} optimum --- prekrižite
+je. Ostat će jedina točka u kojoj je zelena okomita na obje plave, dakle
+kolinearna s crvenom. Nađite je: to je $x^\star = (-1,-1)$. Provjera:
+$(-1)^2 + (-1)^2 = 2$ \checkmark, a $-\nabla f = (-1,-1)$ i
+$\nabla h = (-2,-2)$ doista su paralelni ($\lambda = 1/2$).
+
+\textbf{Korak 7 --- kontrola tangentnošću.} Kroz $(-1,-1)$ povucite nivo
+krivulju $f = -2$. Ona \textbf{dodiruje} kružnicu, ne siječe je. To je vizualni
+potpis optimuma: čim nivo krivulja \emph{siječe} dozvoljeni skup, s obje strane
+sjecišta postoje bolje točke.
+
+\textbf{Što graf znači.} Cijeli uvjet kolinearnosti gradijenata
+$\nabla f = -\lambda\nabla h$, koji ćemo u sljedećem odjeljku izvesti
+algebarski, na ovoj je slici jedna jedina rečenica: \emph{u optimumu nivo
+krivulja cilja tangira krivulju ograničenja.}
+\end{crtanje}
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.74\textwidth]{03-jednakost-krug.png}

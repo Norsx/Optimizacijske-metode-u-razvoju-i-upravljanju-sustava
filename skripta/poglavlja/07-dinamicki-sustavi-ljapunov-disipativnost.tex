@@ -34,9 +34,10 @@ postaju rješiva SDP-om.
 \begin{definicija}[Eksponencijalna stabilnost]
 Eksponencijalna stabilnost znači da postoje realne konstante $a > 0$
 (\textbf{brzina opadanja}) i $K$, takve da vrijedi
-\[
+\begin{equation}
+\label{eq:eksp-stabilnost}
 \|x(t)\| \le \|x(t_0)\|\,K e^{-a(t-t_0)}
-\]
+\end{equation}
 za sve trajektorije i za svaki $t \ge t_0$.
 
 Pretpostavka je da $a$ i $K$ \textbf{ne ovise} o $t_0$ i o $x(t_0)$
@@ -228,6 +229,66 @@ Uz to su svojstvene vrijednosti od $P$ pozitivne, pa je $P \succ 0$.
 
 Slajd 13 sadrži MATLAB kod kojim je slika generirana (samo kao slika, bez
 tekstualnog sloja).
+
+\begin{crtanje}[nivo skupovi Ljapunovljeve funkcije i trajektorije]
+Ovaj crtež pokazuje \emph{zašto} uvjet $A\T P + PA \prec 0$ znači stabilnost.
+Gradite ga u tri sloja: prvo elipse, pa strelice, pa trajektorije.
+
+\textbf{Korak 1 --- osi.} Nacrtajte ravninu stanja $(x_1, x_2)$, obje osi od
+$-2$ do $2$, s ishodištem u sredini. Ishodište je ravnotežno stanje --- ondje
+je $\dot x = A\cdot 0 = 0$.
+
+\textbf{Korak 2 --- nivo krivulje $V(x) = c$.} Funkcija je
+$V(x) = 0{,}6777x_1^2 + 2\cdot0{,}0584\,x_1x_2 + 0{,}3223x_2^2$. Budući da je
+$P \succ 0$, nivo krivulje su \textbf{elipse} oko ishodišta. Nacrtajte tri-četiri
+koncentrične elipse, npr.\ za $c = 0{,}25;\ 0{,}5;\ 1$. Praktično: koeficijent uz
+$x_1^2$ veći je nego uz $x_2^2$, pa je elipsa \textbf{spljoštena u smjeru $x_1$}
+(kraća poluos vodoravno), a mali mješoviti član je tek malo zakreće. Uz svaku
+napišite njezin $c$.
+
+\textbf{Korak 3 --- vektorsko polje.} U mreži točaka izračunajte
+$\dot x = Ax$ i nacrtajte kratku strelicu. Uz
+$A = \begin{psmallmatrix}-1 & 2\\ -3 & -4\end{psmallmatrix}$:
+\[
+x = (1,0) \to \dot x = (-1,-3); \qquad
+x = (0,1) \to \dot x = (2,-4)
+\]
+\[
+x = (-1,0) \to \dot x = (1,3); \qquad
+x = (0,-1) \to \dot x = (-2,4)
+\]
+Dovoljno je osam do dvanaest takvih strelica. Uočit ćete da polje \emph{kruži}
+prema ishodištu.
+
+\textbf{Korak 4 --- ključna provjera u jednoj točki.} Uzmite točku na elipsi,
+npr.\ $x = (1,0)$. Nacrtajte:
+\begin{itemize}
+  \item \textbf{vanjsku normalu} $\nabla V = 2Px$; za $x=(1,0)$ to je
+        $2\cdot(0{,}6777;\ 0{,}0584) = (1{,}355;\ 0{,}117)$ --- strelica gotovo
+        vodoravno udesno, okomita na elipsu, prema van;
+  \item \textbf{brzinu} $\dot x = (-1,-3)$ --- strelica dolje-lijevo.
+\end{itemize}
+Sada izmjerite kut između njih. Skalarni produkt je
+$1{,}355\cdot(-1) + 0{,}117\cdot(-3) = -1{,}706 < 0$, dakle kut je
+\textbf{tup} --- brzina pokazuje na \emph{unutarnju} stranu elipse. Ponovite to
+u još jednoj-dvije točke; ishod je uvijek isti.
+
+\textbf{Korak 5 --- trajektorije.} Krenite od nekoliko početnih točaka na
+najvećoj elipsi i „idite za strelicama”: u svakom koraku nacrtajte kratak potez
+u smjeru lokalne strelice. Dobit ćete \textbf{spirale koje se uvijaju prema
+ishodištu}. Nacrtajte tri-četiri takve krivulje, svaku iz drugog kvadranta.
+
+\textbf{Korak 6 --- provjera na slici.} Prođite pogledom svaku elipsu i pitajte:
+\emph{siječe li je ijedna trajektorija prema van?} Ne smije --- nijedna, nigdje.
+To je invarijantnost nivo skupa: jednom kad trajektorija uđe unutra, više ne
+izlazi.
+
+\textbf{Što graf znači.} Elipse su „ograde” koje se nikad ne probijaju prema
+van, a njihova razina $V$ duž svake trajektorije samo pada. Kako je $V \ge 0$ i
+strogo pada, mora težiti nuli --- a $V = 0$ znači $x = 0$. \textbf{To je
+cjelokupan sadržaj Ljapunovljevog teorema, u jednoj slici:} algebarski uvjet
+$A\T P + PA \prec 0$ jest geometrijska tvrdnja „sve strelice ulaze”.
+\end{crtanje}
 
 \begin{figure}[H]
 \centering
@@ -807,6 +868,45 @@ najveća svojstvena vrijednost & $-4\cdot10^{-6}$ & $-9\cdot10^{-6}$
 Sve su negativne, dakle \textbf{ista} matrica $P$ služi kao Ljapunovljeva
 funkcija za sve $b$ --- upravo definicija kvadratne stabilnosti
 \eqref{eq:kvadratna-stabilnost}. \checkmark
+
+\begin{crtanje}[odziv zatvorenog kruga za cijeli interval nesigurnosti]
+Ovo je \textbf{provjera} rezultata, a ne konstrukcija --- ali i nju treba znati
+skicirati, jer se na ispitu traži da opišete \emph{kako izgleda} odziv robusno
+stabiliziranog sustava.
+
+\textbf{Korak 1 --- osi.} Vodoravno vrijeme $t$ od $0$ do otprilike $5$ s,
+uspravno otklon $\varphi$ u radijanima, od $-0{,}1$ do $0{,}25$. Nacrtajte
+\textbf{vodoravnu crtkanu liniju kroz nulu} --- to je cilj, uspravan položaj
+njihala.
+
+\textbf{Korak 2 --- početni uvjet.} Stavite točku na $(0;\ 0{,}2)$. Njihalo
+kreće nagnuto za $0{,}2$ rad ($\approx 11^\circ$).
+
+\textbf{Korak 3 --- oblik krivulje.} Nacrtajte krivulju koja iz te točke
+\textbf{pada prema nuli}, malo je prebaci u negativno (blagi
+\emph{prebačaj}) i zatim se u nekoliko sve manjih titraja smiri na nuli. Ovojnica
+tih titraja je opadajuća eksponencijala --- lagano je ucrtajte crtkano, iznad i
+ispod krivulje simetrično. To je oblik \eqref{eq:eksp-stabilnost}:
+$\|x(t)\| \le K\|x(t_0)\|e^{-a(t-t_0)}$.
+
+\textbf{Korak 4 --- ostale vrijednosti $b$.} Ponovite Korak 3 još četiri puta,
+za $b = 0{,}05;\ 0{,}1625;\ 0{,}275;\ 0{,}3875;\ 0{,}5$. Kvaka je u tome što se
+\textbf{sve krivulje gotovo poklapaju} --- crtajte ih kao snop koji se jedva
+razdvaja. Razlog stoji u modelu: trenje $b$ ulazi u matricu $A(b)$ preko malog
+člana, pa slabo mijenja dinamiku u odnosu na povratnu vezu.
+
+\textbf{Korak 5 --- ono što se NE smije dogoditi.} Radi kontrasta nacrtajte sa
+strane, sitno, kako bi izgledao \emph{neuspjeh}: krivulja koja raste u
+amplitudi i bježi od nule. To bi značilo da $K$ stabilizira nominalni sustav,
+ali ne i cijeli interval $b \in [0{,}05;\ 0{,}5]$ --- dakle da smo riješili
+\emph{nominalni}, a ne \emph{robusni} problem.
+
+\textbf{Što graf znači.} Jedan jedini $K$, dobiven iz \emph{dvije} LMN
+(u vrhovima $b = 0{,}05$ i $b = 0{,}5$), radi za \textbf{sve} vrijednosti
+između. To je cijela poanta redukcije na vrhove politopa iz
+odjeljka~\ref{sec:robusna-stabilnost}: beskonačno mnogo uvjeta zamijenjeno je
+s dva, bez ikakvog gubitka.
+\end{crtanje}
 
 \begin{figure}[H]
 \centering
