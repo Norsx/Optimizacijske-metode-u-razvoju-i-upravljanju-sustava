@@ -1371,7 +1371,73 @@ rastućim $k$ vrh pomiče udesno i postaje niži.
 aproksimacije, samo su „podaci” vrijednosti impulsnog odziva u 300 vremenskih
 trenutaka, a „bazne funkcije” su impulsni odzivi jednostavnih sustava
 $1/(s+1)^k$. Traže se koeficijenti $c_k$ tako da
-$\sum_k c_k h_k(t) \approx h(t)$. Matrica $A$ ima $300$ redaka i $14$ stupaca.
+$\sum_k c_k h_k(t) \approx h(t)$.
+
+\subsection*{Postavljanje problema korak po korak}
+
+\emph{(Slajd daje samo postavku i grafove rezultata; formulacija niže dobiva se
+receptom iz odjeljka~\ref{sec:vj4-primjer1}, primijenjenim na ove podatke.)}
+
+\textbf{Korak 1 --- projektne varijable.} Traže se koeficijenti razvoja
+\[
+c = (c_1,\ c_2,\ \dots,\ c_{14})\T \in \R^{14}
+\]
+Dakle \textbf{14 nepoznanica} --- po jedna za svaku baznu funkciju. Sam sustav
+ima 22 pola, ali ga aproksimiramo s manje članova; zato aproksimacija i nije
+točna.
+
+\textbf{Korak 2 --- matrica $A$.} Vremenski interval $[0,30]$ podijeljen je na
+$m = 300$ točaka $t_1,\dots,t_{300}$. U redak $i$ upišemo vrijednosti svih
+baznih odziva u trenutku $t_i$:
+\[
+A = \begin{pmatrix}
+h_1(t_1) & h_2(t_1) & \dots & h_{14}(t_1) \\
+h_1(t_2) & h_2(t_2) & \dots & h_{14}(t_2) \\
+\vdots & \vdots & & \vdots \\
+h_1(t_{300}) & h_2(t_{300}) & \dots & h_{14}(t_{300})
+\end{pmatrix} \in \R^{300\times14}
+\]
+\textbf{Pravilo za pamćenje:} \emph{redak $=$ jedna mjerna točka, stupac $=$
+jedna bazna funkcija.}
+
+\textbf{Korak 3 --- vektor podataka i rezidual.} Neka je
+$b = \big(h(t_1),\dots,h(t_{300})\big)\T \in \R^{300}$ pravi impulsni odziv.
+Rezidual (vektor grešaka u svih 300 točaka) je
+\[
+r(c) = Ac - b \in \R^{300}
+\]
+Problem glasi: $\min_c \|Ac - b\|$, a preostaje samo odabrati normu.
+
+\textbf{Korak 4a --- verzija sa slajda 16 ($\infty$-norma) kao LP.} Po
+reformulaciji iz odjeljka~\ref{sec:norme-reformulacije} uvodimo \emph{jednu}
+pomoćnu varijablu $y \in \R$:
+\[
+\begin{aligned}
+\min_{c,\,y} \quad & y \\
+\uzogr & -y\mathbf{1} \le Ac - b \le y\mathbf{1}
+\end{aligned}
+\]
+To je LP s $14 + 1 = 15$ varijabli i $2\cdot300 = 600$ nejednakosti. Varijabla
+$y$ je \emph{najveća} greška, pa je minimiziramo --- odatle ravnomjerno
+razmazana greška na slajdu 16.
+
+\textbf{Korak 4b --- verzija sa slajda 17 ($1$-norma) kao LP.} Ovdje treba
+\emph{po jedna} pomoćna varijabla za svaku od 300 komponenata,
+$y \in \R^{300}$:
+\[
+\begin{aligned}
+\min_{c,\,y} \quad & \mathbf{1}\T y = y_1 + \dots + y_{300} \\
+\uzogr & -y \le Ac - b \le y
+\end{aligned}
+\]
+LP s $14 + 300 = 314$ varijabli i $600$ nejednakosti. Sada se minimizira
+\emph{zbroj} grešaka, pa rješavaču isplati većinu komponenata gurnuti na nulu
+--- odatle šiljci na slajdu 17.
+
+\textbf{Korak 5 --- provjera veličine problema.} Oba su LP-a mala za današnje
+rješavače (stotinjak varijabli), pa se rješavaju u djeliću sekunde. To je
+poanta cijelog poglavlja: čim problem prevedete u LP, veličina prestaje biti
+prepreka.
 
 \textbf{Rezultati:}
 
