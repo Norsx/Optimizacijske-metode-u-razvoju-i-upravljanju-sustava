@@ -12,8 +12,12 @@
 
 ## Trenutni fokus
 
+- **Skripta za učenje (`skripta/`) je gotova i spremna za ispis** — 234 stranice
+  A4, sva predavanja (01–08) i sve vježbe (1–5) obrađeni u cijelosti.
+  Kontrolna lista provjera: `skripta/README.md` → „Provjera spremnosti za ispis”.
 - Repozitorij postavljen; materijali kolegija i tekst zadatka smješteni u `data/`.
-- Sljedeći korak: `latex_architect` postavlja `docs/` (reci "počni pisati").
+- Sljedeći korak: **seminarski rad** — `latex_architect` postavlja `docs/`
+  (reci „počni pisati”). Skripta je za učenje i odvojena je od seminara.
 
 ## Zadatak (4 cjeline)
 

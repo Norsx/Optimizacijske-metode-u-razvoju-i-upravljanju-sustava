@@ -140,3 +140,18 @@
 
 % oznaka izvorne stranice u slajdovima
 \newcommand{\str}[1]{\textcolor{gray}{\footnotesize[str.~#1]}}
+
+% Rucno oznacena jednadzba, npr. (*) kako stoji na slajdu.
+% \tag ne pomice brojac jednadzbi, pa bi hyperref za takvu jednadzbu i za
+% sljedecu obicnu jednadzbu upisao isto PDF odrediste ("Object already
+% defined") i hiperveza bi skakala na krivo mjesto. Zato svakoj rucno
+% oznacenoj jednadzbi dajemo vlastito odrediste; \renewcommand je lokalan
+% unutar okruzenja equation, pa ostale jednadzbe ostaju netaknute.
+% Koristi se ovako:
+%   \begin{jednadzba}{$*$} \label{...} ... \end{jednadzba}
+\newcounter{rucnaoznaka}
+\newenvironment{jednadzba}[1]{%
+  \stepcounter{rucnaoznaka}%
+  \renewcommand{\theHequation}{rucnaoznaka.\therucnaoznaka}%
+  \equation\tag{#1}%
+}{\endequation}

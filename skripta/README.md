@@ -342,8 +342,25 @@ Vježbe 5 (Zadatak 2):
 
 ## Status
 
-**Sva predavanja i sve vježbe obrađeni su u cijelosti.** Skripta ima 217
-stranica A4 formata.
+**Sva predavanja i sve vježbe obrađeni su u cijelosti.** Skripta ima 234
+stranice A4 formata.
+
+### Provjera spremnosti za ispis
+
+Zadnja revizija (kolovoz 2026.) prošla je ove provjere:
+
+| Provjera | Rezultat |
+|---|---|
+| Pokrivenost izvornika (`\str{}` oznake vs. broj stranica) | sve stranice svih 13 izvora citirane; necitirane su samo naslovni i „Outline” slajdovi |
+| Zadaci i primjeri s razrađenim postupkom | svi; nijedan ne stoji bez rješenja |
+| Grafovi s uputama za postupno crtanje rukom | 22 slike / 22 okvira `crtanje` |
+| Prekoračenja margine (Overfull `\hbox`) | 3, sva ispod 5 pt (nevidljiva u ispisu) |
+| Nerazriješene reference (`\ref`, `\eqref`) | nema |
+| Uparenost hrvatskih navodnika `„”` | uparena u svim datotekama |
+| Brojčani rezultati vs. skripte koje ih računaju | provjereno: `solve_vj5_mreza.py`, `solve_vj5_robusna.py`, `solve_p03_ravnoteza.py` |
+
+Provjere pokrivenosti, linta i uparenosti navodnika radne su skripte i nisu
+dio repozitorija; postupak je opisan gore da se može ponoviti.
 
 ## Izvan opsega
 
